@@ -1,12 +1,30 @@
 ###-----replicated.uniques-------------------------------------------------
 # unique units in the synthesised data that replicates unique real units
-# (+number +percent of all observations)
+# for variables in keys  (+number of uniques in real and synthetic data)
 
-replicated.uniques <- function(object, data, exclude = NULL){
-  # check names of vars to be excluded
+replicated.uniques <- function(object, data, keys = names(data), exclude = NULL, ...){
+
+  if (!inherits(object, "synds")) stop("replicated uniques requires an object of class 'synds'", call. = FALSE)
+ 
+  # check names of vars to be keys and exclude exist in data and syn
+  if (!is.null(keys)) {
+    keys.cols <- match(keys, colnames(data))
+    if (any(is.na(keys.cols))) stop("Variable(s) not in data supplied in keys parameter of replicated.uniques: ",
+                                       paste(keys[is.na(keys.cols)],collapse=", "), call. = FALSE)
+    if (object$m > 1)      keys.cols <- match(keys, colnames(object$syn[[1]]))
+    else keys.cols <- match(keys, colnames(object$syn))
+    if (any(is.na(keys.cols))) stop("Variable(s) in keys parameter of replicated.uniques are not in synthetic data : ",
+                                    paste(keys[is.na(keys.cols)],collapse=", "), call. = FALSE)
+  }
+  # restrict data and syn to key variables only
+  data <- data[,keys]
+  if (object$m == 1) object$syn <- object$syn[,keys]
+  if (object$m > 1) object$syn <- lapply(object$syn, function(x) x[,keys])
+
+
   if (!is.null(exclude)) {
     exclude.cols <- match(exclude, colnames(data))
-    if (any(is.na(exclude.cols))) stop("Unrecognized variable(s) in exclude parameter for uniques: ",
+    if (any(is.na(exclude.cols))) stop("Variable(s) to exclude not in data or not in keys for uniques: ",
       paste(exclude[is.na(exclude.cols)],collapse=", "), call. = FALSE)
   }
   
@@ -25,37 +43,50 @@ replicated.uniques <- function(object, data, exclude = NULL){
   } else {
 
     if (object$m == 1){
-      if (!is.null(exclude)) Syn <- object$syn[,-exclude.cols, drop = FALSE] else Syn <- object$syn
-      rm.Syn <- rep(FALSE,nrow(Syn))
-      i.unique.Syn <- which(!(duplicated(Syn) | duplicated(Syn,fromLast=TRUE)))
+    
+      rm.Syn <- rep(FALSE,nrow(object$syn))
+      i.unique.Syn <- which(!(duplicated(object$syn) | duplicated(object$syn,fromLast=TRUE)))
+      no.syn.uniques <- length(i.unique.Syn)
+
       if (length(i.unique.Syn)!=0) {
-        uSyn <- Syn[i.unique.Syn, , drop = FALSE]
+        
+        uSyn <- object$syn[i.unique.Syn, , drop = FALSE]
+        print((uSyn))
+     
         uAll <- rbind.data.frame(uReal,uSyn)
+  
         dup.of.unique <- duplicated(uAll)[(nrow(uReal)+1):nrow(uAll)]
         rm.Syn[i.unique.Syn] <- dup.of.unique
       }
+
       no.duplicates <- sum(rm.Syn)
     }
 
     if (object$m > 1){
+    no.syn.uniques <- rep(NA, object$m)
     rm.Syn <- matrix(FALSE,nrow=nrow(object$syn[[1]]),ncol=object$m)
       for (i in 1:object$m){
-        if (!is.null(exclude)) Syn <- object$syn[[i]][,-exclude.cols,drop = FALSE] else Syn <- object$syn[[i]]
-        i.unique.Syn <- which(!(duplicated(Syn) | duplicated(Syn,fromLast=TRUE)))
+        i.unique.Syn <- which(!(duplicated(object$syn[[i]]) | duplicated(object$syn[[i]],fromLast=TRUE)))
+        no.syn.uniques[i] <- length(i.unique.Syn)
         if (length(i.unique.Syn)!=0) {
-          uSyn <- Syn[i.unique.Syn, , drop = FALSE]
+          uSyn <- object$syn[[i]][i.unique.Syn, , drop = FALSE]
           uAll <- rbind.data.frame(uReal,uSyn)
           dup.of.unique <- duplicated(uAll)[(nrow(uReal)+1):nrow(uAll)]
           rm.Syn[i.unique.Syn,i] <- dup.of.unique
         }
+
       }
       no.duplicates <- colSums(rm.Syn)
     }
-    per.duplicates <- no.duplicates/nrow(data)*100
+
+
   }
 
-  return(list(replications = rm.Syn, no.uniques = no.uniques,
-    no.replications = no.duplicates, per.replications = per.duplicates))
+  result <-  list(m = object$m, n = object$n, k = object$k, keys =keys, 
+    replications = rm.Syn, no.uniques = no.uniques, no.syn.uniques = no.syn.uniques,
+    no.replications = no.duplicates )
+  class(result) <- "repuniq.synds"
+  return(result)
 }
 
 
@@ -128,7 +159,7 @@ sdc <- function(object, data, label = NULL, rm.replicated.uniques = FALSE,
    if (!is.null(recode.vars)) {
      cols <- match(recode.vars,colnames(object$syn[[1]])) 
      for (k in 1:object$m) {
-       cat("\nm =",k)
+
        for (i in cols) {
          j <- match(i,cols) 
          recoded <- bottom.top.recoding(object$syn[[k]][,i],bottom.top.coding[[j]][1],
@@ -139,7 +170,7 @@ sdc <- function(object, data, label = NULL, rm.replicated.uniques = FALSE,
          recoded$no.recoded.top, sep = "")
        }
      }
-   cat("\n")
+
    }
    if (rm.replicated.uniques) {
      du <- replicated.uniques(object, data, exclude = uniques.exclude) 
@@ -269,7 +300,7 @@ read.obs <- function(file, convert.factors = TRUE, lab.factors = FALSE,
 ###---- write.syn ---------------------------------------------------------
 
 write.syn <- function(object, filename,
-  filetype = c("SPSS","Stata","SAS","csv","tab","rda","RData","txt"),
+  filetype =c("csv",  "tab", "txt","SPSS", "Stata", "SAS",  "rda", "RData"),
   convert.factors = "numeric", data.labels = NULL,
   save.complete = TRUE, extended.info = TRUE, ...){
 
