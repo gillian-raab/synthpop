@@ -13,7 +13,7 @@ The biggest change in the new version is the inclusion of two new functions to a
 
 Each of them can take as input either an oject of class synds that includes synthetic data set(s) created by synthpop or a synthetic data set or a list of synthetic data sets created by any method from the same original data.
 
-These are described in the vignette disclosure.pdf. (add link??)
+These are described in the vignette disclosure.pdf.
 
 To install the package from this repo in Rstudio use the command
 
