@@ -673,9 +673,24 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
     data <- data.orig
     # make all variables into factors
     for (j in 1:nvars) {
+      
+      
       if (is.numeric(data[, j])) {
         grpd <- group_num(data[, j], syndata[[i]][, j], syn.mvar[[j]],
                           n = ngroups, cont.na = cna[[j]], ...)
+        ng <- length(table(grpd[[1]]))
+        
+        if (length(table(grpd[[1]])) < 3) {
+          grpd <- group_num(data[, j],  syndata[[i]][, j],  syn.mvar[[j]],
+                            cont.na = cna[[j]], n = ngroups, style = "fisher")
+          
+          if (length(table(grpd[[1]])) < 3 ) {
+            cat("Only",length(table(grpd[[1]])),"groups produced for", names(data)[j],"even after changing method.\n")
+            cat("Check data\n\n")
+          }
+          else if (print.flag) cat("Grouping changed from 'quantile' to  'fisher' in function numtocat.syn for",names(data)[j],"because only",ng," groups produced\n")
+          data[, j] <- grpd[[1]]; syndata[[i]][, j] <- grpd[[2]]
+        }
         data[, j] <- grpd[[1]]; syndata[[i]][, j] <- grpd[[2]]
       } else if (is.character(data[, j])) {
         data[, j] <- factor(data[, j])
@@ -808,6 +823,7 @@ group_num <- function(x1, x2, xsyn, n = 5, style = "quantile", cont.na = NA, ...
   # Categorise 2 continuous variables into factors of n groups
   # with same groupings determined by the first one
   # xsyn - all synthetic values (for m syntheses)
+ 
 
   if (!is.numeric(x1) | !is.numeric(x2) | !is.numeric(xsyn)) 
     stop("x1, x2, and xsyn must be numeric.\n", call. = FALSE)

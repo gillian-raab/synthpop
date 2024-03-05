@@ -13,7 +13,8 @@ for SPSS files imported into R using \code{\link{read.obs}} function.
 }
 \usage{
 write.syn(object, filename, 
-filetype = c("SPSS", "Stata", "SAS", "csv", "tab", "rda", "RData", "txt"), 
+filetype = c("csv", "tab", "txt",
+                    "SPSS", "Stata", "SAS", "rda", "RData"), 
 convert.factors = "numeric", data.labels = NULL, save.complete = TRUE, 
 extended.info = TRUE, ...)
 }

@@ -1,3 +1,16 @@
+###-----print.repuniq.synds--------------------------------------------------------
+print.repuniq.synds <- function(x, dec.pl = 2, ...){
+
+cat("Uniques and replicated uniques for " ,x$m , " synthesised data set(s)\n",
+    "from keys: ",x$keys,"\n\n") 
+cat("Uniques in  original data:\n" ,x$no.uniques , "from ", x$n,"records (",round(x$no.uniques/x$n*100,dec.pl),"%) \n")
+cat("Uniques in synthetic data:\n" ,x$no.syn.uniques , "from ", x$k,"records (",paste(round(x$no.syn.uniques/x$k*100,dec.pl),"%",sep =""), ")\n")
+cat("\nReplicated uniques:\n" ,x$no.replications)
+cat("\nas a % of uniques in synthetic ",paste(round(x$no.replication/x$no.syn.uniques*100,dec.pl),"%",sep =""))
+cat("\nas a % of original records (repU)",paste(round(x$no.replication/x$n*100,dec.pl),"%",sep =""))
+
+  invisible(x)
+}
 ###-----print.synds--------------------------------------------------------
 
 print.synds <- function(x, ...){
@@ -20,7 +33,6 @@ print.synds <- function(x, ...){
   print(x$predictor.matrix)     
   invisible(x)
 }
-
 
 ###-----summary.synds------------------------------------------------------
 
