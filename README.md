@@ -17,7 +17,8 @@ These are described in the vignette disclosure.pdf.
 
 To install the package from this repo in Rstudio use the command
 
-devtools::install_github("Gillian_Raab/synthpop",build_vignettes = TRUE)
+### devtools::install_github("Gillian_Raab/synthpop",build_vignettes = TRUE) ###
+
 If you then go to the package index you will see the documentation file 
 disclosure.pdf in the vignettes directory,
  
