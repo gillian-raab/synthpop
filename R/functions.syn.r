@@ -472,6 +472,7 @@ syn.sample <- function(y, xp, smoothing = "", cont.na = NA, proper = FALSE, ...)
 {
   # Generates random sample from the observed y's
   # with bootstrap if proper == TRUE
+
   if (proper == TRUE) y <- sample(y, replace = TRUE)
   yp <- sample(y, size = xp, replace = TRUE)
   
@@ -897,8 +898,8 @@ syn.collinear <- function(y, x, xp, ...)
 
 ###-----syn.catall---------------------------------------------------------
 
-syn.catall <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
-                       maxtable = 1e8, epsilon = 0, rand = TRUE, ...)
+syn.catall <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, maxtable = 1e8,  
+                       epsilon= 0, delta = 0.05, rand = TRUE, noisetype ="Laplace",  ...)
 {
  # Fits a saturated model to combinations of variables
  # xp just holds number of synthetic records required
@@ -931,8 +932,14 @@ WARNING: Total of ", sum(tab[sz])," counts of original data in structural zero c
  dn  <- dimnames(tab)
   if (epsilon > 0) {
     if (rand == TRUE) {
-      if (!is.null(structzero)) tab[!sz] <- addlapn(tab[!sz], epsilon) 
-      else tab <- addlapn(tab, epsilon) 
+      if (noisetype == "Laplace"){
+        if (!is.null(structzero)) tab[!sz] <- addlapn(tab[!sz], epsilon) 
+        else tab <- addlapn(tab, epsilon) 
+      }
+      if (noisetype == "Gaussian"){
+        if (!is.null(structzero)) tab[!sz] <- addGaussn(tab[!sz], epsilon, delta) 
+        else tab <- addGaussn(tab, epsilon, delta) 
+      }
       fit <- tab
       tab <- tab/sum(tab)   # get it as proportions
       tab <- rmultinom(1, k, tab)
@@ -963,7 +970,8 @@ WARNING: Total of ", sum(tab[sz])," counts of original data in structural zero c
   
 syn.ipf <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
                     gmargins = "twoway", othmargins = NULL, tol = 1e-3, max.its = 5000,
-                    maxtable = 1e8, print.its = FALSE, epsilon= 0, rand = TRUE,...)
+                    maxtable = 1e8, print.its = FALSE, 
+                    epsilon= 0, delta = 0.05, rand = TRUE,noisetype ="Laplace", ...)
 {
  # Fits log-linear model to combinations of variables
  # k just holds number of synthetic records required
@@ -992,13 +1000,23 @@ WARNING: Total of ", sum(tab[sz])," counts of original data in structural zero c
 ************************************************************************\n", sep = "")
  }
  if (!is.null(gmargins)) {
-   if (gmargins == "twoway") {
+   if (gmargins == "fourway") {
+     n_margins  <- nv*(nv - 1)*(nv-2)*(n-3)/24
+     mx_margins <- combn(1:nv, 4)
+     margins <- split(mx_margins, col(mx_margins))
+     print(margins)
+   }    else if (gmargins == "threeway") {
+     n_margins  <- nv*(nv - 1)*(nv-2)/6
+     mx_margins <- combn(1:nv, 3)
+     margins <- split(mx_margins, col(mx_margins))
+     print(margins)
+     }   else if (gmargins == "twoway") {
      n_margins  <- nv*(nv - 1)/2
      mx_margins <- combn(1:nv, 2)
      margins <- split(mx_margins, col(mx_margins))
    } else if (gmargins == "oneway") {
      margins <- as.list(1:nv)
-   } else stop("Only 'oneway' or 'twoway' are implemented for gmargins.\n", 
+   } else stop("Only 'oneway', 'twoway', 'threeway' or 'fourway' are implemented for gmargins.\n", 
                call. = FALSE)
    if (!is.null(othmargins)) for (i in 1:length(othmargins)) {
      margins[[length(margins) + 1]] <- othmargins[[i]]
@@ -1028,7 +1046,8 @@ the same proportion in each level.
    margins.data[[i]] <- table(x[, margins[[i]]], useNA = "ifany")
     margins.data[[i]] <- margins.data[[i]] + priorn/length(margins.data[[i]])
     if (epsilon > 0) {
-      margins.data[[i]] <- addlapn(margins.data[[i]], eps)
+      if (noisetype == "Gaussian") margins.data[[i]] <- addGaussn(margins.data[[i]], eps, delta)
+      if (noisetype == "Laplace") margins.data[[i]] <- addlapn(margins.data[[i]], eps)
     }
  }
  start <- array(1, dim(tab))
@@ -1241,8 +1260,19 @@ including this output\n", tab, "\n")
     if (diff <0 ) result[inds] <- result[inds] - 1
   }
   return(result)
-}
+} 
+###-----add Gaussian noise------------------------------------------------------------
 
+addGaussn <- function(x, eps, delta = 0.05){
+  # add Gaussian noise with re-scaling to a total or sample size
+  
+  if ( eps <= 0) stop("eps must be > 0\n")
+  if ( delta <= 0 | delta > 1) stop(" delta must be > 0 and < 1 \n")
+  sd <-  sqrt(2*log(1.25/delta))/eps
+  res <- x + rnorm(length(x), 0, sd)
+  res <- makepos(res, sum(x))
+  return(res)
+}
 
 ###-----addlapn------------------------------------------------------------
 
