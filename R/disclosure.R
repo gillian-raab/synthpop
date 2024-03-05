@@ -305,7 +305,7 @@ tab_exclude <- function(xx,col,Nexcludes) {
 ##### missings excluded values from tables if set
 
 if (!usetargetNA && any(dd$target == "Missing")) {
-  Nout[1] <- sum(xx[dimnames(xx)[[2]] == "Missing",])
+  Nout[1] <- sum(xx[dimnames(xx)[[1]] == "Missing",])
   xx[dimnames(xx)[[2]] == "Missing",] <- 0
 }
 
@@ -313,7 +313,6 @@ if (!usetargetNA && any(dd$target == "Missing")) {
    if (!usekeysNA[i]) {   ## do not use NA values for ith key
      key_levs <- dimnames(xx)[[2]]
      drop_d <-  word(key_levs,i, sep = fixed(" | ")) == "Missing"
-
      Nout[3] <- Nout[3] + sum(xx[,drop_d])
      xx[,drop_d] <- 0
   }
