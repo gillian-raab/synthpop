@@ -6,14 +6,18 @@
   replicates unique units in the original observed data set.
 }
 \usage{
-replicated.uniques(object, data, exclude = NULL)
+replicated.uniques(object, data, keys = names(data), exclude = NULL)
 }
+
+
+
 \arguments{
   \item{object}{an object of class \code{synds}, which stands
     for 'synthesised data set'. It is typically created by
     function \code{syn()} and it includes \code{object$m} 
     synthesised data set(s).}
   \item{data}{the original observed data set.}
+  \item{keys}{Variables to be used as quasi-identifiers.}
   \item{exclude}{a single string or a vector of strings with name(s) 
     of variable(s) to be excluded from the identification of uniques.}
 }

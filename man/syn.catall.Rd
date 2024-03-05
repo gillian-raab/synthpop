@@ -6,7 +6,8 @@
   all the variables.}
 \usage{
 syn.catall(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
-           maxtable = 1e8, epsilon = 0, rand = TRUE,  ...)}
+           maxtable = 1e8, epsilon = 0,  delta = 0.05,rand = TRUE,
+          noisetype = "Laplace",  ...)}
 \arguments{
   \item{x}{a data frame (\code{n} x \code{p}) of the set of original variables.}
   \item{k}{a number of rows in each synthetic data set - defaults to \code{n}.}
@@ -27,11 +28,15 @@ syn.catall(x, k, proper = FALSE, priorn = 1, structzero = NULL,
     structural zero cells (see an example below).}
   \item{maxtable}{a number of cells in the cross-tabulation of all the variables
     that will trigger a severe warning.}
-  \item{epsilon}{measures scale of laplace noise to be added under differential 
+  \item{epsilon}{measures scale of laplace or Gaussian noise to be added under differential 
     privacy (DP)}
+      \item{delta}{Parameter delta for Gaussian noise when this method is used
+      to make the synthesis differentially private (DP)}
   \item{rand}{for DP versions determines if multinomial noise is to be added to 
     DP counts. If it is set to false the DP adjusted counts are simply rounded 
     to a whole number in a manner that preserves the desired sample size (k).}
+  \item{noisetype}{One of "Laplace" or "Goussian" to determine the type of
+    noise to be added that will make the synthesis DP.}
   \item{\dots}{additional parameters.}
 }
 \details{
