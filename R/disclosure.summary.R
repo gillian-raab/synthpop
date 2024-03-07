@@ -84,16 +84,15 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
   # get keys in same order as in data
   keys <- names(data)[names(data) %in% keys]
   if (!(length(ident.meas) == 1  && length(attrib.meas) == 1 &&
-        ident.meas %in% c("repU", "UiSiO") && attrib.meas %in% c("DiSCO", "DiSCO_DiO","DCAP","TCAP")) )
+        ident.meas %in% c("repU", "UiSiO") && attrib.meas %in% c("DiSCO", "DiSiO","DCAP","TCAP")) )
         stop('ident.meas and attrib.meas must be single values
-             from c("repU", "UiSiO") and  c("DiSCO", "DiSCO_DiO", "DCAP","TCAP") respectively\n\n', call. = FALSE)
+             from c("repU", "UiSiO") and  c("DiSCO", "DiSiO", "DCAP","TCAP") respectively\n\n', call. = FALSE)
 
   if (length(usekeysNA) == 1) usekeysNA <- rep(usekeysNA, length(keys))
   if (length(usetargetsNA) == 1) usetargetsNA <- rep(usetargetsNA, length(targets))
   
   if (length(usekeysNA) != length(keys)) stop("usekeysNA must be same length as keys", call. = FALSE)
   if (length(usetargetsNA) != length(targets)) stop("usetargetsNA must be same length as targets", call. = FALSE)
-  
 
 ###-------------------------- create output data frame-------------------
  ident.orig <- ident.syn <- attrib.orig <- attrib.syn <- n2way <- rep(NA, length(targets))
@@ -115,7 +114,7 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
     if (attrib.meas == "DiSCO" ){
        attrib.orig[i] <- mean(ttt$attrib$DiO)
        attrib.syn[i] <- mean(ttt$attrib$DiSCO )}
-    if (attrib.meas == "DiSCOU" ){
+    if (attrib.meas == "DiSiO" ){
       attrib.orig[i] <- mean(ttt$attrib$DiO)
         attrib.syn[i] <- mean(ttt$attrib$DiSCOU )}
     if (attrib.meas == "DCAP" ){

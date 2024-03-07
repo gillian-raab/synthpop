@@ -346,6 +346,7 @@ if (!usetargetNA && any(dd$target == "Missing")) {
  Nexcludes[col,] <- Nout
    return(list(tab = xx, Nexcludes = Nexcludes))
 }
+tab_ktdO <- tab_ktd
 yy <- tab_exclude(tab_ktd,1,Nexcludes)
 tab_ktd <- yy$tab; Nexcludes <- yy$Nexcludes
 yy <- tab_exclude(tab_kts,2,Nexcludes)
@@ -360,18 +361,20 @@ yy <- tab_exclude(dis_and_correct,6,Nexcludes)
 dis_and_correct <- yy$tab; Nexcludes <- yy$Nexcludes
 yy <- tab_exclude(dis_and_correct_did,7,Nexcludes)
 dis_and_correct_did <- yy$tab; Nexcludes <- yy$Nexcludes
-
 ###--------------------- exclusions done-----------------------------------------
 ###-----------------------get  identity disclosure measures -------------
+t1 <- apply(did,2,sum)
 tab_ks <- apply(tab_kts,2,sum)
 tab_kd <- apply(tab_ktd,2,sum)
-tab_ks1 <- tab_ks[tab_ks == 1] 
-tab_kd1 <- tab_kd[tab_kd == 1]
+tab_ks1 <- tab_ks
+tab_ks1[tab_ks1>1] <- 0
+tab_kd1 <- tab_kd 
+tab_kd1[tab_kd1>1] <- 0
 tab_ks1_d <- tab_ks1[names(tab_ks1) %in% Kd]
 tab_ksd1 <-tab_kd[tab_ks == 1 & tab_kd == 1]
-
+##print(tab_ktdO[,(t1-tab_kd1)<0][,1:10])
 ## exclude bits with missing levels of keys
-Ndropident <- rep(0,4)
+
 
 ks_anonym1_pct <- sum(tab_ks1)/Ns*100
 kd_anonym1_pct <- sum(tab_kd1)/Nd*100
@@ -395,6 +398,7 @@ Nexclusions[[jj]] <- Nexcludes
 
 baseCAPd <- sum((tab_td/Nd)**2)*100 ## just from univariates
 CAPd <-   sum(apply(tab_ktd_p^2,2,sum)*tab_kd)/Nd*100 ## from tables
+
 CAPs <-   sum(apply(tab_kts_p^2,2,sum)*tab_ks)/Ns*100
 DCAP <-   sum(apply(tab_kts_p*tab_ktd,2,sum))/Nd*100
 ##restrict to uniques in d
@@ -558,17 +562,17 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   cat("\nIdentity  measures for keys", x$keys,
       "\nand attribute measures for",x$target,"from the same keys\n" )
   
-  nexcluded <- sapply(x$Nexclusions,function(x) sum(x[1,-6]))
+  nexcluded <- sapply(x$Nexclusions,function(x) sum(x[,-6]))
   if  (any(nexcluded>0)) {
-    ndiscexclude <- sapply(x$Nexclusions,function(x) sum(x[5,-6]))
-    for (i in 1:length(x$Nexclusions))  cat("\nTotal of", nexcluded[i], "original records and",ndiscexclude[i],"disclosive (DiSCO)","from synthesis",i,"\n")
-    cat("\nSee details by adding 'exclusions' to the parameter to.print of disclosure.\n\n")
+    cat("\nSome records excluded from the evaluation of disclosure risks")
+    cat("\nSee details by adding 'exclusions' to the parameter to.print of disclosure,
+    or by printing the details with to,print including 'exclusions'.","\n\n")
   }
   
   if (length(to.print) == 1 && to.print == "short") {
     short <- rbind(c(x$ident[1,1],x$attrib[1,1]),
                    cbind(x$ident[,4],x$attrib[,5]))
-    dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (repU)","Attrib (DiSCO)"))
+    dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (DiO/DiSCO)"))
     print(round(short, digits))
 
   }
@@ -580,17 +584,16 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
     if (any(c("ident","all") %in% to.print))  { 
       cat("\n\nIdentity disclosure measures for", dim(x$ident)[[1]] ,"synthetic data set(s) from keys:\n", x$keys,"\n\n")
       print(round(x$ident, digits))
-      if (any(x$Nidentexclude >0)) {
-        cat("\nNumber of records excluded from identity disclosure for missing keys\n")
-        print(x$Nidentexclude)
       }
-    }
-
+    
     if (any(c("attrib","all") %in% to.print)) {
       cat("\n\nAttribute disclosure measures for",x$target,"from keys:",x$keys,"\n")
        print(round(x$attrib, digits))
     }
-       
+if (any(x$Nidentexclude >0)) {
+  cat("\nNumber of records excluded from identity disclosure for missing keys\n")
+  print(x$Nidentexclude)  
+}
 ###---------------- print CAP measures-----------------------------------------
   if (any(c("allCAPs","all") %in% to.print)) {
     cat("\nCAP measures for the target", x$target, "with keys\n")
