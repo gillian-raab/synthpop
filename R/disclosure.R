@@ -426,7 +426,8 @@ totalLevel[jj] <-tab_dis_target[1]
   if (sum(tab_dis_target) > thresh_1way[1] && pctdisLev >=  thresh_1way[2]) check1way[jj] <- 1
 
 ###------------------------get details for check_2way-----------------
-### only implemented for DiSCO  
+### only implemented for DiSCO  though could be expANDED
+  
   xx <- dis_and_correct_did
   if (any(xx > thresh_2way[1]))  {
     
@@ -559,8 +560,7 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   
   
   cat("\nDisclosure measures from synthesis for",x$Norig, "records in original data\n")
-  cat("\nIdentity  measures for keys", x$keys,
-      "\nand attribute measures for",x$target,"from the same keys\n" )
+
   
   nexcluded <- sapply(x$Nexclusions,function(x) sum(x[,-6]))
   if  (any(nexcluded>0)) {
@@ -570,6 +570,8 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   }
   
   if (length(to.print) == 1 && to.print == "short") {
+    cat("\nIdentity  measures for keys", x$keys,
+        "\nand attribute measures for",x$target,"from the same keys\n" )
     short <- rbind(c(x$ident[1,1],x$attrib[1,1]),
                    cbind(x$ident[,4],x$attrib[,5]))
     dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (DiO/DiSCO)"))

@@ -94,7 +94,8 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
   if (length(usekeysNA) != length(keys)) stop("usekeysNA must be same length as keys", call. = FALSE)
   if (length(usetargetsNA) != length(targets)) stop("usetargetsNA must be same length as targets", call. = FALSE)
 
-###-------------------------- create output data frame-------------------
+Norig <- dim(data)[1]
+###-------------------------- create output data frames-------------------
  ident.orig <- ident.syn <- attrib.orig <- attrib.syn <- n2way <- rep(NA, length(targets))
  checklev_1way <- checklevs_2way <- rep("", length(targets))
  
@@ -182,7 +183,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
         geom_line(data = toplot, mapping = aes(x=.data$VALUE, y=.data$name), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"))
    
        res <- list( attrib.table = result, attrib.plot = attrib.plot, keys = keys,
-                         ident.orig = ident.orig, ident.syn = ident.syn,
+                         ident.orig = ident.orig, ident.syn = ident.syn, Norig = Norig,
                          denom_lim = denom_lim, exclude_ov_denom_lim = exclude_ov_denom_lim,
                          digits = digits, usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
                          ident.meas = ident.meas, attrib.meas = attrib.meas, m = object$m,
@@ -202,9 +203,10 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
     
     
     if (!print) {
-      cat("\nFor more details use print = TRUE.\n")
+      cat("\nTo see results use print = TRUE.\n")
     } else {
-      if (x$m >1) cat("\nResults are averaged over" ,x$m,"syntheses")
+      cat("Disclosure risk for",x$Norig,"records in the original data\n")
+      if (x$m >1) cat("Results are averaged over" ,x$m,"syntheses")
       cat("\nIdentity disclosure measures\n")
       cat("from keys:", x$keys,"\n")
       cat("For original  ( UiO ) ", round(x$ident.orig[1],x$digits),"%\n")

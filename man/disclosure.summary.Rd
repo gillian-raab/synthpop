@@ -120,6 +120,7 @@
        help file  for \code{\link{disclosure}}.} 
   \item{ident.syn}{value of identity disclosure \code{ident.meas} from the synthetic 
   data, see help file  for \code{\link{disclosure}}.} 
+  \item{Norig}{Number of records in data.}
   \item{denom_lim}{see above.}
   \item{exclude_ov_denom_lim}{see above.}
   \item{digits}{see above.} 
