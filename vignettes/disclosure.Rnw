@@ -225,8 +225,6 @@ version of these functions but discarded for giving misleading results for some 
 this measure would only count it if the record was unique in the original data, something that would not be known
 to an intruder with no access to the original. We feel that a better approach is to exclude specific tareget/key combinations.
 
-
-Adding 
 \begin{table}[ht]
 \centering
 \begin{tabular}{|r|rr|rr|rr|rr|rr|}
