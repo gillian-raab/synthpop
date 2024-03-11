@@ -105,16 +105,16 @@
               "repU". See vignette disclosure.pdf for an explanation of these 
               and the following measures.}
   \item{attrib}{Table of measures of attribute disclosure  one for each 
-    synthesis. These include "DiO","DiS","KiSiO","DisCo" and "DiSCO_DiO".
+    synthesis. These include "DiO","DiS","KiSiO","DisDiO" and "DiSCO".
     The measures "DiO" and "DiS" are the percentage of the target that are
     disclosed from the original and synthetic data with these keys. The next
-    measure "KiOiS" gives the percentage of the original key combinations
-    that are present in the synthetic data - one was in which the disclosure
-    risk of synthetic data is reduced. "DiSCO" gives the percentage 
+    measure "KiOiS" gives the percentage of the  key combinations 
+    disclosive in the synthetic data that are present in the original- 
+    one was in which the disclosure
+    risk of synthetic data is reduced. "DiSDiO" restrics this \% to those
+    disclpsiver in the original data and, finally, "DiSCO" gives the percentage 
     of these records where the attribution to the target is correct as judged 
-    from the original. "DiSCO_DiO" restricts the disclosive records to those 
-    that would be disclosive (not just present) if someone had access to the 
-    original data. 
+    from the original. 
     The table also as gives the maximum and mean of the denominators for the
     "DiSCO" measure i.e. the distribution for every record that leads to a 
     correct disclosure of the number of observations with

@@ -152,11 +152,4 @@ keys = c("sex", "age", "edu"))
 t1 <- disclosure.summary(s1, ods, 
 keys = c("sex", "age", "edu"))
 
-t1
-
-### denominators for marital explored
-t2 <- disclosure(s1, ods, keys = c("sex", "age", "edu"), 
-var = "marital", to.print = c("attrib", "denom_details"))
-
-print(t2)
 }

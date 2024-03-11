@@ -217,7 +217,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
       if (x$attrib.meas %in% c("DCAP","TCAP")) oratt <- "CAPd"
       
       cat("Original measure is ",oratt,"and synthetic measure is",x$attrib.meas,"\n")
-      cat("Variables Ordered by original disclosure\n\n")
+      cat("Variables Ordered by synthetic disclosure measure\n\n")
       toprint <- x$attrib.table
       for (i in 1:2) toprint[,i] <- round(toprint[,i], x$digits)
       print(toprint)
