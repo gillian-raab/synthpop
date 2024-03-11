@@ -237,7 +237,7 @@ Adding
       \multicolumn{2}{|c|} {NAs out} &    \multicolumn{2}{|c|} {}  \\
         & \multicolumn{2}{|c|} {basic} & \multicolumn{2}{|c|} {not.targetlevs} & \multicolumn{2}{|c|} {not.targetlevs} & 
       \multicolumn{2}{|c|} {not.targetlevs} &    \multicolumn{2}{|c|} {denom\_lim 1}  \\
- & orig & syn &  orig & syn   & orig & syn  & orig & syn  & orig & syn     \\ 
+ target & orig & syn &  orig & syn   & orig & syn  & orig & syn  & orig & syn     \\ 
   \hline
 capital.gain & 22.55 & 12.09 & 0.21 & 0.00 & 0.19 & 0.00 & 0.19 & 0.00 & 2.68 & 1.12 \\ 
   capital.loss & 30.61 & 17.71 & 0.08 & 0.00 & 0.08 & 0.00 & 0.08 & 0.00 & 2.68 & 1.23 \\ 
