@@ -229,7 +229,7 @@ to an intruder with no access to the original. We feel that a better approach is
 Adding 
 \begin{table}[ht]
 \centering
-\begin{tabular}{r|rr|rr|rr|rr|rr|}
+\begin{tabular}{|r|rr|rr|rr|rr|rr|}
   \hline
             & \multicolumn{2}{|c|} {} & \multicolumn{2}{|c|} {} & \multicolumn{2}{|c|} {} & 
       \multicolumn{2}{|c|} {denom\_lim 1} &    \multicolumn{2}{|c|} {}  \\
