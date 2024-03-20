@@ -14,6 +14,11 @@ NEW FEATURES
   del - to define delta for the Gaussian mechanism.
 * New function mergelevels() that combines levels of factors in a data.frame 
   using routines from the forcats package.
+* New function synorig.compare() that can be used to check synthetic data created
+  by methods other than syn() to make sure that the data sets are comparable.
+  Some simple fixes can be done and the changed data sets returmed.
+  It is called in compare.synds(), utility.gen(), utility.tab(), utility.tables(),
+  disclosure() and disclosure.summary()
   
 CHANGE""
 * Function replicated.uniques() changed. Now has additional parameter "keys" and
