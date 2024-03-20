@@ -20,11 +20,24 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     if (is.list(object) & !is.data.frame(object)) m <- length(object)
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
-    
+
+    if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
+    if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
+ 
+    if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
+    run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
+    else if (!adjust.data$unchanged) {
+      syn <- adjust.data$syn
+      orig <- adjust.data$orig
+      cat("Synthetic data or original or both adjusted with synorig.compare to make them comparable")
+      if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
+      m <- 1 }
+    else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
+
     object <- list(syn = object, m = m) 
     class(object) <- "synds"
     
-    
+
     res <- disclosure.summary.synds(object, data, keys = keys , targets = targets, 
            denom_lim = denom_lim,  exclude_ov_denom_lim = exclude_ov_denom_lim, 
            print.flag = print.flag ,  usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
