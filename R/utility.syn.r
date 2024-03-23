@@ -621,12 +621,12 @@ utility.tab.data.frame <- utility.tab.list <-
      if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
   
    if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-     run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
+     run the disclosure functions - see output. Use function synorig,compare() to check.\n", call. = FALSE)
    else if (!adjust.data$unchanged) {
      syn <- adjust.data$syn
      orig <- adjust.data$orig
-     cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable")
-     if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
+     cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
+     if (m > 1) cat("only first element of the list has been adjusted and will be used here.\n")
      m <- 1 }
    else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
   }  
@@ -748,8 +748,11 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
       tab.obs[[i]] <- table(data, useNA = "no", deparse.level = 0)
       tab.syn[[i]] <- table(syndata[[i]], useNA = "no", deparse.level = 0)
     }
-if (!all(dim(tab.obs[[i]] ) == dim(tab.syn[[i]]) )) stop("Dimensions of table doesn't match for", vars, 
-                                      "use synorig.compare() to check data\n",call.=FALSE)
+    
+    print(dim(tab.syn[[i]]))
+    print(dim(tab.obs[[i]]))
+    
+if (!all(dim(tab.obs[[i]] ) == dim(tab.syn[[i]]) )) stop("Dimensions of table don't match: use synorig.compare() to check data.\n",call.=FALSE)
    ## remove cells all zeros
     nempty[i] <-   sum(tab.obs[[i]] + tab.syn[[i]] == 0)
     td <- tab.obs[[i]][tab.obs[[i]] + tab.syn[[i]]  > 0]
