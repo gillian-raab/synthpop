@@ -749,10 +749,12 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
       tab.syn[[i]] <- table(syndata[[i]], useNA = "no", deparse.level = 0)
     }
     
-    print(dim(tab.syn[[i]]))
-    print(dim(tab.obs[[i]]))
-    
-if (!all(dim(tab.obs[[i]] ) == dim(tab.syn[[i]]) )) stop("Dimensions of table don't match: use synorig.compare() to check data.\n",call.=FALSE)
+
+if (!all(dim(tab.obs[[i]] ) == dim(tab.syn[[i]]) )) {
+  cat("Dimensions of tables being compared for ", vars," do not match.\n")
+  cat("From synthetic ",tab.syn[[i]]," from original ",tab.obs[[i]],"\n")
+  stop("Use synorig.compare() to check data and attempt to correct.\n",call.=FALSE)
+}
    ## remove cells all zeros
     nempty[i] <-   sum(tab.obs[[i]] + tab.syn[[i]] == 0)
     td <- tab.obs[[i]][tab.obs[[i]] + tab.syn[[i]]  > 0]
