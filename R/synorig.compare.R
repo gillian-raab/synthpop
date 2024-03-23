@@ -65,19 +65,20 @@ synorig.compare <- function(syn,orig, print.flag = TRUE){
         syn[,i1] <- addNA(syn[,i1])
         orig[,i2] <- addNA(orig[,i2])
     }
-      syn[,i1] <- factor(as.character(syn[,i1])) ### to get in right order
-      orig[,i2] <- factor(as.character(orig[,i2])) ### maybe not needed
       lev1 <- levels(syn[,i1]) ;lev2 <- levels(orig[,i2])
       
       #cat("\n",(lev1),"\n",(lev2),"\n\n", lev1==lev2)
       if ( length(lev1) != length(lev2)  ||
            !all(lev1[!is.na(lev1)] == lev2[!is.na(lev2)]) ) {
-        
-        cat("Different levels of",names(orig)[i2],"in 1st and 2nd data set; now combined\n",
-         "syn:"  , lev1,"\n","orig:",lev2,"\n\n not just due to absence of missings in syn, levels combined BUT please check  if looks OK",
-  "\n************************************* checking highly recommended*******************\n\n")
+        cat(lev1,"lev1\n")
+        cat(lev2,"lev2\n")
+
         syn[,i1] <- factor(as.character(syn[,i1]), exclude = NULL, levels = unique(c(lev1,lev2)))
         orig[,i2] <- factor(as.character(orig[,i2]), exclude = NULL, levels = unique(c(lev1,lev2)))
+        
+        cat("Different levels of",names(orig)[i2],"in 1st and 2nd data set; now combined\n",
+            "syn:"  , lev1,"\n","orig:",lev2,"\n\n not just due to absence of missings in syn, levels combined BUT please check  if looks OK\n",
+            "\n************************************* checking highly recommended*******************\n\n")
         unchanged = FALSE
       }
     }

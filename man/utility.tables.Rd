@@ -40,7 +40,7 @@
                max.scale = NULL, min.scale = 0, plot.title = NULL,  
                nworst = 5, ntabstoprint = 0, k.syn = FALSE,
                low = "grey92", high = "#E41A1C",
-               n.breaks = NULL, breaks = NULL, \dots)
+               n.breaks = NULL, breaks = NULL, compare.synorig = FALSE, \dots)
 
 \method{utility.tables}{list}(object, data,
                cont.na = NULL, not.synthesised = NULL, 
@@ -53,7 +53,7 @@
                max.scale = NULL, min.scale = 0, plot.title = NULL,  
                nworst = 5, ntabstoprint = 0, k.syn = FALSE,
                low = "grey92", high = "#E41A1C",
-               n.breaks = NULL, breaks = NULL, \dots)
+               n.breaks = NULL, breaks = NULL, compare.synorig = FALSE, \dots)
 
 \method{print}{utility.tables}(x, print.tabs = NULL, digits.tabs = NULL, 
       plot = NULL, plot.title = NULL, max.scale = NULL, min.scale = NULL, 
@@ -137,7 +137,10 @@
   \item{high}{colour for high end of the gradient.} 
   \item{n.breaks}{a number of break points to create if breaks are not given 
     directly.}
-  \item{breaks}{breaks for a two colour binned gradient.}    
+  \item{breaks}{breaks for a two colour binned gradient.}
+    \item{compare.synorig}{a logical with default set to FALSE indicating 
+    if data sets shouold be compared with the function  compare.synorig  and
+    possible adjusted to make them compatible.}
   \item{\dots}{additional parameters}   
   \item{x}{an object of class \code{utility.tables}.}
 }
@@ -188,7 +191,7 @@
 }
 
 \seealso{
- \code{\link{utility.tab}}
+  \code{\link{multi.compare}   \code{\link{compare.synorig} }
 }
 
 \examples{

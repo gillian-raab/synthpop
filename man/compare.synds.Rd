@@ -31,7 +31,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, \dots)
+        plot = TRUE, table = FALSE, compare.synorig = FALSE, \dots)
 
 \method{compare}{list}(object, data, vars = NULL, cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
@@ -39,7 +39,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, \dots)
+        plot = TRUE, table = FALSE,  compare.synorig = FALSE,\dots)
 
 \method{print}{compare.synds}(x, \dots)
 }
@@ -85,6 +85,9 @@
     whether plots should be produced.}
   \item{table}{a logical value with default set to \code{FALSE} indicating
     whether tables should be printed.}
+  \item{compare.synorig}{a logical with default set to FALSE indicating 
+    if data sets shouold be compared with the function  compare.synorig  and
+    possible adjusted to make them compatible.}
   \item{\dots}{additional parameters.}
 
   \item{x}{an object of class \code{compare.synds}.}
@@ -108,7 +111,7 @@ they and their corresponding frequency tables are stored as a list.
   \bold{74}(11), 1-26. \doi{10.18637/jss.v074.i11}.
 }
 \seealso{
-  \code{\link{multi.compare}}
+  \code{\link{multi.compare}   \code{\link{compare.synorig} }
 }
 \examples{
 ods <- SD2011[ , c("sex", "age", "edu", "marital", "ls", "income")]

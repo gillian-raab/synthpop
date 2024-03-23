@@ -26,14 +26,14 @@
             print.tables = length(vars) < 4,
             print.stats = c("pMSE", "S_pMSE", "df"),
             print.zdiff = FALSE, print.flag = TRUE,
-            digits = 4, k.syn = FALSE, \dots)
+            digits = 4, k.syn = FALSE, compare.synorig = FALSE,  \dots)
 
 \method{utility.tab}{list}(object, data, vars = NULL, cont.na = NULL,
             ngroups = 5, useNA = TRUE, max.table = 1e6,
             print.tables = length(vars) < 4,
             print.stats = c("pMSE", "S_pMSE", "df"),
             print.zdiff = FALSE, print.flag = TRUE,
-            digits = 4, k.syn = FALSE, \dots)
+            digits = 4, k.syn = FALSE, compare.synorig = FALSE, \dots)
 
 
 \method{print}{utility.tab}(x, print.tables = NULL,
@@ -88,6 +88,9 @@
   \item{k.syn}{a logical indicator as to whether the sample size itself has
     been synthesised. The default value is \code{FALSE}, which will apply
     to synthetic data created by synthpop.}
+    \item{compare.synorig}{a logical with default set to FALSE indicating 
+    if data sets shouold be compared with the function  compare.synorig  and
+    possible adjusted to make them compatible.}
   \item{\dots}{additional parameters; can be passed to classIntervals() function.}
   \item{x}{an object of class \code{utility.tab}.}
 }
@@ -176,6 +179,9 @@ of the original and synthetic data sets.
   \item{n}{number of observation in the original dataset.}
   \item{k.syn}{a logical indicator as to whether the sample size itself has
     been synthesised.}
+      \item{compare.synorig}{a logical with default set to FALSE indicating 
+    if data sets shouold be compared with the function  \code{compare.synorig( ))} and
+    possible adjusted to make them compatible.}
 }
 
 \references{
@@ -196,8 +202,9 @@ of the original and synthetic data sets.
 }
 
 \seealso{
- \code{\link{utility.gen}}
+  \code{\link{multi.compare}   \code{\link{compare.synorig} }
 }
+
 
 \examples{
 ods <- SD2011[1:1000, c("sex", "age", "marital", "nofriend")]
