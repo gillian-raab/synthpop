@@ -752,7 +752,7 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
 
 if (!all(dim(tab.obs[[i]] ) == dim(tab.syn[[i]]) )) {
   cat("Dimensions of tables being compared for ", vars," do not match.\n")
-  cat("From synthetic ",tab.syn[[i]]," from original ",tab.obs[[i]],"\n")
+  cat("From synthetic ",dim(tab.syn[[i]])," from original ",dim(tab.obs[[i]]),"\n")
   stop("Use synorig.compare() to check data and attempt to correct.\n",call.=FALSE)
 }
    ## remove cells all zeros
