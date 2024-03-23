@@ -31,7 +31,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, \dots)
+        plot = TRUE, table = FALSE, synorig.compare = FALSE, \dots)
 
 \method{compare}{list}(object, data, vars = NULL, cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
@@ -39,7 +39,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, \dots)
+        plot = TRUE, table = FALSE, synorig.compare = FALSE, \dots)
 
 \method{print}{compare.synds}(x, \dots)
 }
@@ -85,8 +85,10 @@
     whether plots should be produced.}
   \item{table}{a logical value with default set to \code{FALSE} indicating
     whether tables should be printed.}
+  \item{synorig.compare}{a logical value with default set to \code{FALSE}
+    to determine if the functions \code{synorig,compare()} should be used to
+    check that data sets can be compared.}
   \item{\dots}{additional parameters.}
-
   \item{x}{an object of class \code{compare.synds}.}
 }
 \details{

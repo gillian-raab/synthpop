@@ -20,7 +20,7 @@ utility.tables.data.frame <- utility.tables.list <-
                            max.scale = NULL, min.scale = 0, plot.title = NULL,
                            nworst = 5, ntabstoprint = 0, k.syn = FALSE,
                            low = "grey92", high = "#E41A1C",
-                           n.breaks = NULL, breaks = NULL, ...){
+                           n.breaks = NULL, breaks = NULL, synorig.compare = FALSE, ...){
                      if (is.null(data)) stop("Requires parameter 'data' to give name of the real data.\n", call. = FALSE)
  if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
   
@@ -48,19 +48,21 @@ utility.tables.data.frame <- utility.tables.list <-
    syn.method[names(data) %in% not.synthesised] <- ""
  }
  
- if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
-   if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
  
- if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-    run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
- else if (!adjust.data$unchanged) {
-   syn <- adjust.data$syn
-   orig <- adjust.data$orig
-   cat("Synthetic data or original or both adjusted with synorig.compare to make them comparable")
-   if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
-   m <- 1 }
- else cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
-  
+ if (synorig.compare) {
+   if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
+     if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
+   
+   if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
+      run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
+   else if (!adjust.data$unchanged) {
+     syn <- adjust.data$syn
+     orig <- adjust.data$orig
+     cat("Synthetic data or original or both adjusted with synorig.compare to make them comparable")
+     if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
+     m <- 1 }
+   else cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
+ }   
  object <- list(syn = object, m = m, strata.syn = NULL, 
                 method = syn.method, cont.na = cont.na)
  class(object ) <- "synds"

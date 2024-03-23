@@ -21,14 +21,14 @@
    usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
    exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
    thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), \dots )
+  to.print =c("short"), synorig.compare = FALSE, \dots )
 
 \method{disclosure}{list}(object, data, keys, target, denom_lim = 5,
   exclude_ov_denom_lim = FALSE, print.flag = TRUE,digits = 2,
    usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
    exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
    thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), \dots )
+  to.print =c("short"), synorig.compare = FALSE, \dots )
 
 \method{print}{disclosure}(x,  to.print =NULL, digits = NULL, \dots)
 }
@@ -85,6 +85,9 @@
    class disclosure will be printed. Must consist  of  one or more of the 
    following "short", "ident", "attrib","allCAPs", "all", "check_1way", 
    "check_2way", "exclusions". Default is "short" giving a brief summary.}
+\item{synorig.compare}{a logical value with default set to \code{FALSE}
+    to determine if the functions \code{synorig,compare()} should be used to
+    check that data sets can be compared.}
 \item{\dots}{additional parameters}  
  \item{x}{an object of class \code{disclosure}.}
 }

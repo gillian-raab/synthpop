@@ -26,14 +26,16 @@
             print.tables = length(vars) < 4,
             print.stats = c("pMSE", "S_pMSE", "df"),
             print.zdiff = FALSE, print.flag = TRUE,
-            digits = 4, k.syn = FALSE, \dots)
+            digits = 4, k.syn = FALSE, 
+            synorig.compare = FALSE, \dots)
 
 \method{utility.tab}{list}(object, data, vars = NULL, cont.na = NULL,
             ngroups = 5, useNA = TRUE, max.table = 1e6,
             print.tables = length(vars) < 4,
             print.stats = c("pMSE", "S_pMSE", "df"),
             print.zdiff = FALSE, print.flag = TRUE,
-            digits = 4, k.syn = FALSE, \dots)
+            digits = 4, k.syn = FALSE, 
+            synorig.compare = FALSE, \dots)
 
 
 \method{print}{utility.tab}(x, print.tables = NULL,
@@ -88,6 +90,9 @@
   \item{k.syn}{a logical indicator as to whether the sample size itself has
     been synthesised. The default value is \code{FALSE}, which will apply
     to synthetic data created by synthpop.}
+  \item{synorig.compare}{a logical value with default set to \code{FALSE}
+    to determine if the functions \code{synorig,compare()} should be used to
+    check that data sets can be compared.}
   \item{\dots}{additional parameters; can be passed to classIntervals() function.}
   \item{x}{an object of class \code{utility.tab}.}
 }
