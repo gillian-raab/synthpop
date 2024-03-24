@@ -587,7 +587,7 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   
   if (length(to.print) == 1 && to.print == "short") {
     cat("\nIdentity  measures for keys", x$keys,
-        "\nand attribute measures for",x$target,"from the same keys" )
+        "\nand attribute measures for",x$target,"from the same keys\n" )
     short <- rbind(c(x$ident[1,1],x$attrib[1,1]),
                    cbind(x$ident[,4],x$attrib[,5]))
     dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (DiO/DiSCO)"))
