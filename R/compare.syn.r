@@ -325,7 +325,7 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
     else if (!adjust.data$unchanged) {
       syn <- adjust.data$syn
       orig <- adjust.data$orig
-      cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable")
+      cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
       if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
       m <- 1 }
     else  cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
