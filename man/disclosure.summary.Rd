@@ -32,7 +32,7 @@
          ident.meas = "repU", attrib.meas = "DiSCO",
          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
           digits = 2, plot = TRUE, print = TRUE, 
-          synorig.compare = FALSE, \dots)
+          compare.synorig = FALSE, \dots)
 
 \method{disclosure.summary}{list}(object, data, keys , targets = NULL, 
          denom_lim = 5, exclude_ov_denom_lim = FALSE,not.targetslev = NULL, 
@@ -40,7 +40,7 @@
          ident.meas = "repU", attrib.meas = "DiSCO",
          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
           digits = 2, plot = TRUE, print = TRUE, 
-          synorig.compare = FALSE, \dots)
+          compare.synorig = FALSE, \dots)
 
 
 \method{print}{disclosure.summary}(x, digits = NULL, plot = NULL, print = NULL,
@@ -100,8 +100,8 @@
   \item{plot}{determines if plot will be produced when the result is printed.} 
   \item{print}{logical value that determines if a summary of results is 
     to be printed.}  
-  \item{synorig.compare}{a logical value with default set to \code{FALSE}
-    to determine if the functions \code{synorig,compare()} should be used to
+  \item{compare.synorig}{a logical value with default set to \code{FALSE}
+    to determine if the functions \code{synorig.compare()} should be used to
     check that data sets can be compared.}
   \item{\dots}{additional parameters}   
   \item{x}{an object of class \code{disclosure.summary}.}

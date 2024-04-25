@@ -12,7 +12,7 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
            usetargetsNA = TRUE,  usekeysNA = TRUE, 
            ident.meas = "repU", attrib.meas = "DiSCO",
            thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-           digits = 2, plot = TRUE, print = TRUE,  synorig.compare = FALSE, ...)
+           digits = 2, plot = TRUE, print = TRUE,  compare.synorig = FALSE, ...)
     
   {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
@@ -21,7 +21,7 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-if(synorig.compare){
+if(compare.synorig){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
    

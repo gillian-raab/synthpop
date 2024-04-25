@@ -13,7 +13,7 @@ disclosure.data.frame <- disclosure.list <-
            exclude.keys =NULL, exclude.keylevs = NULL, 
            exclude.targetlevs = NULL, 
            thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-           to.print =c("short"),  synorig.compare = FALSE, ...) 
+           to.print =c("short"),  compare.synorig = FALSE, ...) 
     {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
     
@@ -21,13 +21,13 @@ disclosure.data.frame <- disclosure.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-    if (synorig.compare) {
+    if (compare.synorig) {
     
         if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
         if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
         
         if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-      run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
+      run the disclosure functions - see output. Use function synorig.compare() to check.", call. = FALSE)
         else if (!adjust.data$unchanged) {
           syn <- adjust.data$syn
           orig <- adjust.data$orig
