@@ -139,8 +139,9 @@
     directly.}
   \item{breaks}{breaks for a two colour binned gradient.}
     \item{compare.synorig}{a logical with default set to FALSE indicating 
-    if data sets shouold be compared with the function  compare.synorig  and
+    if data sets shouold be compared with the function \code{synorig.compare( ))}  and
     possible adjusted to make them compatible.}
+
   \item{\dots}{additional parameters}   
   \item{x}{an object of class \code{utility.tables}.}
 }
@@ -191,7 +192,7 @@
 }
 
 \seealso{
-  \code{\link{multi.compare}   \code{\link{compare.synorig} }
+  \code{\link{multi.compare}}   \code{\link{synorig.compare}} 
 }
 
 \examples{

@@ -47,7 +47,7 @@ export(compare, compare.synds, compare.fit.synds,
        disclosure.summary, disclosure.summary.synds,
        disclosure.summary.data.frame, disclosure.summary.list,
        codebook.syn, numtocat.syn, mergelevels.syn,
-       print.disclosure.summary)
+       print.disclosure.summary,synorig.compare)
 
 S3method(compare, default)
 S3method(compare, synds)

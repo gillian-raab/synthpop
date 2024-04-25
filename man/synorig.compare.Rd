@@ -6,11 +6,11 @@ check synthetic and original if not produced by synthpop.
 }
 \description{
 Prepare synthetic datasets NOT created by  \code{syn()}, and
- chack if they are compatible with their originals and can be used 
+ check if they are compatible with their originals and can be used 
  to eveluate disclosure  and utility of synthetic data with the functions
  \code{compare.synds()}, \code{utility.syn()}, \code{utility.tab()} and
  \code{utility.tables()} and \code{disclosure()}. 
- he output is a list with 3 components, the first two giving adjusted
+ The output is a list with 3 components, the first two giving adjusted
  versions of the input synthetic data and original and the third \code{needsfix}
  an indicator of whether these functions can be used on the adjusted data.
  THis function is used in functions like \code{compare.data.frame} and
@@ -31,7 +31,12 @@ Prepare synthetic datasets NOT created by  \code{syn()}, and
  but not in the original.
 Some warning messages are printed if level differences are not just due to
 missing values.
- 
+
+The function can be run to compare original and synthetic or it can be called
+by setting synorig,compare = TRUE in the following functions:
+\code{utility.tab() utility.tables() compare() disclosure() disclosure.summary()}.
+In this case the function attempts to correctdifferences and contunue or
+prompts the user as to which variables need changing.
 }
 \usage{
 synorig.compare(syn,orig, print.flag = TRUE)

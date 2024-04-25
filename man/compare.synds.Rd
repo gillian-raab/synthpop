@@ -86,10 +86,9 @@
   \item{table}{a logical value with default set to \code{FALSE} indicating
     whether tables should be printed.}
   \item{compare.synorig}{a logical with default set to FALSE indicating 
-    if data sets shouold be compared with the function  compare.synorig  and
+    if data sets shouold be compared with the function  synorig.compare  and
     possible adjusted to make them compatible.}
   \item{\dots}{additional parameters.}
-
   \item{x}{an object of class \code{compare.synds}.}
 }
 \details{
@@ -110,9 +109,12 @@ they and their corresponding frequency tables are stored as a list.
   creation of synthetic data in R. \emph{Journal of Statistical Software},
   \bold{74}(11), 1-26. \doi{10.18637/jss.v074.i11}.
 }
+
 \seealso{
-  \code{\link{multi.compare}   \code{\link{compare.synorig} }
+  \code{\link{multi.compare}}   \code{\link{synorig.compare}} 
 }
+
+
 \examples{
 ods <- SD2011[ , c("sex", "age", "edu", "marital", "ls", "income")]
 s1  <- syn(ods, cont.na = list(income = -8))

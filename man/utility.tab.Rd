@@ -89,7 +89,7 @@
     been synthesised. The default value is \code{FALSE}, which will apply
     to synthetic data created by synthpop.}
     \item{compare.synorig}{a logical with default set to FALSE indicating 
-    if data sets shouold be compared with the function  compare.synorig  and
+    if data sets shouold be compared with the function  synorig.compare  and
     possible adjusted to make them compatible.}
   \item{\dots}{additional parameters; can be passed to classIntervals() function.}
   \item{x}{an object of class \code{utility.tab}.}
@@ -180,7 +180,7 @@ of the original and synthetic data sets.
   \item{k.syn}{a logical indicator as to whether the sample size itself has
     been synthesised.}
       \item{compare.synorig}{a logical with default set to FALSE indicating 
-    if data sets shouold be compared with the function  \code{compare.synorig( ))} and
+    if data sets shouold be compared with the function  \code{synorig.compare( ))} and
     possible adjusted to make them compatible.}
 }
 
@@ -202,9 +202,8 @@ of the original and synthetic data sets.
 }
 
 \seealso{
-  \code{\link{multi.compare}   \code{\link{compare.synorig} }
+  \code{\link{multi.compare} }  \code{\link{synorig.compare}} 
 }
-
 
 \examples{
 ods <- SD2011[1:1000, c("sex", "age", "marital", "nofriend")]
