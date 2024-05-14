@@ -23,7 +23,7 @@
          print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
          ident.meas = "repU", attrib.meas = "DiSCO",
          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE, print = TRUE, \dots)
+          digits = 2, plot = TRUE,\dots)
 
                
 \method{disclosure.summary}{data.frame}(object, data, keys , targets = NULL, 
@@ -31,19 +31,19 @@
          print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
          ident.meas = "repU", attrib.meas = "DiSCO",
          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE, print = TRUE, 
-          compare.synorig = FALSE, \dots)
+          digits = 2, plot = TRUE, 
+          compare.synorig = TRUE, \dots)
 
 \method{disclosure.summary}{list}(object, data, keys , targets = NULL, 
          denom_lim = 5, exclude_ov_denom_lim = FALSE,not.targetslev = NULL, 
          print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
          ident.meas = "repU", attrib.meas = "DiSCO",
          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE, print = TRUE, 
-          compare.synorig = FALSE, \dots)
+          digits = 2, plot = TRUE, 
+         compare.synorig = TRUE,\dots)
 
 
-\method{print}{disclosure.summary}(x, digits = NULL, plot = NULL, print = NULL,
+\method{print}{disclosure.summary}(x, digits = NULL, plot = NULL, to.print =  c("ident","attrib"),
        \dots)}
 
 
@@ -80,8 +80,8 @@
   \item{ident.meas}{Choice of statistics to use as a measure of identity disclosure.
    Must be a selection from: \code{"repU"} or \code{"UiSiO"}. See     
         \code{\link{disclosure}} for  explanations of measures.}
-  \item{attrib.meas}{Choice of statistics to use as a measure of identity disclosure.
-   Must be a selection from: \code{"DiSCO"} or \code{"DiSCO_"}. See     
+  \item{attrib.meas}{Choice of statistics to use as a measure of attribute disclosure.
+   Must be a selection from: \code{"DiSCO"} or \code{"DiSDiO"}. See     
         \code{\link{disclosure}} for  explanations of measures.}
   \item{thresh_1way}{A vector of two numeric values both of which meed to be exceeded
    for warnings about a level of the target that may be dominating the results. 
@@ -100,9 +100,10 @@
   \item{plot}{determines if plot will be produced when the result is printed.} 
   \item{print}{logical value that determines if a summary of results is 
     to be printed.}  
-  \item{compare.synorig}{a logical value with default set to \code{FALSE}
-    to determine if the functions \code{synorig.compare()} should be used to
-    check that data sets can be compared.}
+  \item{compare.synorig}{a logical value  to determine if the functions
+  \code{synorig.compare()} should be used to check that data sets can be 
+   compared. Default set to \code{FALSE} except when the synthetic data are supplied as a    data.frame or a list when set to TRUE.} 
+   \item{to.print}{Vector of items to be printed including "ident", "attrib", both or NULL}
   \item{\dots}{additional parameters}   
   \item{x}{an object of class \code{disclosure.summary}.}
 }
@@ -134,11 +135,10 @@
   \item{ident.meas}{see above.} 
   \item{attrib.meas}{see above.} 
   \item{plot}{see above.} 
-  \item{print}{see above.}
    }
       
 \references{
-to follow ;ink to vignette
+to follow link to vignette
 }
 
 \seealso{

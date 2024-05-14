@@ -292,10 +292,9 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
                                                utility.stats = c("pMSE", "S_pMSE", "df"),
                                                utility.for.plot = "S_pMSE",
                                                cols = c("#1A3C5A","#4187BF"),   
-                                               plot = TRUE, table = FALSE, 
-                                               compare.synorig = FALSE, ...)
-  {
-
+                                               plot = TRUE, table = FALSE ,
+                                               compare.synorig = TRUE, ...){
+  
   if (is.null(data)) stop("Requires parameter 'data' to give name of the real data.\n\n",  call. = FALSE)
   if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n\n",  call. = FALSE)   
   
@@ -316,19 +315,17 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
       cont.na[[j]] <- unique(c(NA,cna[[i]]))
     }
   }
-
-  ####compare syn with orig
-
-  if (compare.synorig){
+  
+  if (synorig.compare){
     if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
-
+    
     if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
       run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
     else if (!adjust.data$unchanged) {
       syn <- adjust.data$syn
       orig <- adjust.data$orig
-      cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable")
+      cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
       if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
       m <- 1 }
     else  cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")

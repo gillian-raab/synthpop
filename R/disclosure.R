@@ -13,7 +13,7 @@ disclosure.data.frame <- disclosure.list <-
            exclude.keys =NULL, exclude.keylevs = NULL, 
            exclude.targetlevs = NULL, 
            thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-           to.print =c("short"),  compare.synorig = FALSE, ...) 
+           to.print =c("short"),  compare.synorig = TRUE, ...) 
     {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
     
@@ -21,18 +21,18 @@ disclosure.data.frame <- disclosure.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-    if (compare.synorig) {
+    if (synorig.compare) {
     
         if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
         if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
         
         if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-      run the disclosure functions - see output. Use function synorig.compare() to check.", call. = FALSE)
+      run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
         else if (!adjust.data$unchanged) {
           syn <- adjust.data$syn
           orig <- adjust.data$orig
-          cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable")
-          if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
+          cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable\n\n")
+          if (m > 1) cat("only first element of the list has been adjusted and will be used here\n\n")
           m <- 1 }
         else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
     }  
@@ -134,7 +134,7 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
   ident  <- matrix(NA,object$m ,4)
 
   dimnames(allCAPs) <- list(1:object$m, c("baseCAPd","CAPd", "CAPs", "DCAP","TCAP"))
-  dimnames(attrib) <- list(1:object$m,c("DiO","DiS","KDiSiO","DiSDiO", "DiSCO", "max_denom","mean_denom"))
+  dimnames(attrib) <- list(1:object$m,c("DiO","DiS","iSO", "DiSCO",  "DiSDiO", "max_denom","mean_denom"))
   dimnames(ident) <- list(1:object$m,c("UiO", "UiS","UiOiS", "repU"))
   check_2way <-list(1:object$m)
   Nexclusions <- list(1:object$m)
@@ -231,20 +231,24 @@ if (length(keys) >1) {
 
    if (!(all(Kd %in% Ks))) { ## some original not found in synthetic
     extraKd <- Kd[!(Kd %in% Ks) ]
+    #cat("  ",length(extraKd),"length(extraKd)\n")
     extra_tab <- matrix(0,dim(tab_kts)[1],length(extraKd))
     dimnames(extra_tab) <- list(dimnames(tab_kts)[[1]],extraKd)
     tab_kts <- cbind(tab_kts,extra_tab)
     tab_kts  <- tab_kts[, order(dimnames(tab_kts)[[2]])] 
-  }
+   }
+  #print(dimnames(tab_kts)[[2]])
 
   if (!(all(Ks %in% Kd))) {  ## extra synthetic keys not in original
     extraKs <- Ks[!(Ks %in% Kd) ]
- 
+    #cat("  ",length(extraKs),"length(extraKs)\n")
     extra_tab <- matrix(0,dim(tab_ktd)[1],length(extraKs))
     dimnames(extra_tab) <- list(dimnames(tab_ktd)[[1]],extraKs)
     tab_ktd <- cbind(tab_ktd,extra_tab)
     tab_ktd <- tab_ktd[,order(dimnames(tab_ktd)[[2]])]
   }
+  #cat("Do they line up\n")
+  #print(table(dimnames(tab_ktd)[[2]] == dimnames(tab_kts)[[2]] ))
 
 # same thing for target
 
@@ -284,26 +288,20 @@ if (length(keys) >1) {
   Nd_ins <- sum(tab_kd[names(tab_kd) %in% Ks])
 ###------------------------get tables for  calculating attribute disclosure measures-----------------------------------------------------
 
-nots <- apply(tab_kts_p,2,function(x) !(any(x==1))) 
-  
-  ## indicates not unique in the margins of tab_kts
-
-
 did <- tab_ktd ; did[tab_ktd_p != 1] <- 0
 dis <- tab_kts ; dis[tab_kts_p != 1] <- 0
-keys_orig <- apply(tab_ktd,2,sum)
-keys_in_syn_in_orig <- dis 
-keys_in_syn_in_orig[,keys_orig == 0] <- 0
-dis_in_orig <- keys_in_syn_in_orig
-dis_in_orig[tab_ktd == 0] <- 0 ## disclosive and in original 
-dis_both_correct <- dis_in_orig  
-dis_both_correct[tab_ktd_p != 1] <- 0 ## disclosive in syn in original  correct and dis in orig
-
+keys_syn <- apply(tab_kts,2,sum)
+tab_iSO <- tab_ktd
+tab_iSO[,keys_syn ==0 ] <- 0
+tab_DiSCO <- tab_iSO
+tab_DiSCO[tab_kts_p != 1] <- 0
+tab_DiSDiO <- tab_DiSCO
+tab_DiSDiO[tab_ktd_p != 1] <- 0
 
 Nout <- rep(0, 6)
 names(Nout) = c("excluded target","missing target","missing in  keys", "set to exclude","over denom_lim","remaining")
-Nexcludes <- matrix(0,7,6)
-dimnames(Nexcludes) <- list(c("original","synthetic","DiO","DiS","KDiSiO", "DiSDiO", "DiSCO"),
+Nexcludes <- matrix(0,8,6)
+dimnames(Nexcludes) <- list(c("original","synthetic","DiO","DiS","iSO", "DiSO", "DiSCO", "DiSDiO"),
                             c("excluded target","missing target","missing in  keys", "set to exclude","over denom_lim","remaining"))
 ###----------------------------- now exclusions----------------------------------
 
@@ -320,7 +318,7 @@ tab_exclude <- function(xx,col,Nexcludes) {
 ##### missings excluded values from tables if set
 
 if (!usetargetNA && any(dd$target == "Missing")) {
-  print(dimnames(xx)[[1]] )
+  #print(dimnames(xx)[[1]] )
   Nout[1] <- sum(xx[dimnames(xx)[[1]] == "Missing",])
   xx[dimnames(xx)[[1]] == "Missing",] <- 0
 }
@@ -362,7 +360,7 @@ if (!usetargetNA && any(dd$target == "Missing")) {
  Nexcludes[col,] <- Nout
    return(list(tab = xx, Nexcludes = Nexcludes))
 }
-tab_ktdO <- tab_ktd
+
 yy <- tab_exclude(tab_ktd,1,Nexcludes)
 tab_ktd <- yy$tab; Nexcludes <- yy$Nexcludes
 yy <- tab_exclude(tab_kts,2,Nexcludes)
@@ -371,15 +369,15 @@ yy <- tab_exclude(did,3,Nexcludes)
 did <- yy$tab; Nexcludes <- yy$Nexcludes
 yy <- tab_exclude(dis,4,Nexcludes)
 dis <- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(keys_in_syn_in_orig,5,Nexcludes)
-keys_in_syn_in_orig <- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(dis_in_orig,6,Nexcludes)
-dis_in_orig <- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(dis_both_correct,7,Nexcludes)
-dis_both_correct <- yy$tab; Nexcludes <- yy$Nexcludes
+yy <- tab_exclude(tab_iSO,5,Nexcludes)
+tab_iSO<- yy$tab; Nexcludes <- yy$Nexcludes
+yy <- tab_exclude(tab_DiSCO,6,Nexcludes)
+tab_DiSCO <- yy$tab; Nexcludes <- yy$Nexcludes
+yy <- tab_exclude(tab_DiSDiO,7,Nexcludes)
+tab_DiSDiO <- yy$tab; Nexcludes <- yy$Nexcludes
 ###--------------------- exclusions done-----------------------------------------
 ###-----------------------get  identity disclosure measures -------------
-t1 <- apply(did,2,sum)
+
 tab_ks <- apply(tab_kts,2,sum)
 tab_kd <- apply(tab_ktd,2,sum)
 tab_ks1 <- tab_ks
@@ -387,9 +385,7 @@ tab_ks1[tab_ks1>1] <- 0
 tab_kd1 <- tab_kd 
 tab_kd1[tab_kd1>1] <- 0
 tab_kd1_s <- tab_kd1[names(tab_kd1) %in% Ks]
-tab_ksd1 <-tab_kd[tab_ks == 1 & tab_kd == 1]
-##print(tab_ktdO[,(t1-tab_kd1)<0][,1:10])
-## exclude bits with missing levels of keys
+tab_ksd1 <-tab_kd[tab_ks == 1 & tab_kd == 1] ## repU
 
 
 UiS<- sum(tab_ks1)/Ns*100
@@ -401,13 +397,11 @@ ident[jj,] <- c( UiO,UiS, UiOiS,repU )
 ###----------------------------- attrib dis measures-------------------------
 DiO <- sum(did)/Nd*100
 DiS <- sum(dis)/Ns*100
-KDiSiO <- sum(keys_in_syn_in_orig)/Nd*100
-DiSDiO <- sum(dis_in_orig)/Nd*100
-DiSCO <- sum(dis_both_correct)/Nd*100
+iSO <- sum(tab_iSO)/Nd*100
+DiSCO <- sum(tab_DiSCO)/Nd*100
+DiSDiO <- sum(tab_DiSDiO)/Nd*100
 
-denom_DisCO <- as.vector(tab_ktd[dis_both_correct])
-
-attrib[jj,] <- c( DiO,DiS,KDiSiO,DiSDiO,DiSCO,max(dis_both_correct),mean(dis_both_correct[dis_both_correct>0]))
+attrib[jj,] <- c( DiO,DiS,iSO,DiSCO,DiSDiO,max(tab_DiSCO),mean(tab_DiSCO[tab_DiSCO>0]))
 Nexclusions[[jj]] <- Nexcludes
 
 ###----------------- get  CAP and DCAP measures---------------------
@@ -420,13 +414,17 @@ DCAP <-   sum(apply(tab_kts_p*tab_ktd,2,sum))/Nd*100
 ##restrict to uniques in d
 tab_kts_pU <- tab_kts_p
 tab_kts_pU[,tab_kd != 1] <- 0
-TCAP <-   sum(apply(tab_kts_pU*tab_ktd,2,sum))/Nd*100
+TCAP_denom <- sum(tab_kd[tab_ks >0])
+#TCAP0 <-   sum(apply(tab_kts_pU*tab_ktd,2,sum))/Nd*100
+TCAP <-   sum(tab_DiSCO)/TCAP_denom*100
 
+#cat(baseCAPd,"baseCAPd",TCAP0,"TCAP0",TCAP,"TCAP\n")
 allCAPs[jj,] <- c( baseCAPd,  CAPd,  CAPs, DCAP,TCAP)
 
 ###----------------------- checks for most_dis_lev 1 way ---------------------------
+
 tab_target <- apply(tab_ktd,1,sum)
-tab_dis_target <- apply(dis_in_orig,1,sum)
+tab_dis_target <- apply(dis,1,sum)
 pctdisLev <- max(tab_dis_target)/sum(tab_dis_target)*100
  
 totalDisclosive[jj] <- sum(tab_dis_target)
@@ -437,14 +435,14 @@ totalLevel[jj] <-tab_dis_target[1]
 
   most_dis_lev[jj] <- names(tab_dis_target)[1]
   totalLevel[jj] <-tab_dis_target[1]
-  pctdisLevel[jj] <- tab_dis_target[1]/sum(dis_in_orig)*100
+  pctdisLevel[jj] <- tab_dis_target[1]/sum(dis)*100
 
   if (sum(tab_dis_target) > thresh_1way[1] && pctdisLev >=  thresh_1way[2]) check1way[jj] <- 1
 
 ###------------------------get details for check_2way-----------------
 ### only implemented for DiSCO  though could be changed
   
-  xx <- dis_both_correct
+  xx <- tab_DiSCO
   if (any(xx > thresh_2way[1]))  {
     
    denoms <- as.vector(xx[xx > thresh_2way[1]])
@@ -575,7 +573,7 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   if (length(to.print) >1 & ("short" %in% to.print)) stop("A 'Short' entry in to.print should not be combined with other options.\n", call. = FALSE)
   
   
-  cat("Disclosure measures from synthesis for",x$Norig, "records in original data")
+  cat("Disclosure measures from synthesis for",x$Norig, "records in original data.\n")
 
   
   nexcluded <- sapply(x$Nexclusions,function(x) sum(x[,-6]))
@@ -587,7 +585,7 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
   
   if (length(to.print) == 1 && to.print == "short") {
     cat("\nIdentity  measures for keys", x$keys,
-        "\nand attribute measures for",x$target,"from the same keys" )
+        "\nand attribute measures for",x$target,"from the same keys\n" )
     short <- rbind(c(x$ident[1,1],x$attrib[1,1]),
                    cbind(x$ident[,4],x$attrib[,5]))
     dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (DiO/DiSCO)"))
@@ -620,7 +618,7 @@ if (any(x$Nidentexclude >0)) {
   }   
   
   ###------------------------ print check messages  
-  if (x$checklev_1way != ""){
+  if (x$checklev_1way != "" & !("check_1way" %in% to.print)){
     cat("\nThe 1 way distributions of",x$target,"has a large contribution to disclosure from level",x$checklev_1way,"\n")
     cat("Please add 'check_1way' to to.print (e.g. print(disclosure_result, to.print = 'check_1way'),\n")
     cat("and look at original data to decide if backround knowledge would make this disclosure likely\n")
@@ -628,15 +626,14 @@ if (any(x$Nidentexclude >0)) {
   }
        
   if ("check_1way" %in% to.print){
-      if (!is.null(x$check_1way)) {
-      cat("\nDetails of target contributing disproportionately to disclosure\n")
-      if (dim(x$check_1way)[1] >1) cat("averaged over all",dim(x$check_1way)[1],"syntheses\n")
+      if (!is.null(x$check_1way) ) {
+      cat("\nDetails of target level contributing disproportionately to disclosure\n")
       print(x$check_1way)
       }
       else {cat("No 1 way checks for your target are flagged at your settings for thresh_1way\n\n ")}
   }
   
-  if (!(length(x$checklevs_2way) == 1 && x$checklevs_2way == "")){
+  if (!(length(x$checklevs_2way) == 1 && x$checklevs_2way == "") & !("check_2way" %in% to.print)){
     cat("\nDetails of target-key pairs contributing disproportionately to disclosure of",x$target,"\n")
     if (length(x$checklevs_2way) > 3) cat("Note only the first 3 printed here\n")
     for (i in 1:(min(length(x$checklevs_2way),3))) cat(x$checklevs_2way[i],"\n")

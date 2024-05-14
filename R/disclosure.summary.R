@@ -12,7 +12,7 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
            usetargetsNA = TRUE,  usekeysNA = TRUE, 
            ident.meas = "repU", attrib.meas = "DiSCO",
            thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-           digits = 2, plot = TRUE, print = TRUE,  compare.synorig = FALSE, ...)
+           digits = 2, plot = TRUE,  compare.synorig = TRUE, ...)
     
   {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
@@ -21,7 +21,7 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-if(compare.synorig){
+if(synorig.compare){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
    
@@ -43,7 +43,7 @@ if(compare.synorig){
            denom_lim = denom_lim,  exclude_ov_denom_lim = exclude_ov_denom_lim, 
            print.flag = print.flag ,  usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
            ident.meas = ident.meas, attrib.meas = attrib.meas, 
-           digits = digits, plot = plot, print = print, ...) 
+           digits = digits, plot = plot,...) 
     res$call <- match.call()
     return(res)
   }
@@ -55,7 +55,7 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
                                          usetargetsNA = TRUE,  usekeysNA = TRUE, 
                                          ident.meas = "repU", attrib.meas = "DiSCO",
                                          thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-                                         digits = 2, plot = TRUE, print = TRUE,  ...)
+                                         digits = 2, plot = TRUE,...)
 {
   ###----------------check input parameters ----
   if (!(is.data.frame(data)) )   stop("data  must be a data frame \n\n", call. = FALSE)
@@ -98,9 +98,9 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
   # get keys in same order as in data
   keys <- names(data)[names(data) %in% keys]
   if (!(length(ident.meas) == 1  && length(attrib.meas) == 1 &&
-        ident.meas %in% c("repU", "UiSiO") && attrib.meas %in% c("DiSCO", "DiSiO","DCAP","TCAP")) )
+        ident.meas %in% c("repU", "UiSiO") && attrib.meas %in% c("DiSCO", "DiSDiO")) )
         stop('ident.meas and attrib.meas must be single values
-             from c("repU", "UiSiO") and  c("DiSCO", "DiSiO", "DCAP","TCAP") respectively\n\n', call. = FALSE)
+             from c("repU", "UiSiO") and  c("DiSCO", "DiSDiO") respectively\n\n', call. = FALSE)
 
   if (length(usekeysNA) == 1) usekeysNA <- rep(usekeysNA, length(keys))
   if (length(usetargetsNA) == 1) usetargetsNA <- rep(usetargetsNA, length(targets))
@@ -129,16 +129,10 @@ Norig <- dim(data)[1]
     if (attrib.meas == "DiSCO" ){
        attrib.orig[i] <- mean(ttt$attrib$DiO)
        attrib.syn[i] <- mean(ttt$attrib$DiSCO )}
-    if (attrib.meas == "DiSiO" ){
+    if (attrib.meas == "DiSDiO" ){
       attrib.orig[i] <- mean(ttt$attrib$DiO)
-        attrib.syn[i] <- mean(ttt$attrib$DiSCOU )}
-    if (attrib.meas == "DCAP" ){
-      attrib.orig[i] <- mean(ttt$allCAPs$CAPd)
-      attrib.syn[i] <- mean(ttt$allCAPs$DCAP )}
-    if (attrib.meas == "TCAP" ){
-      attrib.orig[i] <- mean(ttt$allCAPs$CAPd)
-        attrib.syn[i] <- mean(ttt$allCAPs$TCAP )}
- 
+        attrib.syn[i] <- mean(ttt$attrib$DiSDiO )}
+
     checklev_1way[i] <- ttt$checklev_1way
     checklevs_2way[i] <- ttt$checklevs_2way[1]
     if (ttt$checklevs_2way[1] == "") n2way[i] <- 0
@@ -186,10 +180,9 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
   
       names(toplot)[2] <- "VALUE"
       oratt <- "DiO"
-      if (attrib.meas %in% c("DCAP","TCAP")) oratt <- "CAPd"
 
       attrib.plot <- ggplot(toplot) + 
-       geom_point(data = toplot, size=5, aes(colour = .data$measure, x=.data$VALUE, y=.data$name)) +
+       geom_point(data = toplot, size=5, aes(colour = .data$measure, shape = .data$measure, x=.data$VALUE, y=.data$name)) +
        xlim(0,100)  +
         labs(x = "Disclosure measure", y = "", 
          title = "Comparison of attribute disclosure measures",
@@ -201,7 +194,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
                          denom_lim = denom_lim, exclude_ov_denom_lim = exclude_ov_denom_lim,
                          digits = digits, usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
                          ident.meas = ident.meas, attrib.meas = attrib.meas, m = object$m,
-                         plot = TRUE, print = TRUE)
+                         plot = plot)
        class(res) <- "disclosure.summary"
        return(res)
     }        
@@ -209,42 +202,39 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
   
   ###-----print.disclosure.summary-----------------------------------------------
   print.disclosure.summary <- function(x,  digits = NULL,  
-                                   plot = NULL, print = NULL, ...) {
+                                   plot = NULL, to.print = c("ident","attrib"), ...) {
     
      if (is.null(digits)) digits <- x$digits
     if (is.null(plot)) plot <- x$plot
-    if (is.null(print)) print <- x$print
-    
-    
-    if (!print) {
-      cat("\nTo see results use print = TRUE.\n")
-    } else {
+  
+    if ("ident" %in% to.print) {
       cat("Disclosure risk for",x$Norig,"records in the original data\n")
       if (x$m >1) cat("Results are averaged over" ,x$m,"syntheses")
       cat("\nIdentity disclosure measures\n")
       cat("from keys:", x$keys,"\n")
       cat("For original  ( UiO ) ", round(x$ident.orig[1],x$digits),"%\n")
       cat("For synthetic (", x$ident.meas,")",round(x$ident.syn[1],x$digits),"%.\n")
-  
-      cat("\nTable of attribute disclosure measures for the same keys, \n")
+    }
+    if ("attrib" %in% to.print) {
+      cat("\nTable of attribute disclosure measures for",x$keys,"\n")
       oratt <- "DiO"
-      if (x$attrib.meas %in% c("DCAP","TCAP")) oratt <- "CAPd"
-      
+
       cat("Original measure is ",oratt,"and synthetic measure is",x$attrib.meas,"\n")
       cat("Variables Ordered by synthetic disclosure measure\n\n")
       toprint <- x$attrib.table
       for (i in 1:2) toprint[,i] <- round(toprint[,i], x$digits)
       print(toprint)
-    }
-    if (any(toprint$npairs >1 )) cat("Only the first two-way pair is given when npairs >1\n")
   if (plot & !is.null(x$attrib.plot)) {
     print(x$attrib.plot)
   }
+    }
  
   if (any(x$attrib$check1 != "")) cat("\n\nCheck check_1way in output from disclosure()\n",
    "for targets with check1 \n")
-    if (any(x$attrib$check2 != "")) cat("\n\nCheck check_2way in output from disclosure()\n",
+    if (any(x$attrib$check2 != "")){ cat("\n\nCheck check_2way in output from disclosure()\n",
                                         "for targets with check2 \n")
+      cat("Only the first two-way pair is given here when npairs >1\n")
+    }
   invisible(x)
 }
 

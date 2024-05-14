@@ -31,7 +31,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, compare.synorig = FALSE, \dots)
+        plot = TRUE, table = FALSE, compare.synorig = TRUE, \dots)
 
 \method{compare}{list}(object, data, vars = NULL, cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,
@@ -39,7 +39,7 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE,  compare.synorig = FALSE,\dots)
+        plot = TRUE, table = FALSE, compare.synorig = TRUE, \dots)
 
 \method{print}{compare.synds}(x, \dots)
 }
@@ -85,9 +85,10 @@
     whether plots should be produced.}
   \item{table}{a logical value with default set to \code{FALSE} indicating
     whether tables should be printed.}
-  \item{compare.synorig}{a logical with default set to FALSE indicating 
-    if data sets shouold be compared with the function  synorig.compare  and
-    possible adjusted to make them compatible.}
+  \item{compare.synorig}{a logical value  to determine if the functions
+  \code{synorig.compare()} should be used to check that data sets can be 
+   compared. Used when the synthetic data are supplied as a data.frame or 
+   a list when  default set to TRUE.} 
   \item{\dots}{additional parameters.}
   \item{x}{an object of class \code{compare.synds}.}
 }
@@ -109,12 +110,9 @@ they and their corresponding frequency tables are stored as a list.
   creation of synthetic data in R. \emph{Journal of Statistical Software},
   \bold{74}(11), 1-26. \doi{10.18637/jss.v074.i11}.
 }
-
 \seealso{
-  \code{\link{multi.compare}}   \code{\link{synorig.compare}} 
+  \code{\link{multi.compare}}
 }
-
-
 \examples{
 ods <- SD2011[ , c("sex", "age", "edu", "marital", "ls", "income")]
 s1  <- syn(ods, cont.na = list(income = -8))

@@ -21,14 +21,14 @@
    usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
    exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
    thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), compare.synorig = FALSE, \dots )
+  to.print =c("short"), compare.synorig = TRUE,  \dots )
 
 \method{disclosure}{list}(object, data, keys, target, denom_lim = 5,
   exclude_ov_denom_lim = FALSE, print.flag = TRUE,digits = 2,
    usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
    exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
    thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), compare.synorig = FALSE, \dots )
+  to.print =c("short"), compare.synorig = TRUE, \dots )
 
 \method{print}{disclosure}(x,  to.print =NULL, digits = NULL, \dots)
 }
@@ -60,10 +60,10 @@
   \item{usekeysNA}{determines whether NA values in keys are to be used 
             in checking for disclosure.}
   \item{not.targetlev}{Character variable giving level of target to be
-   excluded from discloude measures. Usually identified by checklev_1way.}
+   excluded from disclosure measures. Usually identified by checklev_1way.}
   \item{exclude.keys}{vector of names of keys that, with the next two items
-     will define the target and key options to be excluded from the calculation 
-         of disclosure measures.}
+     will define the target and key combinations to be excluded from the
+     calculation of disclosure measures. Often identified by checklev_2way.}
   \item{exclude.keylevs}{vector of the same length as exclude.keys that give 
       the levels  to be excluded for the corresponding key.}
   \item{exclude.targetlevs}{vector of the same length as exclude.keys that give 
@@ -85,9 +85,10 @@
    class disclosure will be printed. Must consist  of  one or more of the 
    following "short", "ident", "attrib","allCAPs", "all", "check_1way", 
    "check_2way", "exclusions". Default is "short" giving a brief summary.}
-\item{compare.synorig}{a logical value with default set to \code{FALSE}
-    to determine if the functions \code{synorig,compare()} should be used to
-    check that data sets can be compared.}
+  \item{compare.synorig}{a logical value  to determine if the functions
+  \code{synorig.compare()} should be used to check that data sets can be 
+   compared. Used when the synthetic data are supplied as a data.frame or 
+   a list when  default set to TRUE.} 
 \item{\dots}{additional parameters}  
  \item{x}{an object of class \code{disclosure}.}
 }
@@ -108,16 +109,15 @@
               "repU". See vignette disclosure.pdf for an explanation of these 
               and the following measures.}
   \item{attrib}{Table of measures of attribute disclosure  one for each 
-    synthesis. These include "DiO","DiS","KiSiO","DisDiO" and "DiSCO".
+    synthesis. These include "DiO","DiS","iSO","DiSCO" and "DiSDiO".
     The measures "DiO" and "DiS" are the percentage of the target that are
     disclosed from the original and synthetic data with these keys. The next
-    measure "KiOiS" gives the percentage of the  key combinations 
-    disclosive in the synthetic data that are present in the original- 
-    one was in which the disclosure
-    risk of synthetic data is reduced. "DiSDiO" restrics this \% to those
-    disclpsiver in the original data and, finally, "DiSCO" gives the percentage 
-    of these records where the attribution to the target is correct as judged 
-    from the original. 
+    measure "iSO" gives the percentage of the  key combinations 
+    in the synthetic data that are present in the original - 
+    one was in which the disclosure.  "DiSCO" gives the percentage 
+    of original records where the attribution to the target is correct as judged 
+    from the original. "DiSDiO" gives the \% of origina; records in "DISCO"
+    that are unique in the original data.
     The table also as gives the maximum and mean of the denominators for the
     "DiSCO" measure i.e. the distribution for every record that leads to a 
     correct disclosure of the number of observations with

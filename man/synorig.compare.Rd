@@ -33,10 +33,11 @@ Some warning messages are printed if level differences are not just due to
 missing values.
 
 The function can be run to compare original and synthetic or it can be called
-by setting synorig,compare = TRUE in the following functions:
+by setting compare.synorig = TRUE when data are not supplied as an object
+ of class synds created by synthpop in the following functions :
 \code{utility.tab() utility.tables() compare() disclosure() disclosure.summary()}.
-In this case the function attempts to correctdifferences and contunue or
-prompts the user as to which variables need changing.
+In this case the function attempts to correct differences and continue or, if this
+is impossible, will prompt the user as to which variables need changing.
 }
 \usage{
 synorig.compare(syn,orig, print.flag = TRUE)
