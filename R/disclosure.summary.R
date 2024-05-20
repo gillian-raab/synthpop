@@ -21,7 +21,7 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-if(synorig.compare){
+if(compare.synorig){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
    
