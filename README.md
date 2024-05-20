@@ -36,5 +36,5 @@ disclosure.pdf in the vignettes directory,
 
 ## Acknowledgements
 
-Help from MA
+Help from Jason Klebes
 
