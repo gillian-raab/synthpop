@@ -25,19 +25,17 @@ if(compare.synorig){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
    
-      if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-      run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
-      else if (!adjust.data$unchanged) {
-        syn <- adjust.data$syn
-        orig <- adjust.data$orig
-        cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable")
+     if (!adjust.data$unchanged) {
+        data <- adjust.data$orig
+        object <- adjust.data$syn
+
+        cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
         if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
         m <- 1 }
       else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 }
-    object <- list(syn = object, m = m) 
+    object <- list(syn = object, m = 1) 
     class(object) <- "synds"
-    
 
     res <- disclosure.summary.synds(object, data, keys = keys , targets = targets, 
            denom_lim = denom_lim,  exclude_ov_denom_lim = exclude_ov_denom_lim, 
@@ -98,9 +96,9 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
   # get keys in same order as in data
   keys <- names(data)[names(data) %in% keys]
   if (!(length(ident.meas) == 1  && length(attrib.meas) == 1 &&
-        ident.meas %in% c("repU", "UiSiO") && attrib.meas %in% c("DiSCO", "DiSDiO")) )
+        ident.meas %in% c("repU", "UiSiO","baseCAPd") && attrib.meas %in% c("DiSCO", "DiSDiO","DCAP")) )
         stop('ident.meas and attrib.meas must be single values
-             from c("repU", "UiSiO") and  c("DiSCO", "DiSDiO") respectively\n\n', call. = FALSE)
+             from c("repU", "UiSiO""repU", "UiSiO","baseCAPd") and  c("DiSCO", "DiSDiO","DCAP") respectively\n\n', call. = FALSE)
 
   if (length(usekeysNA) == 1) usekeysNA <- rep(usekeysNA, length(keys))
   if (length(usetargetsNA) == 1) usetargetsNA <- rep(usetargetsNA, length(targets))

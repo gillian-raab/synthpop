@@ -21,25 +21,23 @@ disclosure.data.frame <- disclosure.list <-
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
-    if (synorig.compare) {
+    if (compare.synorig) {
     
         if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
         if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
         
-        if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
-      run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
-        else if (!adjust.data$unchanged) {
+        if (!adjust.data$unchanged) {
           syn <- adjust.data$syn
-          orig <- adjust.data$orig
+          data <- adjust.data$orig
           cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable\n\n")
-          if (m > 1) cat("only first element of the list has been adjusted and will be used here\n\n")
+          if (m > 1) {cat("only first element of the list has been adjusted and will be used here\n\n")
           m <- 1 }
-        else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
-    }  
+           else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 
+    }
     object <- list(syn = object, m = m) 
     class(object) <- "synds"
-    
+        }
     
     res <- disclosure(object, data, keys , target , denom_lim = denom_lim,
                       exclude_ov_denom_lim = exclude_ov_denom_lim, 
@@ -130,14 +128,14 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
 ###---------------------- define output items-------------
    
   allCAPs         <- matrix(NA,object$m,5)
-  attrib   <- matrix(NA,object$m,7)
+  attrib   <- matrix(NA,object$m,8)
   ident  <- matrix(NA,object$m ,4)
 
   dimnames(allCAPs) <- list(1:object$m, c("baseCAPd","CAPd", "CAPs", "DCAP","TCAP"))
-  dimnames(attrib) <- list(1:object$m,c("DiO","DiS","iSO", "DiSCO",  "DiSDiO", "max_denom","mean_denom"))
+  dimnames(attrib) <- list(1:object$m,c("Dorig","Dsyn","iS", "DiS","DiSCO",  "DiSDiO", "max_denom","mean_denom"))
   dimnames(ident) <- list(1:object$m,c("UiO", "UiS","UiOiS", "repU"))
-  check_2way <-list(1:object$m)
   Nexclusions <- list(1:object$m)
+  check_2way <-list(1:object$m)
 
   
   dd <- data ## rename target variable to target
@@ -291,17 +289,21 @@ if (length(keys) >1) {
 did <- tab_ktd ; did[tab_ktd_p != 1] <- 0
 dis <- tab_kts ; dis[tab_kts_p != 1] <- 0
 keys_syn <- apply(tab_kts,2,sum)
-tab_iSO <- tab_ktd
-tab_iSO[,keys_syn ==0 ] <- 0
-tab_DiSCO <- tab_iSO
+tab_iS <- tab_ktd
+tab_iS[,keys_syn ==0 ] <- 0
+tab_DiS <- tab_ktd
+anydis <- apply(tab_kts_p,2,function(x) any(x ==1))
+tab_DiS[,!anydis] <- 0
+tab_DiSCO <- tab_iS
 tab_DiSCO[tab_kts_p != 1] <- 0
 tab_DiSDiO <- tab_DiSCO
 tab_DiSDiO[tab_ktd_p != 1] <- 0
 
+
 Nout <- rep(0, 6)
 names(Nout) = c("excluded target","missing target","missing in  keys", "set to exclude","over denom_lim","remaining")
 Nexcludes <- matrix(0,8,6)
-dimnames(Nexcludes) <- list(c("original","synthetic","DiO","DiS","iSO", "DiSO", "DiSCO", "DiSDiO"),
+dimnames(Nexcludes) <- list(c("original","synthetic","Dorig","Dsyn","iS", "DiS", "DiSCO", "DiSDiO"),
                             c("excluded target","missing target","missing in  keys", "set to exclude","over denom_lim","remaining"))
 ###----------------------------- now exclusions----------------------------------
 
@@ -369,11 +371,13 @@ yy <- tab_exclude(did,3,Nexcludes)
 did <- yy$tab; Nexcludes <- yy$Nexcludes
 yy <- tab_exclude(dis,4,Nexcludes)
 dis <- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(tab_iSO,5,Nexcludes)
-tab_iSO<- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(tab_DiSCO,6,Nexcludes)
+yy <- tab_exclude(tab_iS,5,Nexcludes)
+tab_iS<- yy$tab; Nexcludes <- yy$Nexcludes
+yy <- tab_exclude(tab_DiS,6,Nexcludes)
+tab_DiS<- yy$tab; Nexcludes <- yy$Nexcludes
+yy <- tab_exclude(tab_DiSCO,7,Nexcludes)
 tab_DiSCO <- yy$tab; Nexcludes <- yy$Nexcludes
-yy <- tab_exclude(tab_DiSDiO,7,Nexcludes)
+yy <- tab_exclude(tab_DiSDiO,8,Nexcludes)
 tab_DiSDiO <- yy$tab; Nexcludes <- yy$Nexcludes
 ###--------------------- exclusions done-----------------------------------------
 ###-----------------------get  identity disclosure measures -------------
@@ -395,13 +399,14 @@ repU <- sum(tab_ksd1)/Nd*100
 
 ident[jj,] <- c( UiO,UiS, UiOiS,repU )
 ###----------------------------- attrib dis measures-------------------------
-DiO <- sum(did)/Nd*100
-DiS <- sum(dis)/Ns*100
-iSO <- sum(tab_iSO)/Nd*100
+Dorig <- sum(did)/Nd*100
+Dsyn <- sum(dis)/Ns*100
+iS <- sum(tab_iS)/Nd*100
+DiS <- sum(tab_DiS)/Nd*100
 DiSCO <- sum(tab_DiSCO)/Nd*100
 DiSDiO <- sum(tab_DiSDiO)/Nd*100
 
-attrib[jj,] <- c( DiO,DiS,iSO,DiSCO,DiSDiO,max(tab_DiSCO),mean(tab_DiSCO[tab_DiSCO>0]))
+attrib[jj,] <- c( Dorig,Dsyn,iS,DiS,DiSCO,DiSDiO,max(tab_DiSCO),mean(tab_DiSCO[tab_DiSCO>0]))
 Nexclusions[[jj]] <- Nexcludes
 
 ###----------------- get  CAP and DCAP measures---------------------
@@ -421,135 +426,135 @@ TCAP <-   sum(tab_DiSCO)/TCAP_denom*100
 #cat(baseCAPd,"baseCAPd",TCAP0,"TCAP0",TCAP,"TCAP\n")
 allCAPs[jj,] <- c( baseCAPd,  CAPd,  CAPs, DCAP,TCAP)
 
-###----------------------- checks for most_dis_lev 1 way ---------------------------
 
+###----------------------- checks for most_dis_lev 1 way ---------------------------
 tab_target <- apply(tab_ktd,1,sum)
-tab_dis_target <- apply(dis,1,sum)
+tab_dis_target <- apply(tab_DiSCO,1,sum)
 pctdisLev <- max(tab_dis_target)/sum(tab_dis_target)*100
- 
+
 totalDisclosive[jj] <- sum(tab_dis_target)
 PctDisAll[jj] <- totalDisclosive[jj]/sum(tab_target)*100
 tab_dis_target <- sort(tab_dis_target, decreasing = TRUE)
 totalLevel[jj] <-tab_dis_target[1]
 
 
-  most_dis_lev[jj] <- names(tab_dis_target)[1]
-  totalLevel[jj] <-tab_dis_target[1]
-  pctdisLevel[jj] <- tab_dis_target[1]/sum(dis)*100
+most_dis_lev[jj] <- names(tab_dis_target)[1]
+totalLevel[jj] <-tab_dis_target[1]
+pctdisLevel[jj] <- tab_dis_target[1]/sum(tab_DiSCO)*100
 
-  if (sum(tab_dis_target) > thresh_1way[1] && pctdisLev >=  thresh_1way[2]) check1way[jj] <- 1
+if (sum(tab_dis_target) > thresh_1way[1] && pctdisLev >=  thresh_1way[2]) check1way[jj] <- 1
 
 ###------------------------get details for check_2way-----------------
 ### only implemented for DiSCO  though could be changed
+
+xx <- tab_DiSCO
+if (any(xx > thresh_2way[1]))  {
   
-  xx <- tab_DiSCO
-  if (any(xx > thresh_2way[1]))  {
-    
-   denoms <- as.vector(xx[xx > thresh_2way[1]])
+  denoms <- as.vector(xx[xx > thresh_2way[1]])
   rows <- rep(1:dim(xx)[1],dim(xx)[2])
   rows <- rows[xx > thresh_2way[1]]
   cols <- rep(1:dim(xx)[2],rep(dim(xx)[1],dim(xx)[2]))
   cols <- cols[xx > thresh_2way[1]]
   
-
+  
   target_levels = dimnames(xx)[[1]][rows]
-   key_levs = dimnames(xx)[[2]][cols]
-
-   props <- tots <- max_denom <- key_levels <-  rep(NA,length(keys))
-   maxprops <- maxpropkey <-maxpropkeylevs <-maxpropdenom <- maxproptargetlevs <-  rep(NA,length(denoms))
-
-
+  key_levs = dimnames(xx)[[2]][cols]
+  
+  props <- tots <- max_denom <- key_levels <-  rep(NA,length(keys))
+  maxprops <- maxpropkey <-maxpropkeylevs <-maxpropdenom <- maxproptargetlevs <-  rep(NA,length(denoms))
+  
+  
   for ( j in 1:length(denoms) ) {
     for ( i in 1:length(keys)) {
-    key_levels[i] <- word(key_levs[j],i, sep = fixed(" | "))
-    tab <- table(dd$target, dd[,names(dd) == keys[i]])
-
-    ### get proportions for 2-way tables of each part of key with target
-    
-    line <- tab[,dimnames(tab)[[2]] == key_levels[i]]
-    props[i] <- (line[ names(line) == target_levels[j] ])/(sum(line))
-    tots[i] <- sum(line)
+      key_levels[i] <- word(key_levs[j],i, sep = fixed(" | "))
+      tab <- table(dd$target, dd[,names(dd) == keys[i]])
+      
+      ### get proportions for 2-way tables of each part of key with target
+      
+      line <- tab[,dimnames(tab)[[2]] == key_levels[i]]
+      props[i] <- (line[ names(line) == target_levels[j] ])/(sum(line))
+      tots[i] <- sum(line)
     }
-
-  maxprops[j] <- max(props)
-  maxpropkey[j] <- keys[order(props)][length(keys)]
-  maxpropkeylevs[j] <- key_levels[order(props)][length(keys)]
-  maxpropdenom[j] <- tots[order(props)][length(keys)]
-
+    
+    maxprops[j] <- max(props)
+    maxpropkey[j] <- keys[order(props)][length(keys)]
+    maxpropkeylevs[j] <- key_levels[order(props)][length(keys)]
+    maxpropdenom[j] <- tots[order(props)][length(keys)]
+    
   }
-
+  
   det <- data.frame( key = maxpropkey,
-                        key_levels  = maxpropkeylevs, 
-                        target_levels  = target_levels, 
-                        maxprops = maxprops,
-                        maxpropdenom = maxpropdenom,
-                        denoms = denoms)
+                     key_levels  = maxpropkeylevs, 
+                     target_levels  = target_levels, 
+                     maxprops = maxprops,
+                     maxpropdenom = maxpropdenom,
+                     denoms = denoms)
   det$target_key <- paste(det$target_levels,det$key_levels,sep = fixed(" | "))
   
   ###aggregate details by key and target combinations
-   det <- det[order(det$target_key),]
-   total <- tapply(det$denoms,det$target_key,sum)
-   pctall <- total*100/sum(xx)
-   max_denom <- tapply(det$denoms,det$target_key,max)
-   key <- det$key[!duplicated(det$target_key)]
-   target_key <- det$target_key[!duplicated(det$target_key)]
-   prop <- det$maxprops[!duplicated(det$target_key)]
-   denom_2way <- det$maxpropdenom[!duplicated(det$target_key) ] 
-                                  
-   details <- data.frame( total = total,pctall = round(pctall,1), max_denom = max_denom, key = key, 
-   target_key = target_key,  pct_2way = round(prop*100,1), denom_2way = denom_2way )
-   if (all(details$pct_2way <= thresh_2way[2])) details <- NULL
-   else {
-     details <- details[details$pct_2way > thresh_2way[2],]
-     details <- details[order(details$total, decreasing = TRUE),]
-     dimnames(details)[[1]] <- 1:(dim(details)[1]) 
-   }
-   check_2way[[jj]] <- details
+  det <- det[order(det$target_key),]
+  total <- tapply(det$denoms,det$target_key,sum)
+  pctall <- total*100/sum(xx)
+  max_denom <- tapply(det$denoms,det$target_key,max)
+  key <- det$key[!duplicated(det$target_key)]
+  target_key <- det$target_key[!duplicated(det$target_key)]
+  prop <- det$maxprops[!duplicated(det$target_key)]
+  denom_2way <- det$maxpropdenom[!duplicated(det$target_key) ] 
+  
+  details <- data.frame( total = total,pctall = round(pctall,1), max_denom = max_denom, key = key, 
+                         target_key = target_key,  pct_2way = round(prop*100,1), denom_2way = denom_2way )
+  if (all(details$pct_2way <= thresh_2way[2])) details <- NULL
+  else {
+    details <- details[details$pct_2way > thresh_2way[2],]
+    details <- details[order(details$total, decreasing = TRUE),]
+    dimnames(details)[[1]] <- 1:(dim(details)[1]) 
   }
-  else check_2way[[jj]] <- NULL
+  check_2way[[jj]] <- details
+}
+else check_2way[[jj]] <- NULL
 
 
 ###-------------------------- end of jj loop -----------------------------------
-  }
-###----------------------- checks for most_dis_lev 1 way ---------------------------
- 
-check_1way <- data.frame(check= check1way, Level = most_dis_lev, totalDisclosive =  totalDisclosive,
-                        PctDisAll = PctDisAll, totalLevel = totalLevel,
-                        pctdisLevel = pctdisLevel)
-if (any (check_1way$check ==1 )) {
-     if (object$m >1 ) {
-       check_1way <- check_1way[check_1way$check ==1,]
-       ulevs <- unique(check_1way$Level)
-       nlevs <- length(ulevs)
-       newcheck <- check_1way[1:nlevs,]
-       newcheck$Level <- ulevs
-       for (i in c(3:6)) newcheck[,i] <- tapply(check_1way[,i],check_1way[,2], mean)
-       check_1way <- newcheck[order(-newcheck[,3]),-1]  
-       }
-     else check_1way <- check_1way
-     checklev_1way <- paste(unique(check_1way$Level), sep = "|")
-}
-else {
-  check_1way <- NULL
-  checklev_1way <- ""
-  }
+} ######## end of jj loop
+  ###----------------------- checks for most_dis_lev 1 way ---------------------------
   
-if (length(check_2way) == 0) {
-  check_2way <- NULL
-  checklevs_2way <- ""
-}
-else {
-  alllevs <- paste(check_2way[[1]]$target_key,"for key",check_2way[[1]]$key)
-  if (object$m > 1) {
-    for (i in 2:object$m){
-      allevs <- c(alllevs,paste(check_2way[[i]]$target_key,"for key",check_2way[[i]]$key))
+  check_1way <- data.frame(check= check1way, Level = most_dis_lev, totalDisclosive =  totalDisclosive,
+                           PctDisAll = PctDisAll, totalLevel = totalLevel,
+                           pctdisLevel = pctdisLevel)
+  if (any (check_1way$check ==1 )) {
+    if (object$m >1 ) {
+      check_1way <- check_1way[check_1way$check ==1,]
+      ulevs <- unique(check_1way$Level)
+      nlevs <- length(ulevs)
+      newcheck <- check_1way[1:nlevs,]
+      newcheck$Level <- ulevs
+      for (i in c(3:6)) newcheck[,i] <- tapply(check_1way[,i],check_1way[,2], mean)
+      check_1way <- newcheck[order(-newcheck[,3]),-1]  
     }
+    else check_1way <- check_1way
+    checklev_1way <- paste(unique(check_1way$Level), sep = "|")
   }
-  alllevs <- unique(alllevs)
-  checklevs_2way <- (alllevs)
-}
-
-
+  else {
+    check_1way <- NULL
+    checklev_1way <- ""
+  }
+  ############################################ 2 way checks#################################  
+  if (length(check_2way) == 0) {
+    check_2way <- NULL
+    checklevs_2way <- ""
+  }
+  else {
+    alllevs <- paste(check_2way[[1]]$target_key,"for key",check_2way[[1]]$key)
+    if (object$m > 1) {
+      for (i in 2:object$m){
+        allevs <- c(alllevs,paste(check_2way[[i]]$target_key,"for key",check_2way[[i]]$key))
+      }
+    }
+    alllevs <- unique(alllevs)
+    checklevs_2way <- (alllevs)
+  }
+  ################################################ save ###############################
+  
 res <- list(ident = data.frame(ident), attrib = data.frame(attrib), 
             allCAPs = data.frame(allCAPs), check_1way = check_1way, 
             checklev_1way = checklev_1way, check_2way = check_2way,
@@ -588,7 +593,7 @@ print.disclosure <- function(x, to.print = NULL, digits = NULL,   ...)
         "\nand attribute measures for",x$target,"from the same keys\n" )
     short <- rbind(c(x$ident[1,1],x$attrib[1,1]),
                    cbind(x$ident[,4],x$attrib[,5]))
-    dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (DiO/DiSCO)"))
+    dimnames(short) <- list(c("Original",paste("Synthesis", 1:dim(x$attrib)[1])),c("Identity (UiO/repU)","Attrib (Dorig/DiSCO)"))
     print(round(short, digits))
 
   }
