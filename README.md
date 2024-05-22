@@ -36,5 +36,4 @@ disclosure.pdf in the vignettes directory,
 
 ## Acknowledgements
 
-Help from MA
-
+Many thanks to Jasom Klebes for all his help with github and his patience with my ignorance.
