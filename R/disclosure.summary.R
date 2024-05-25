@@ -32,8 +32,9 @@ if(compare.synorig){
         cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
         if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
         m <- 1 }
-      else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 }
+      else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
+
     object <- list(syn = object, m = 1) 
     class(object) <- "synds"
 
@@ -125,7 +126,7 @@ Norig <- dim(data)[1]
     ident.orig[i] <- mean(ttt$ident$UiO)
 
     if (attrib.meas == "DiSCO" ){
-       attrib.orig[i] <- mean(ttt$attrib$DiO)
+       attrib.orig[i] <- mean(ttt$attrib$Dorig)
        attrib.syn[i] <- mean(ttt$attrib$DiSCO )}
     if (attrib.meas == "DiSDiO" ){
       attrib.orig[i] <- mean(ttt$attrib$DiO)
@@ -177,7 +178,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
       dimnames(toplot)[[1]] <- 1:dim(toplot)[1]
   
       names(toplot)[2] <- "VALUE"
-      oratt <- "DiO"
+      oratt <- "Dorig"
 
       attrib.plot <- ggplot(toplot) + 
        geom_point(data = toplot, size=5, aes(colour = .data$measure, shape = .data$measure, x=.data$VALUE, y=.data$name)) +
@@ -215,7 +216,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
     }
     if ("attrib" %in% to.print) {
       cat("\nTable of attribute disclosure measures for",x$keys,"\n")
-      oratt <- "DiO"
+      oratt <- "Dorig"
 
       cat("Original measure is ",oratt,"and synthetic measure is",x$attrib.meas,"\n")
       cat("Variables Ordered by synthetic disclosure measure\n\n")

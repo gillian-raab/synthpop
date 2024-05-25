@@ -35,7 +35,7 @@ disclosure.data.frame <- disclosure.list <-
            else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 
     }
-    object <- list(syn = object, m = m) 
+    object <- list(syn = syn, m = m) 
     class(object) <- "synds"
         }
     
@@ -63,6 +63,7 @@ disclosure.synds <-  function(object, data, keys , target , denom_lim = 5,
                               to.print =c("short"), ...) 
   
   {
+
 ###-----------------------check input parameters ----
     if (!(is.data.frame(data)) )   stop("data  must be a data frame \n\n", call. = FALSE)
    data <- data.frame(data) ## in case it is table or a tibble
@@ -200,7 +201,6 @@ if (length(keys) >1) {
 }
 
 
-  
 ###--------------------- make tables ---------------------------
 
   NKd <- length(table(dd$keys))
@@ -208,7 +208,9 @@ if (length(keys) >1) {
 
   tab_kts <- table(ss$target,ss$keys)
   tab_ktd <- table(dd$target,dd$keys)   ## two way target and keys table orig
-  
+
+  if (print.flag) cat("Target", target, "has",dim(tab_ktd)[1],"levels and the keys form a q with",dim(tab_ktd)[2],"levels in the GT\n")
+    
   ###  get keys in s and d
   #
   Kd <- names(table(dd$keys))
@@ -266,6 +268,8 @@ if (length(keys) >1) {
     tab_ktd <- tab_ktd[order(dimnames(tab_ktd)[[1]]),] 
   }   else extraTs <- NULL
  
+  if (print.flag) cat("Target", target, "has",dim(tab_ktd)[1],"levels and the keys form a q with",dim(tab_ktd)[2],"levels in GT combined with SD\n")
+  
 ###------------------------- calculate proportions and margins ---------
   
   tab_ktd_p <- sweep(tab_ktd,2,apply(tab_ktd,2,sum),"/")

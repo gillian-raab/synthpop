@@ -97,10 +97,6 @@ for members of this sample, or of the Polish population in 2011. By default,the 
 We first use \texttt{disclosure.summary} to create a \texttt{disclosure.summary} object for these keys, and we print out its identity 
 component.
 \renewcommand{\baselinestretch}{1.0}
-<<readin, echo=FALSE>>=
-source("C:/syncs/new_package/synthpop2/R/disclosure.R")
-library("stringr")
-@
 <<synth, size="small">>=
 library("synthpop")
 ods <- SD2011[, c("sex", "age", "region","placesize","depress",
@@ -218,9 +214,9 @@ d1_workab <- disclosure(s1, ods, print.flag = FALSE, target = "workab",
 print(d1_workab, to.print = c("check_1way","check_2way"))
 @
 \renewcommand{\baselinestretch}{1.5}
-We cn see that it was the category "NO" of \texttt{workab} that contributed most to the
-disclosure risk; most survey respondents (93\%) had never worked abroad. This level of
-the target accounted for 89\% of apparent disclosures for \texttt{workab}. To
+We can see that it was the category "NO" of \texttt{workab} that contributed most to the
+disclosure risk; most survey respondents (89\%) had never worked abroad. This level of
+the target accounted for 93\% of apparent disclosures for \texttt{workab}. To
 predict this level for all of a group with the same $q$ could hardly be considered 
 disclosive. This would be true if the intruder had access to the marginal distribution
 of \texttt{workab}, and even if they did not some knowledge of the respondents' background
