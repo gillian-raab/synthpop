@@ -626,11 +626,8 @@ utility.tab.data.frame <- utility.tab.list <-
         cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
         if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
         m <- 1 }
-      else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
+      #else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
   }
-  object <- list(syn = object, m = 1) 
-  class(object) <- "synds"
-  
 
   object <- list(syn = object, m = m, cont.na = cont.na)
   class(object ) <- "synds"
@@ -706,14 +703,16 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
       
       
       if (is.numeric(data[, j])) {
+
         grpd <- group_num(data[, j], syndata[[i]][, j], syn.mvar[[j]],
                           n = ngroups, cont.na = cna[[j]], ...)
         ng <- length(table(grpd[[1]]))
-        
+
         if (length(table(grpd[[1]])) < 3) {
+
           grpd <- group_num(data[, j],  syndata[[i]][, j],  syn.mvar[[j]],
-                            cont.na = cna[[j]], n = ngroups, style = "fisher")
-          
+                            cont.na = cna[[j]], n = ngroups, style = "equal")
+          cat(j,length(table(grpd[[1]])),"line715\n")
           if (length(table(grpd[[1]])) < 3 ) {
             cat("Only",length(table(grpd[[1]])),"groups produced for", names(data)[j],"even after changing method.\n")
             cat("Check data\n\n")
@@ -721,6 +720,7 @@ utility.tab.synds <- function(object, data, vars = NULL, ngroups = 5,
           else if (print.flag) cat("Grouping changed from 'quantile' to  'fisher' in function numtocat.syn for",names(data)[j],"because only",ng," groups produced\n")
           data[, j] <- grpd[[1]]; syndata[[i]][, j] <- grpd[[2]]
         }
+
         data[, j] <- grpd[[1]]; syndata[[i]][, j] <- grpd[[2]]
       } else if (is.character(data[, j])) {
         data[, j] <- factor(data[, j])
@@ -868,7 +868,7 @@ group_num <- function(x1, x2, xsyn, n = 5, style = "quantile", cont.na = NA, ...
   x1nm <- x1[!(x1 %in% cont.na) & !is.na(x1)]
   x2nm <- x2[!(x2 %in% cont.na) & !is.na(x2)]
   xsynnm <- xsyn[!(xsyn %in% cont.na) & !is.na(xsyn)]
-  
+
   # Derive breaks
   my_breaks <- unique(suppressWarnings(classIntervals(c(x1nm, xsynnm),
                                        n = n, style = style, ...))$brks)

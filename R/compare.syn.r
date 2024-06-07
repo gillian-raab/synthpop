@@ -81,7 +81,7 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
    df.syn <- vector("list",length(msel))
    for (i in 1:length(msel)) df.syn[[i]] <- synds[[i]][, commonnames, drop = FALSE]
  }
- 
+
  # change any numeric variables with < 6 distinct values to factors
  for (i in 1:length(commonnames)) {
    if (is.numeric(df.obs[,i]) && length(table(df.obs[,i])) < 6){
@@ -97,7 +97,7 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
    if (object$m == 1) vars <- names(object$syn)
    else vars <- names(object$syn[[1]])
  }
- 
+
  if (!is.null(utility.stats) | !is.null(utility.for.plot)) {
    utility.list <- as.list(1:length(vars))
    names(utility.list) <- vars
@@ -109,10 +109,13 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
    dimnames(tab.utility) <- list(vars, unique(c(utility.stats, utility.for.plot)))
 
    for (i in 1:length(vars)) {
+
      utility.list[[i]] <- utility.tab(object, data, vars = vars[i])
+
      if (i == 1) tab.ind <- match(utility.stats, names(utility.list[[i]]))
      tab.utility[i, ] <- sapply(utility.list[[i]][tab.ind], mean)
    }
+
    if (!is.null(utility.for.plot)) utilvals.for.plot <- tab.utility[, match(utility.for.plot, dimnames(tab.utility)[[2]])]
  } else {
    if (is.null(utility.stats)) tab.utility <- NULL
@@ -316,19 +319,18 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
     }
   }
   
-  if (synorig.compare){
+  if (compare.synorig){
     if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
     
     if (adjust.data$needsfix) stop("Synthetic data and/or original data needs more fixing before you can
       run the disclosure functions - see output. Use function synorig,compare() to check.", call. = FALSE)
     else if (!adjust.data$unchanged) {
-      syn <- adjust.data$syn
-      orig <- adjust.data$orig
+      object <- adjust.data$syn
+      data <- adjust.data$orig
       cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable.\n")
       if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
       m <- 1 }
-    else  cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
   }
   
   object <- list(syn = object, m = m, cont.na = cont.na)

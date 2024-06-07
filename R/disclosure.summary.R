@@ -110,7 +110,7 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
 Norig <- dim(data)[1]
 ###-------------------------- create output data frames-------------------
  ident.orig <- ident.syn <- attrib.orig <- attrib.syn <- n2way <- rep(NA, length(targets))
- checklev_1way <- checklevs_2way <- rep("", length(targets))
+ check1 <- check2 <- rep("", length(targets))
  
   for (i in 1:length(targets)) {
     if (print.flag) cat("------------------",i,targets[i],"-------------------","\n")
@@ -132,15 +132,15 @@ Norig <- dim(data)[1]
       attrib.orig[i] <- mean(ttt$attrib$DiO)
         attrib.syn[i] <- mean(ttt$attrib$DiSDiO )}
 
-    checklev_1way[i] <- ttt$checklev_1way
-    checklevs_2way[i] <- ttt$checklevs_2way[1]
-    if (ttt$checklevs_2way[1] == "") n2way[i] <- 0
-    else n2way[i] <- length(ttt$checklevs_2way)
+    check1[i] <- ttt$check1
+    check2[i] <- ttt$check2[1]
+    if (ttt$check2[1] == "") n2way[i] <- 0
+    else n2way[i] <- length(ttt$check2)
 
   }
 
-    result <- data.frame(attrib.orig , attrib.syn, check1 = checklev_1way,
-                    Npairs = n2way, check2 = checklevs_2way)
+    result <- data.frame(attrib.orig , attrib.syn, check1 = check1,
+                    Npairs = n2way, check2 = check2)
  
     dimnames(result)[[1]] <- targets
  

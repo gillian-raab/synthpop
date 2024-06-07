@@ -70,17 +70,20 @@
       the levels  of target that will be excluded for each key and key level.}
   \item{thresh_1way}{A vector of two numeric values both of which meed to be exceeded
    for warnings about a level of the target that may be dominating the results. 
-   The first is the count of all disclosive records, and the second is the \% of 
-   all records for this level of the target. Default is c(50, 90), 
+   The first is the count of all disclosive records for this level of the target,
+   and the second is the \% of all original records for this level of the target. Default is c(50, 90), 
    meaning a group of 50 disclosive records for this level of the target
    where they make up over 90\% of all disclosive records.}
   \item{thresh_2way}{A vector of two numeric values both of which meed to be 
    exceeded for warnings about a level of the target that may be dominating 
-   the results. The first is the count of all disclosive records for this 
-   key-target combination and the second is the percantage of all disclosive 
-   records for this combination. Default is c(5, 80), 
-   meaning a group of more than 5 records where over 80\% of all the original 
-   values with this key have this level of the target.}
+   the results. The first is the count of disclosive records for a 
+   quasi-identifier used to identify possible s that
+   are searched for the most disclosive key-target combination. The second is the  
+   percentage of all original records for each combination examined that must
+   be exceeded to trigger a warning.  Default is c(5, 80), 
+   meaning a pairs found from key-target groups of more than 5 records 
+   where over 80\% of all the original values with these key-target 
+   pairs have this level of the target.}
 \item{to.print}{Vector to determine what aspects of an object of
    class disclosure will be printed. Must consist  of  one or more of the 
    following "short", "ident", "attrib","allCAPs", "all", "check_1way", 
@@ -129,20 +132,20 @@
   \item{check_1way}{A data frame with one record per synthesis
       identifying the level of the target with numbers of disclosive records
       that are above threshholds defined by \code{thresh_1way}, with default
-      value c(50,95). This means that there must be more than 50 disclosive       records
-    with this level of the target, and that 95\% or more of all disclosive 
+      value c(50,90). This means that there must be more than 50 disclosive       records
+    with this level of the target, and that 90\% or more of all disclosive 
     records must have this target. The value of most_dis_lev will be blank 
     if no level exceeds these thresholds.
     Note this level will be identified  for data without 
     excluded or missing values of keys if there are any excluded records.} 
-  \item{checklev_1way}{The level of the target identified by check_1way
+  \item{check1}{The level of the target identified by check_1way
    ` or blank if none}
   \item{check_2way}{A list of length number of syntheses giving details 
     for each of the two-way combinations of target and keys where the
     the numbers of disclosive records are above threshholds defined by 
     \code{thresh_2way}. The default value for this is c(5, 80),
     meaning that there must be at least 5 records with this combination
-    of targets and keys and that 90\% or more of records in the original
+    of targets and keys and that 80\% or more of records in the original
     data with this level of the key will have this level of the target.
     If no combinations exceed \code{thresh_2way} for one of the syntheses 
     then the list element is NULL. 

@@ -80,7 +80,7 @@ numtocat.syn <- function(data, numtocat = NULL,
    nb <- length(breaks[[i]])
 
    if (length(breaks[[i]]) <= 3 ) {
-     grpd <- group_var(data[, varnos[i]], cont.na = cna[[i]], n = catgroups[i], style = "fisher")
+     grpd <- group_var(data[, varnos[i]], cont.na = cna[[i]], n = catgroups[i], style = "equal")
      breaks[[i]] <- grpd$breaks
 
      if (length(breaks[[i]]) <= 3 ) {
@@ -88,7 +88,7 @@ numtocat.syn <- function(data, numtocat = NULL,
        cat("Check data\n\n")
      }
      else {
-      cat("Grouping changed from 'quantile' to  'fisher' in function numtocat.syn for",
+      cat("Grouping changed from 'quantile' to  'equal' in function numtocat.syn for",
                numtocat[i],"because only",nb - 1," groups produced\n")
      }
    }
