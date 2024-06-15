@@ -49,7 +49,7 @@ utility.tables.data.frame <- utility.tables.list <-
  }
  
  
- if (synorig.compare) {
+ if (compare.synorig) {
    if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
      if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
    
