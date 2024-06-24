@@ -18,29 +18,39 @@
 }
 
 \usage{
-\method{disclosure.summary}{synds}(object, data, keys , targets = NULL, 
-         denom_lim = 5, exclude_ov_denom_lim = FALSE,not.targetslev = NULL, 
-         print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
-         ident.meas = "repU", attrib.meas = "DiSCO",
-         thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE,\dots)
+\method{disclosure.summary}{synds}(object, data, 
+           keys , targets = NULL, print.flag = TRUE, 
+           denom_lim = 5, exclude_ov_denom_lim = FALSE,
+           not.targetslev = NULL,  
+           usetargetsNA = TRUE,  usekeysNA = TRUE, 
+           exclude.keys = NULL, exclude.keylevs = NULL,  exclude.targetlevs = NULL,
+           ngroups_targets = NULL, ngroups_keys = NULL, 
+           ident.meas = "repU", attrib.meas = "DiSCO",
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
+           digits = 2, plot = TRUE,  \dots)
 
                
-\method{disclosure.summary}{data.frame}(object, data, keys , targets = NULL, 
-         denom_lim = 5, exclude_ov_denom_lim = FALSE,not.targetslev = NULL, 
-         print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
-         ident.meas = "repU", attrib.meas = "DiSCO",
-         thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE, 
-          compare.synorig = TRUE, \dots)
+\method{disclosure.summary}{data.frame}(object, data, cont.na = NULL, 
+           keys , targets = NULL,  print.flag = TRUE, 
+           denom_lim = 5, exclude_ov_denom_lim = FALSE,
+           not.targetslev = NULL, 
+           usetargetsNA = TRUE,  usekeysNA = TRUE, 
+           exclude.keys = NULL, exclude.keylevs = NULL,  exclude.targetlevs = NULL,
+           ngroups_targets = NULL, ngroups_keys = NULL, 
+           ident.meas = "repU", attrib.meas = "DiSCO",
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
+           digits = 2, plot = TRUE,  compare.synorig = TRUE,  \dots)
 
-\method{disclosure.summary}{list}(object, data, keys , targets = NULL, 
-         denom_lim = 5, exclude_ov_denom_lim = FALSE,not.targetslev = NULL, 
-         print.flag = TRUE,  usetargetsNA = TRUE,  usekeysNA = TRUE,  
-         ident.meas = "repU", attrib.meas = "DiSCO",
-         thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-          digits = 2, plot = TRUE, 
-         compare.synorig = TRUE,\dots)
+\method{disclosure.summary}{list}(object, data, cont.na = NULL,
+            keys , targets = NULL,  print.flag = TRUE, 
+            denom_lim = 5, exclude_ov_denom_lim = FALSE,
+           not.targetslev = NULL,  
+           usetargetsNA = TRUE,  usekeysNA = TRUE, 
+           exclude.keys = NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_targets = NULL, ngroups_keys = NULL, 
+           ident.meas = "repU", attrib.meas = "DiSCO",
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
+           digits = 2, plot = TRUE, compare.synorig = TRUE,\dots)
 
 
 \method{print}{disclosure.summary}(x, digits = NULL, plot = NULL, to.print =  c("ident","attrib"),
@@ -57,6 +67,9 @@
     of data frames with synthetic data sets, all created from the same original 
     data with the same variables and the same method.}  
   \item{data}{the original (observed) data set.}
+  \item{cont.na}{For data NOT supplied as a synthetic data object created by 
+  \code{synthpop}, this gives special values for continuous variables as
+   described in the documentation for the function \code{syn}.}
   \item{keys}{a vector of strings with the names of variables to be used 
     in combination to form  a quasi identifier.}   
   \item{targets}{a vector of strings with the names of variables to be used as
@@ -77,6 +90,26 @@
   \item{usekeysNA}{A logical vector of the same length as \code{keys} that
             determines if \code{NA} values of each key are to be
          considered disclosive. Defaults to \code{FAULT} for all keys.}
+  \item{exclude.keys}{A list of same length as  \code{targets} giving the keys 
+     for two way exclusions for the ith target. For details see  documentation 
+     in \code{\link{disclosure}} } 
+  \item{ exclude.keylevs}{A list of same length as  \code{targets} giving the levels of keys 
+     for two way exclusions for the ith target. For details see  documentation 
+     in \code{\link{disclosure}} } 
+  \item{ exclude.targetlevs}{A list of same length as  \code{targets} giving the levels of
+     target for two way exclusions for the ith target. For details see  documentation 
+     in \code{\link{disclosure}} } 
+  \item{ngroups_targets}{Unless set to NULL (the default) numeric target variables
+     will be grouped into code{ngroups_target} categories.If \code{ngroups_keys}
+     is of length 1 all numeric  targets will be have the same number of groups. 
+     Otherwise \code{ngroups_targets} needs to be a vector of the same length as 
+     targets and will give the number of groups for each  target. 
+     If an element of \code{ngroups_targets} is zero, no grouping will be done.}
+  \item{ngroups_keys}{Unless set to NULL (the default) any numeric variable
+     will be grouped into categories If \code{ngroups_keys} is of length 1 all numeric
+     keys will be have the same number of groups. Otherwise \code{ngroups_keys}
+     needs to be the same length as keys and will give the number of groups for each
+     key. If an element of \code{ngroups_keys} is zero, no grouping will be done.}
   \item{ident.meas}{Choice of statistics to use as a measure of identity disclosure.
    Must be a selection from: \code{"repU"} or \code{"UiSiO"}. See     
         \code{\link{disclosure}} for  explanations of measures.}

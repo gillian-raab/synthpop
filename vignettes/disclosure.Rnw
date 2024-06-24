@@ -47,9 +47,10 @@ options(prompt="R> ", width=77, digits=4, useFancyQuotes=FALSE)
 
 \maketitle
 \begin{abstract}
-This paper explains how synthpop package\footnote{see \url{www.synthpop.org.uk} }\footnote{The new version 1.8-1 is currently available on Github at \url{https://github.com/gillian-raab/synthpop}} has been extended to include functions to calculate identity and attribute disclosure risk measures for the original records. using information obtained from the corresponding synthetic data. The basic function \texttt{disclosure} calculates identity disclosure for a set of quasi-identifiers (keys) and attribute disclosure for one variable specified as a target from the same set of keys. The second function \texttt{disclosure.summary} is a wrapper for the first and it presents summary results for a set of targets. This short paper explains the measures of disclosure risk and documents how they are calculated. We recommend two measures: $RepU$ (replicated uniques) for identity
+This paper explains how synthpop package\footnote{see \url{www.synthpop.org.uk} }\footnote{The new version 1.8-1 is currently available on Github at \url{https://github.com/gillian-raab/synthpop}} has been extended to include functions to calculate measures of identity and attribute disclosure risk for the 
+records used to create the synthetic data using information obtained from the synthetic data. The basic function \texttt{disclosure} calculates identity disclosure for a set of quasi-identifiers (keys) and attribute disclosure for one variable specified as a target from the same set of keys. The second function \texttt{disclosure.summary} is a wrapper for the first and presents summary results for a set of targets. This short paper explains the measures of disclosure risk and documents how they are calculated. We recommend two measures: $RepU$ (replicated uniques) for identity
 disclosure and $DiSCO$ (disclosive in synthetic and correct in the original) for attribute disclosure. Both
-are expressed a \% of the original records and both can be compared to similar measures calculated from the original data.
+are expressed a \% of the original records and each can be compared to similar measures calculated from the original data.
 Experience with using the functions on real data found that some apparent disclosures could be identified as coming from relationships 
 in the data that would be expected to be known to anyone familiar with its features. We flag cases when this seems to have occurred and provide means of excluding them.
 
@@ -62,7 +63,7 @@ comments:
 ''While there is need to examine disclosure risks in synthetic data, there is no standard for
 doing so, especially in fully synthetic data. Instead, disclosure checks tend to be ad hoc"
 \end{quote}
-This is in contrast to the variety of measures of utility available for synthetic data; see \cite{raab2021} for a list of these. While utility measures must be chosen that are relevant to the intended use of the synthetic data, disclosure measures must focus on the possible harm to the privacy of an individual or other unit whose data contributed to the creation of the synthetic data. The evaluation of the disclosure risk from synthetic data must relate to the context of its release (see \cite{elliot_anonframe} for a discussion of this). We cannot expect a fixed rule, for example that a criterion for release requires a value of some disclosure measure beyond a threshold. Instead, we expect those releasing data to use the disclosure measures to evaluate potential harm to the data subjects or to the data custodians from information in the released data. We hope that these new functions will allow the disclosure risk of synthetic data sets to be explored and, where necessary, reduced. 
+This is in contrast to the variety of measures of utility available for synthetic data; see \cite{raab2021} for a list of these. While utility measures must be chosen that are relevant to the intended use of the synthetic data, disclosure measures must focus on the possible harm to the privacy of an individual or other unit whose data contributed to the creation of the synthetic data. The evaluation of the disclosure risk from synthetic data must relate to the context of its release (see \cite{elliotanonframe} for a discussion of this). We cannot expect a fixed rule, for example that a criterion for release requires a value of some disclosure measure beyond a threshold. Instead, we expect those releasing data to use the disclosure measures to evaluate potential harm to the data subjects or to the data custodians from information in the released data. We hope that these new functions will allow the disclosure risk of synthetic data sets to be explored and, where necessary, reduced. 
 
 We expect that disclosure risks from synthetic data to be lower than those from the original data. But in some cases, e.g. a large data set with only a few categorical variables, the disclosure risk from the original may already be low. To evaluate the disclosure risk of a synthesis method, the risks for synthetic data must be compared with equivalent risks for the original. We consider two types of disclosure risk:
 
@@ -71,12 +72,11 @@ We expect that disclosure risks from synthetic data to be lower than those from 
 \item{\textit{attribute disclosure}:This refers to the ability to find out from the keys something, not previously known, for an attribute associated with a record in the original data.}
 \end{itemize}
 
-The measures we describe here are appropriate for fully synthetic data where all items in all records are replaced by synthetic values. Different measures have been developed for partially synthetic data \cite{DrechslerReiter2009,ReiterMitra2009}. Note that our disclosure methods treat all variables as if they were categories. Although the \texttt{income} variable, in our first example,  may have been an exact value in the original survey, it is rounded in the data that are released so that there are only 405 distinct values in the 5000 records used here. This is typical of much data made available to researchers. If 
-the data sets contain more finely-grained continuous data, there are two possible approaches. The first would be to count as disclosure records where the distance between the GT and SD is lower than a threshold. The second is to group the continuous variables into categories that are small enough to make knowledge of them be considered disclosive. The second, simpler, approach is implemented in the \texttt{synthpop} package via the function \texttt{numtocat.syn}.
+The measures we describe here are appropriate for fully synthetic data where all items in all records are replaced by synthetic values. Different measures have been developed for partially synthetic data \cite{DrechslerReiter2009,ReiterMitra2009}. Note that our disclosure methods treat numeric variables, by default, as if they were categories unless \texttt{ngroups\_keys} and/or \texttt{ngroups\_target(s)} are set. In our first example the \texttt{income} variable has been grouped into 20 categories, but the other numerical variable \texttt(depress) with only 21 categories has been left as it is.  The final number of groups may differ from the parameter setting e.g. if there are fewer than \texttt{numgroups} distinct values.\footnote{The code uses grouping options from functions in the \texttt{classInt} package.}. 
 
 The disclosure risk posed by synthetic data can be reduced by using techniques from statistical disclosure control (\textbf{sdc}), such as aggregation of categories, smoothing of numeric values or removal of replicated uniques. These methods can be used to reduce disclosure risk by modifying the original data before synthesis, or the synthetic data before its is released. Some such methods are already available in the \textbf{synthpop} package. These include categorising, top/bottom coding and smoothing for continuous variables, and the merging of small categories for factors. The removal of replicated uniques is another option available in \texttt{synthpop}.
 
-There has been many recent proposals for making synthetic data sets comply with  Differential Privacy (DP) \cite{Dwork2006b}. DP is a very strong privacy guarantee that protects against an intruder with arbitrary external information about the subjects in the data, except for the one whose privacy is being protected. This is an unrealistic assumption and DP synthetic data has been shown to have unacceptably low utility in many cases \cite{bowen_ss, groundhog}. We will not discuss these methods here, but note that we could use the metrics proposed here to evaluate disclosure risks for DP synthetic data. 
+There have been many recent proposals for making synthetic data sets comply with  Differential Privacy (DP) \cite{Dwork2006b}. DP is a very strong privacy guarantee that protects against an intruder with arbitrary external information about the subjects in the data, except for the one whose privacy is being protected. This is an unrealistic assumption and DP synthetic data has been shown to have unacceptably low utility in many cases \cite{bowen_ss, groundhog}. We will not discuss these methods here, but note that we could use the metrics proposed here to evaluate disclosure risks for DP synthetic data. 
 
 
 
@@ -85,23 +85,21 @@ There has been many recent proposals for making synthetic data sets comply with 
 Here we illustrate the basic use of \texttt{disclosure.summary}. If the parameter \texttt{targets} is not specified, all the variables in the synthetic data that are not part of keys are used as targets.
 The identity disclosure measures are \texttt{UiO} for original and \texttt{repU} for synthetic, and for attribute disclosure \texttt{Dorig} for original and \texttt{DiSCO} for synthetic. These and other measures will be explained in Sections \ref{subsec:ident} and \ref{subsec:attrib}.
 
-First, a subset of 9 variables are selected fron the \texttt{SD2011} data (a survey on quality of life in Poland) that is available as part of the \texttt{synthpop} package. A single synthetic data set is created by the default method in \texttt{synthpop}: \texttt{cart} for each conditional distribution. The synthetic data object \texttt{s1}\footnote{an object of class \texttt{synds}} has a component \texttt{syn} that is a single synthetic data set. The disclosure functions can also be used with synthetic data created by other methods either as single synthetic data sets or lists of repeated syntheses from the same original. Here we select 4 keys that represent items that might be known
-for members of this sample, or of the Polish population in 2011. By default,the 5 other variables become the targets: \texttt{income} (rounded to give 406 distinct values) \texttt{marital} (marital status), \texttt{workab} (intention to work abroad), \texttt{ls} and \texttt{depress} (scores for life satisfaction and depression with 7 and 21 distinct values).
-We first use \texttt{disclosure.summary} to create a \texttt{disclosure.summary} object for these keys, and we print out its identity 
-component.
+First, a subset of 9 variables are selected fron the \texttt{SD2011} data (a survey on quality of life in Poland) that is available as part of the \texttt{synthpop} package. A single synthetic data set is created by the default method in \texttt{synthpop}: \texttt{cart} for each conditional distribution. Note that the variable \texttt{income} has values -8 that indicate not applicable, and the synthesis allows for this. The synthetic data object \texttt{s1}\footnote{an object of class \texttt{synds}} has a component \texttt{syn} that is a single synthetic data set. The disclosure functions can also be used with synthetic data created by other methods either as single synthetic data sets or lists of repeated syntheses from the same original. Here we select 4 keys that represent items that might be known
+for members of this sample, or of the Polish population in 2011. By default,the 5 other variables become the targets: \texttt{depress} \texttt{income} \texttt{ls} \texttt{marital} (marital status), \texttt{workab} (intention to work abroad). The second target, \texttt{income}, is grouped into 20 categories, plus the -8 category. 
+We first use \texttt{disclosure.summary} to create a \texttt{disclosure.summary} object for these keys, and we print out its identity component.
 \renewcommand{\baselinestretch}{1.0}
 <<synth, size="small">>=
 library("synthpop")
 ods <- SD2011[, c("sex", "age", "region","placesize","depress",
    "income","ls","marital" , "workab")]
-s1 <- syn(ods, seed = 8564, print.flag = FALSE)
-t1 <- disclosure.summary(s1, ods, print.flag = FALSE, plot = FALSE,
-    keys = c("sex", "age", "region", "placesize"))
+s1 <- syn(ods, seed = 8564, print.flag = FALSE, cont.na = list(income = -8))
+t1 <- disclosure.summary(s1, ods, print.flag = FALSE, plot = FALSE, 
+ keys = c("sex", "age", "region", "placesize"),   ngroups_targets = c(0,20,0,0,0))
 print(t1,to.print = "ident")
 @
 \renewcommand{\baselinestretch}{1.5}
 The measure $UiO$ (Unique in Original) shows that 48\% of the original records would have unique combinations of these 4 keys. The term, ''singling out" is used in data protection regulation for this type of attribute disclosure\footnote{See for example its use in the UK Information Commissioner's guidance on anonymisation here https://ico.org.uk/media/about-the-ico/documents/4018606/chapter-2-anonymisation-draft.pdf}. For the synthetic data $RepU$ tells us that almost 15\% of the original records would be unique in the original and also unique in the synthetic data.
-
 For attribute disclosure we can examine the results as either a table or a plot. Here we see in Figure \ref{fig:f1} the plot that would have been generated if \texttt{plot} had been set to TRUE in the code above, the attribute disclosure results would have been plotted as shown in Figure \ref{fig:f1}. Details of how identity and disclosure measures are calculated can be found in Section 3.
 \begin{figure}[ht]
   \centering
@@ -126,7 +124,7 @@ Disclosure measures from the synthetic data are each compared to similar measure
 The first step in evaluating disclosure risk, as described here, is to identify a set of keys that might be expected to be known to an intruder. These keys are then combined to form a quasi-identifier that we designate as $q$. For example, if we have hospital records we might define age,sex date and hospital as keys and this would give a $q$ with levels such as ''\texttt{78 | M | 1/1/2024 | WG}" for a 78 year old man admitted to hospital WG on 1/1/2024.
 
 \subsection{Identity disclosure measures}\label{subsec:ident} 
-The concept of k-anonymity is central to identity disclosure for microdata. First proposed in 1998 \cite{kanon1} it is discussed fully in \cite{elliot_anonframe}. A table is k-anonymous if a set of keys identifies at most $k-1$ individuals. Thus 2-anonymous data will never identify just one individual. Based on this idea, the percentage of records for which the keys identify just one individual give identity disclosure measures. 
+The concept of k-anonymity is central to identity disclosure for microdata. First proposed in 1998 \cite{kanon1} it is discussed fully in \cite{elliotanonframe}. A table is k-anonymous if a set of keys identifies at most $k-1$ individuals. Thus 2-anonymous data will never identify just one individual. Based on this idea, the percentage of records for which the keys identify just one individual give identity disclosure measures. 
  A table of $q$ values is produced from the synthetic and the original data. $UiO$ and $UiS$ are the percentages of records with keys where the table value is 1. An intruder checking out a record for their known set of keys will look for it in the synthetic data. Some records
 will not be in the synthetic data and $UiOiS$ (Unique in Original in Synthetic) gives the \% that would be found. These records are then checked for uniqueness in the
 synethetic data giving, $repU$ is the percentage of unique original records that are also unique in the synthetic data.
@@ -204,7 +202,7 @@ to get details for the two targets that were flagged as requiring checking; see 
 <<workab, size="small">>=
 d1_workab <- disclosure(s1, ods, print.flag = FALSE, target = "workab",
     keys = c("sex", "age", "region", "placesize"),plot = FALSE)
-print(d1_workab, to.print = c("check_1way","check_2way"))
+print(d1_workab, to.print = c("check_1way"))
 @
 \renewcommand{\baselinestretch}{1.5}
 We can see that it was the category "NO" of \texttt{workab} that contributed most to the
@@ -219,7 +217,7 @@ level of the target.
 <<marital, size="small">>=
 d1_marital <- disclosure(s1, ods, print.flag = FALSE, target = "marital",
     keys = c("sex", "age", "region", "placesize"),plot = FALSE)
-print(d1_marital, to.print = c("check_1way","check_2way"))
+print(d1_marital, to.print = c("check_2way"))
 @
 \renewcommand{\baselinestretch}{1.5}
 For the target \texttt{marital} two $tq$ pairs are identified as contributing large denominators. Those aged 20 are all SINGLE, and those aged 40 are mainly MARRIED. Again these would not 
@@ -230,7 +228,7 @@ the parameter \texttt{thresh\_1way} has the default value of $c(50, 90)$, meanin
 disclosive $tq$ combinations with denominators over 5. It then identifies the level of the key in $q$ with that best predicts this level of $t$ and checks if over 80\% of the disclosive records with this key would have the correct prediction. 
 
 \section{Excluding records}\label{sec:exclusions}
-Having identified records where the disclosure is not really telling us anything new, one option is to exclude some of these original records explicitly from the measures. The following parameters 
+Having identified records where the disclosure is not really telling us anything that would not generally be known, one option is to exclude these key-target combinations explicitly from the measures. The following parameters 
 for \texttt{disclosure.summary} and \texttt{disclosure} can be used for this.
 \begin{itemize}
 \item{\texttt{not.target}: All records with levels of the target given by the parameter \texttt{not.target} are excluded from all disclosure measures.}
@@ -284,7 +282,7 @@ workclass &   14.27 &   11.64 &  14.27 & 11.64 &  14.27 & 11.64 &  2.45 &  0.85 
 \end{table}
 
 
-Table 1 gives the results of excluding different entries in the tables of $q$ and $t$ from the attrinute disclosure measures.
+Table 1 gives the results of excluding different entries in the tables of $q$ and $t$ from the attribute disclosure measures.
 Excluding the levels of the target flagged by texttt{check\_1way} reduces the $DiSCO$ to almost zero for these 3 variables.
 Adding exclusion of missing values reduced the disclosure for \texttt{workclass} and for some other variables a little. 
 Adding the restriction to denominators of 1, reduced the disclosure for variables identified by \texttt{check\_2way} to low 

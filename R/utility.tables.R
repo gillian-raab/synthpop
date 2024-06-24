@@ -96,7 +96,8 @@ utility.tables.synds <- function(object, data,
                                  nworst = 5, ntabstoprint = 0, k.syn = FALSE, 
                                  low = "grey92", high = "#E41A1C",
                                  n.breaks = NULL, breaks = NULL, ...){
-
+###---------------------- checks of input params-------------------------
+  
  if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data object.\n", call. = FALSE)   
  if (is.null(data)) stop("Requires parameter 'data' to give name of the original data.\n", call. = FALSE)
  if (!inherits(object, "synds")) stop("'object' must be of class 'synds', a synthetic data object", call. = FALSE)
@@ -144,9 +145,8 @@ utility.tables.synds <- function(object, data,
      "MabsDD", "dBhatt", "S_VW", "S_FT", "S_JSD", "S_WMabsDD", "S_G", "S_pMSE"))) 
    stop('Parameter plot.stat must be just one of:\n"VW", "FT", "JSD", "SPECKS", "WMabsDD", "U", "G", "pMSE", "PO50", 
 "MabsDD", "dBhatt", "S_VW", "S_FT", "S_JSD", "S_WMabsDD", "S_G", "S_pMSE".\n', call. = FALSE)
-# End of check of input parameters 
-
-# Add labels to names.vars to get plots in right order
+ 
+###---------------- Add labels to names.vars and make lists of pairs -----------------
  nv <- length(vars)
  names.vars <- paste(ntoc(vno), vars, sep = ".")
 
@@ -186,7 +186,9 @@ utility.tables.synds <- function(object, data,
    if (!tables == "oneway")  X2[i] <- names.vars[pairs.num[2, i]]
    if (tables == "threeway") X3[i] <- names.vars[pairs.num[3, i]]
  }
-  
+ 
+ ###-------------------make list of utils for pairs-----------------------------------
+ 
  utility.list <- as.list(1:npairs)
    # now make tabs of results
    tabs <- matrix(NA, npairs, length(tab.stats)) 

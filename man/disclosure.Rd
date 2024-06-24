@@ -9,27 +9,32 @@
   Calculates disclosure measures for synthetic data. 
 }
 \usage{
-\method{disclosure}{synds}(object, data, keys, target, denom_lim = 5,
-  exclude_ov_denom_lim = FALSE, print.flag = TRUE,digits = 2,
-   usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
-   exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
-   thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), \dots )
-  
-\method{disclosure}{data.frame}(object, data, keys, target, denom_lim = 5,
-  exclude_ov_denom_lim = FALSE, print.flag = TRUE,digits = 2,
-   usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
-   exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
-   thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), compare.synorig = TRUE,  \dots )
+\method{disclosure}{synds}(object, data, keys , target , print.flag = TRUE,
+           denom_lim = 5, exclude_ov_denom_lim = FALSE, not.targetlev = NULL,
+           usetargetNA = TRUE, usekeysNA = TRUE, 
+           exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_target = NULL, ngroups_keys = NULL, 
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80),
+           digits = 2, to.print =c("short"),\dots) 
 
-\method{disclosure}{list}(object, data, keys, target, denom_lim = 5,
-  exclude_ov_denom_lim = FALSE, print.flag = TRUE,digits = 2,
-   usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
-   exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL, 
-   thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-  to.print =c("short"), compare.synorig = TRUE, \dots )
+\method{disclosure}{data.frame}(object, data,cont.na = NULL, keys , target , print.flag = TRUE,
+           denom_lim = 5, exclude_ov_denom_lim = FALSE, 
+           not.targetlev = NULL,
+           usetargetNA = TRUE, usekeysNA = TRUE, 
+           exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_target = NULL, ngroups_keys = NULL, 
+           thresh_1way = c(50, 90),thresh_2way = c(5, 80),
+           digits = 2, to.print =c("short"), compare.synorig = TRUE, \dots) 
 
+\method{disclosure}{list}(object, data,cont.na = NULL, keys , target , print.flag = TRUE,
+           denom_lim = 5, exclude_ov_denom_lim = FALSE, 
+           not.targetlev = NULL,
+           usetargetNA = TRUE, usekeysNA = TRUE, 
+           exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_target = NULL, ngroups_keys = NULL, 
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80),
+           digits = 2, to.print =c("short"), compare.synorig = TRUE, \dots) 
+           
 \method{print}{disclosure}(x,  to.print =NULL, digits = NULL, \dots)
 }
 
@@ -43,6 +48,9 @@
   data set or a list  of data frames with synthetic data sets, all created from 
   the same original data with the same variables.}  
   \item{data}{the original (observed) data set.}
+  \item{cont.na}{For data NOT supplied as a synthetic data object created by 
+  \code{synthpop}, this gives special values for continuous variables as
+   described in the documentation for the function \code{syn}.}
   \item{keys}{vector of variable names or  column numbers in data 
   that are also present in the synthetic data to act as 
        quasi-identifiers for identity or attribute disclosure.}
@@ -68,6 +76,13 @@
       the levels  to be excluded for the corresponding key.}
   \item{exclude.targetlevs}{vector of the same length as exclude.keys that give 
       the levels  of target that will be excluded for each key and key level.}
+  \item{ngroups_target}{Unless set to NULL (the default) a numeric target variable
+     will be grouped into code{ngroups_target} catergories.}
+  \item{ngroups_keys}{Unless set to NULL (the default) any numeric variable
+     will be grouped into categories If \code{ngroups_keys} is of length 1 all numeric
+     keys will be have the same number of groups. Othersise \code{ngroups_keys}
+     needs to be the same length as keys and will give the number of groups for each
+     key. If an element of \code{ngroups_keys} is zero, no grouping will be done.}
   \item{thresh_1way}{A vector of two numeric values both of which meed to be exceeded
    for warnings about a level of the target that may be dominating the results. 
    The first is the count of all disclosive records for this level of the target,

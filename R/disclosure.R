@@ -7,20 +7,35 @@ disclosure.default <- function(object, ...)
 
 ###-----disclosure.data.frame---disclosure.list--------
 disclosure.data.frame <- disclosure.list <- 
-  function(object, data, keys , target , denom_lim = 5,
-           exclude_ov_denom_lim = FALSE, print.flag = TRUE, digits = 2, 
-           usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
-           exclude.keys =NULL, exclude.keylevs = NULL, 
-           exclude.targetlevs = NULL,
-           thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-           to.print =c("short"),  compare.synorig = TRUE, ...) 
+  function(object, data, cont.na = NULL, keys , target , print.flag = TRUE,
+           denom_lim = 5, exclude_ov_denom_lim = FALSE, 
+           not.targetlev = NULL,
+           usetargetNA = TRUE, usekeysNA = TRUE, 
+           exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_target = NULL, ngroups_keys = NULL, 
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80),
+           digits = 2, to.print =c("short"), compare.synorig = TRUE, ...) 
     {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
-    
     if (is.list(object) & !is.data.frame(object)) m <- length(object)
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
+    # sort out cont.na to make it into a complete named list
+    cna <- cont.na
+    cont.na <- as.list(rep(NA, length(data)))
+    names(cont.na) <- names(data)
+    if (!is.null(cna)) {
+      if (!is.list(cna) | any(names(cna) == "") | is.null(names(cna)))
+        stop("Argument 'cont.na' must be a named list with names of selected variables.", call. = FALSE)
+      if (any(!names(cna) %in% names(data))) stop("Names of the list cont.na must be variables in data.\n", call. = FALSE)
+      for (i in 1:length(cna)) {
+        j <- (1:length(data))[names(cna)[i] == names(data)]
+        cont.na[[j]] <- unique(c(NA,cna[[i]]))
+      }
+    }
+ ##------------------------------- check with synorig.compare ---------------------------------   
+ 
     if (compare.synorig) {
     
         if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
@@ -35,7 +50,7 @@ disclosure.data.frame <- disclosure.list <-
         }
         else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 
-    object <- list(syn = syn, m = m) 
+    object <- list(syn = syn, m = m, cont.na = cont.na) 
     class(object) <- "synds"
         }
     
@@ -45,8 +60,8 @@ disclosure.data.frame <- disclosure.list <-
                       usetargetNA = usetargetNA, usekeysNA = usekeysNA,  
                       not.targetlev = not.targetlev,
                       exclude.keys = exclude.keys, exclude.keylevs =  exclude.keylevs,
-                      exclude.targetlevs =  exclude.targetlevs,
-                      thresh_1way = thresh_1way,thresh_2way = thresh_2way,
+                      exclude.targetlevs =  exclude.targetlevs, ngroups_target = ngroups_target,
+                      ngroups_keys = ngroups_keys, thresh_1way = thresh_1way,thresh_2way = thresh_2way,
                       to.print = to.print, ...) 
     
     res$call <- match.call()
@@ -54,15 +69,15 @@ disclosure.data.frame <- disclosure.list <-
   }
     
 ###-----disclosure.synds-------------------------
-disclosure.synds <-  function(object, data, keys , target , denom_lim = 5,
-                              exclude_ov_denom_lim = FALSE, print.flag = TRUE, digits = 2, 
-                              usetargetNA = TRUE, usekeysNA = TRUE, not.targetlev = NULL,
-                              exclude.keys =NULL, exclude.keylevs = NULL, 
-                              exclude.targetlevs = NULL, 
-                              thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-                              to.print =c("short"), ...) 
-  
-  {
+disclosure.synds <-  function(object, data, keys , target , print.flag = TRUE,
+                              denom_lim = 5, exclude_ov_denom_lim = FALSE, 
+                              not.targetlev = NULL,
+                              usetargetNA = TRUE, usekeysNA = TRUE, 
+                              exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+                              ngroups_target = NULL, ngroups_keys = NULL, 
+                              thresh_1way = c(50, 90),thresh_2way = c(4, 80),
+                              digits = 2, to.print =c("short"), ...) 
+{ 
 
 ###-----------------------check input parameters ----
     if (!(is.data.frame(data)) )   stop("data  must be a data frame \n\n", call. = FALSE)
@@ -77,10 +92,7 @@ disclosure.synds <-  function(object, data, keys , target , denom_lim = 5,
    if (is.numeric(target)) target <- names(data)[target]
   
   Norig <- dim(data)[1]
- if (object$m ==1) {
-   names.syn <- names(object$syn)
- }
-   else names.syn <- names(object$syn[[1]])
+  if (object$m ==1) names.syn <- names(object$syn)  else names.syn <- names(object$syn[[1]])
 
   # target must be a single variable in  data and object$syn
   # keys must be a vector of variable names in data and in s
@@ -104,14 +116,13 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
    if (length(usekeysNA) ==1 ) usekeysNA <- rep(usekeysNA, length(keys))
    if (!(length(usekeysNA)==length(keys)))
      stop("usekeysNA must be a logical value of same length as keys\n", call. = FALSE)
-   
   # get keys and usekeysNA in same order as in data
+   
    #cat(keys,"keys\n", usekeysNA,"usekeysNA\n")
    #cat((1:length(names(data)))[names(data) %in% keys],"(1:length(names(data)))[names(data) %in% keys]\n")
    oldkeys <- keys
    keys <- names(data)[(1:length(names(data)))[names(data) %in% keys]]
    usekeysNA <- usekeysNA[match(oldkeys,keys)]
-   #cat(keys,"keys\n", usekeysNA,"line 79 usekeysNA\n")
 
      # check excluded combinations
   if (!is.null(exclude.keys)) {
@@ -119,12 +130,26 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
         length(exclude.keylevs) == length(exclude.targetlevs) ) stop("All excludes must be the same length\n" , call. = FALSE)
     if (!all(exclude.keys %in% keys)) stop("exclude.keys must be the name of one of your keys", call.= FALSE)
   }
-   
+
    if(!is.null(denom_lim)){
      if (!(round(denom_lim) == denom_lim && denom_lim > 0 )){
        cat(denom_lim ,"denom_lim\n")
        stop("\ndenom_lim must be an integer >0\n", call.= FALSE)
      }
+   }
+   
+    if (!is.null(ngroups_target)) {
+      if(!(length(ngroups_target) ==1 )) stop("\nngroups_target must be a single value", call.= FALSE)
+      if( ngroups_target  == 1 )
+        stop("\nTarget ngroups cannot be set to 1", call.= FALSE)
+    }
+   
+   if (!is.null(ngroups_keys)) {
+     if (length(ngroups_keys) == 1) ngroups_keys <- rep(ngroups_keys, length(keys))
+       if(!(length(ngroups_keys) == length(keys) ))
+       stop("\nngroups_keys must be an vector of length 1 or same as keys", call.= FALSE)
+     if( any( ngroups_keys  ==1) )
+       stop("\nElements of ngroups cannot be set to 1", call.= FALSE)
    }
 ###---------------------- define output items-------------
    
@@ -138,35 +163,88 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
   Nexclusions <- list(1:object$m)
   Nexclusions <- check_1way <- check_2way <-list(1:object$m)
 
-  
+###-----------------------restrict data sets to targets and keys------------------------------
+m <- object$m
+if (m == 1) syndata <- list(object$syn) else syndata <- object$syn
   dd <- data ## rename target variable to target
   targetx =dd[, names(dd) == target]
   dd$target <- targetx
  # cat(names(dd),"names(dd)\n")
-  dd <- as.data.frame(dd[,names(dd) %in% c( keys, "target")])
+  dd <- as.data.frame(dd[,c( "target",keys)])
+  for (jj in 1:m) {
+      targetx = syndata[[jj]][, names(syndata[[jj]]) == target]
+      syndata[[jj]]$target <- targetx
+      syndata[[jj]] <- as.data.frame(syndata[[jj]][, c( "target",keys)])
+  }
+###----- get cont.na parameters for stratified synthesis----------------------------------------
+  # --------
+  if (!is.null(object$strata.syn)) cna <- object$cont.na[1, ] 
+  else   cna <- object$cont.na
+###------ get cna levels for target and keys  ------------------------
 
+  cna <- cna[c(target,keys)]
 
-  if ( !is.factor(dd$target) )   dd$target <- factor(dd$target)
-  for (i in 1:length(keys))   dd[,names(dd) == keys[i]] <- factor( dd[,names(dd) == keys[i]])
+  for ( i in 1:length(cna)) {
+    nm <- names(cna)[i]
+    vals <- unique(cna[[i]][!is.na(cna[[i]])])  # get variables with cont.na other than missing
+    if (length(vals) > 0){
+      for (j in 1:length(vals))
+        n_cna <- sum(vals[j] == data[,nm] & !is.na(data[,nm]))
+      if (n_cna == 0) stop("\nValue ", vals[j], " identified as denoting a special or missing in cont.na for ",nm, " is not in data.\n",sep = "", call. = FALSE)
+      else if (n_cna < 10 & print.flag) cat ("\nWarning: Only ",n_cna ," record(s) in data with value ",vals[j]," identified as denoting a missing value in cont.na for ",nm, "\n\n", sep = "")
+    }
+  }
+  ###----------------------- group any continuous variables if ngroups not NULL----------------------
+  ### needs a seperate loop to fix all syn data sets with the same breaks-----------------
+  # Numeric variables
+  if ( is.null(ngroups_target) ) ngroups_target <- 0
+  if ( is.null(ngroups_keys) )    ngroups_keys  <- 0
+  if (length(ngroups_keys) == 1)  ngroups_keys  <- rep(ngroups_keys,length(keys))
+  ngroups <- c(ngroups_target,  ngroups_keys)
 
+  if (print.flag) if (any (ngroups >0 & !sapply(dd,is.numeric))) cat("\n\nWith target",target,"variable(s) you have asked to group are not numeric:\n",
+                   names(dd)[ngroups >0 & !sapply(dd,is.numeric)]," no grouping done for them.\n")
+  if (any(ngroups > 0)){
+   togroup <- (1:dim(dd)[2])[ ngroups >0 & sapply(dd,is.numeric) ]
+   for (i in togroup) {
+      syn0 <- c(sapply(syndata, '[[', i)) ## all synthetic values for ith var
+      for (j in 1:m) {
+            grpd <- group_num(dd[,i], syndata[[j]][,i], syn0,
+                            ngroups[i], cont.na = cna[[i]], ...)
+           if (length(table(grpd[[1]])) < 3 ) {
+             grpd <- group_num(dd[,i],  syndata[[j]][,i], syn0,
+                            cont.na = cna[[i]], n = ngroups[i], style = "equal")
+             if (length(table(grpd[[1]])) < 3 ) cat("Only",length(table(grpd[[1]])),"groups produced for", names(data)[j],"even after changing method.\n")
+             else if (print.flag) cat("Grouping changed from 'quantile' to  'equal' in function numtocat.syn for",names(data)[j],"because only",length(table(grpd[[1]]))," groups produced\n")
+           }
+       syndata[[j]][,i] <- grpd[[2]]
+      }
+      dd[, i] <- grpd[[1]]
+      if (print.flag) {
+        if (i  == 1) cat("Numeric values of",names(dd)[i],target,"grouped into ", length(table(dd[,i])),"groups\n with levels", names(table(dd[,i])),"\n")
+        else cat("Numeric values of key",names(dd)[i],"grouped into ", length(table(dd[,i])),"groups\nwith levels", names(table(dd[,i])),"\n")
+      }
+   }
+}
+###--- make any remaining numeric values into factors---------------------------------------
+
+  if (any(sapply(dd,is.numeric))){
+    numvars <- (1:dim(dd)[2])[sapply(dd,is.numeric)]
+    for ( i in numvars) {
+      dd[,i] <- factor(dd[,i])
+      for (jj in 1:object$m){ syndata[[jj]][,i] <- factor(syndata[[jj]][,i])
+     }
+    }
+  }
   check1 <- check2 <- ""
+
 ###------------------- loop over object$m syntheses---------------
- 
+
   for ( jj in 1:object$m) {
 ###-------------------------------- PRINT WHERE AT ----------------------------------   
-    if (print.flag) cat("Synthesis",jj,"\n") 
+    if (print.flag) cat("-------------------Synthesis",jj,"--------------------\n") 
     
-   if (object$m > 1 )    ss <- object$syn[[jj]]
-    else    ss <- object$syn
-    
-###--------------- make new variable in synthetic data from the target variable called target--------------------------
-    targetx =ss[, names(ss) == target]
-    ss$target <- targetx
-    ss <- ss[,names(ss) %in% c("keys","target", keys)]
-    
-    if ( !is.factor(ss$target) )   ss$target <- factor(ss$target)
-    for (i in 1:length(keys))   ss[,names(ss) == keys[i]] <- factor( ss[,names(ss) == keys[i]])
-
+    ss <- syndata[[jj]]
 ###----------------------- sort missings-----------------     
 ###  replace Missing values with factor value of "Missing" to make tables easier
     tomissing <- function(x){
@@ -175,7 +253,6 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
       x[is.na(x)] <- "Missing"
       x <- factor(x)
     }
-
     if ( any(is.na(dd$target)) ) dd$target <- tomissing(dd$target)
     if ( any(is.na(ss$target)) ) ss$target <- tomissing(ss$target)
 
@@ -186,7 +263,7 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
           tomissing(ss[,names(ss) == keys[i]])
 
  }
-    
+
      Nd <- dim(dd)[1]
      Ns <- dim(ss)[1]
 ###------------------------ make composite variable for keys --------------------------
@@ -255,7 +332,7 @@ if (length(keys) >1) {
     tab_kts <- rbind(tab_kts,extra_tab)
     tab_kts  <- tab_kts[order(dimnames(tab_kts)[[1]]),] 
   }   else extraTd <- NULL
- 
+
   if (!(all(Ts %in% Td))) {  ## extra synthetic target levels not in original  ############### 
     extraTs <- Ts[!(Ts %in% Td) ]
     extra_tab <- matrix(0,length(extraTs),dim(tab_ktd)[2],)
@@ -333,7 +410,6 @@ if (!usetargetNA && any(dd$target == "Missing")) {
   }
 }
 ###-------------------------- remove any excluded two way  combinations----------------------------------
-
  if (!is.null(exclude.keys)) {
 
   if (!all(exclude.targetlevs %in% levels(dd$target))) stop("exclude.targetlevs must be one of levels of ",target,"\n", call. =FALSE)
@@ -426,9 +502,9 @@ TCAP <-   sum(tab_DiSCO)/TCAP_denom*100
 #cat(baseCAPd,"baseCAPd",TCAP0,"TCAP0",TCAP,"TCAP\n")
 allCAPs[jj,] <- c( baseCAPd,  CAPd,  CAPs, DCAP,TCAP)
 
-if (print.flag) cat("-------------------Disclosure measures completed\n")
+#if (print.flag) cat("-------------------Disclosure measures completed\n")
 
-if (print.flag) cat("------------------Now 1 and 2 way checks\n")
+#if (print.flag) cat("------------------Now 1 and 2 way checks\n")
 ###----------------------- checks for most_dis_lev 1 way ---------------------------
   
 tab_target <- apply(tab_ktd,1,sum)
@@ -448,7 +524,7 @@ if (nLevelDis > thresh_1way[1] &  PctLevelDis > thresh_1way[2]) {
     check1 <- paste("Check " ,target," level ",most_dis_lev)
 }
 else check_1way[[jj]] <- ""
-if (print.flag) cat("------------------One-way checks completed\n")
+#if (print.flag) cat("------------------One-way checks completed\n")
 ###------------------------get details for check_2way-----------------
 ### only implemented for DiSCO  though could be changed
 
@@ -496,7 +572,7 @@ if (any(xx > thresh_2way[1]))  {
 } 
 else  check_2way[[jj]] <- ""
 
-if (print.flag) cat("----------------------------Two-way checks completed.\n")
+#if (print.flag) cat("----------------------------Two-way checks completed.\n")
 ###-------------------------- end of jj loop -----------------------------------
 
 } ######## end of jj loop
@@ -619,5 +695,4 @@ if (any(x$Nidentexclude >0)) {
 
   
   invisible(x)
-    }
-  
+}

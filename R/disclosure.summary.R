@@ -7,11 +7,14 @@ disclosure.summary.default <- function(object, ...)
 
 ###-----disclosure.summary.data.frame---disclosure.list--------
 disclosure.summary.data.frame <- disclosure.summary.list <- 
-  function(object, data, keys , targets = NULL, denom_lim = 5, 
-           exclude_ov_denom_lim = FALSE, not.targetslev = NULL, print.flag = TRUE,  
+  function(object, data, cont.na = NULL, keys , targets = NULL, print.flag = TRUE, 
+           denom_lim = 5, exclude_ov_denom_lim = FALSE,
+           not.targetslev = NULL,  
            usetargetsNA = TRUE,  usekeysNA = TRUE, 
+           exclude.keys = NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+           ngroups_targets = NULL, ngroups_keys = NULL, 
            ident.meas = "repU", attrib.meas = "DiSCO",
-           thresh_1way = c(50, 90),thresh_2way = c(5, 80),
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
            digits = 2, plot = TRUE,  compare.synorig = TRUE, ...)
     
   {
@@ -20,6 +23,20 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     if (is.list(object) & !is.data.frame(object)) m <- length(object)
     else if (is.data.frame(object)) m <- 1
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
+    
+# sort out cont.na to make it into a complete named list
+    cna <- cont.na
+    cont.na <- as.list(rep(NA, length(data)))
+    names(cont.na) <- names(data)
+    if (!is.null(cna)) {
+      if (!is.list(cna) | any(names(cna) == "") | is.null(names(cna)))
+        stop("Argument 'cont.na' must be a named list with names of selected variables.", call. = FALSE)
+      if (any(!names(cna) %in% names(data))) stop("Names of the list cont.na must be variables in data.\n", call. = FALSE)
+      for (i in 1:length(cna)) {
+        j <- (1:length(data))[names(cna)[i] == names(data)]
+        cont.na[[j]] <- unique(c(NA,cna[[i]]))
+      }
+    }
     
 if(compare.synorig){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
@@ -40,8 +57,10 @@ if(compare.synorig){
 
     res <- disclosure.summary.synds(object, data, keys = keys , targets = targets, 
            denom_lim = denom_lim,  exclude_ov_denom_lim = exclude_ov_denom_lim, 
-           print.flag = print.flag ,  usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
-           ident.meas = ident.meas, attrib.meas = attrib.meas, 
+           not.targetslev = not.targetslev, print.flag = print.flag ,  
+           usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, ngroups_targets = ngroups_targets,
+           ngroups_keys = ngroups_keys, ident.meas = ident.meas, attrib.meas = attrib.meas, 
+           thresh_1way = thresh_1way, thresh_2way = thresh_2way,
            digits = digits, plot = plot,...) 
     res$call <- match.call()
     return(res)
@@ -49,18 +68,23 @@ if(compare.synorig){
 
 
 ###-----disclosure.summary.synds-------------------------
-disclosure.summary.synds <-     function(object, data, keys , targets = NULL, denom_lim = 5, 
-                                         exclude_ov_denom_lim = FALSE, not.targetslev = NULL, print.flag = TRUE,  
+disclosure.summary.synds <-     function(object, data, keys , targets = NULL, print.flag = TRUE,  
+                                         denom_lim = 5, exclude_ov_denom_lim = FALSE,
+                                         not.targetslev = NULL, 
                                          usetargetsNA = TRUE,  usekeysNA = TRUE, 
+                                         exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
+                                         ngroups_targets = NULL, ngroups_keys = NULL, 
                                          ident.meas = "repU", attrib.meas = "DiSCO",
-                                         thresh_1way = c(50, 90),thresh_2way = c(5, 80),
-                                         digits = 2, plot = TRUE,...)
+                                         thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
+                                         digits = 2, plot = TRUE, ...)
+  
+
 {
   ###----------------check input parameters ----
   if (!(is.data.frame(data)) )   stop("data  must be a data frame \n\n", call. = FALSE)
   data <- data.frame(data) ## in case it is table or a tibble
   if (!( inherits(object,"synds")))   stop(" object must be an object of class synds\n\n", call. = FALSE)
-  
+
   if (object$m ==1) {
     names.syn <- names(object$syn)
   }
@@ -107,20 +131,41 @@ disclosure.summary.synds <-     function(object, data, keys , targets = NULL, de
   if (length(usekeysNA) != length(keys)) stop("usekeysNA must be same length as keys", call. = FALSE)
   if (length(usetargetsNA) != length(targets)) stop("usetargetsNA must be same length as targets", call. = FALSE)
 
+  if (!is.null(ngroups_targets)) {
+  if (length(ngroups_targets) == 1) ngroups_targets <- rep(ngroups_targets, length(targets))
+  if (!length(ngroups_targets) == length(targets))  stop("ngroups_targets must be same length as targets", call. = FALSE)
+  }
+  
 Norig <- dim(data)[1]
+
+ if (!is.null(exclude.keys)) {
+   if (!is.list(exclude.keys) && ! length(exclude.keys) == length(targets))
+   stop("exclude.keys must be a list of same length as targets", call. = FALSE)
+   if (!is.list(exclude.keylevs) && ! length(exclude.keylevs) == length(targets))
+     stop("exclude.keylevs must be a list of same length as targets", call. = FALSE)
+   if (!is.list(exclude.targetlevs) && ! length(exclude.targetlevs) == length(targets))
+     stop("exclude.targetlevs must be a list of same length as targets", call. = FALSE)
+
+ }
 ###-------------------------- create output data frames-------------------
  ident.orig <- ident.syn <- attrib.orig <- attrib.syn <- n2way <- rep(NA, length(targets))
  check1 <- check2 <- rep("", length(targets))
- 
+ output.list <-  as.list(1:length(targets))
+ names(output.list) <- targets
+
+
+
   for (i in 1:length(targets)) {
     if (print.flag) cat("------------------",i,targets[i],"-------------------","\n")
 
-    ttt <-disclosure(object, data, target = targets[i], keys = keys, 
-            denom_lim = denom_lim, exclude_ov_denom_lim = exclude_ov_denom_lim,
-            print.flag = print.flag, digits =digits, not.targetlev = not.targetslev[i],
-            usekeysNA = usekeysNA, usetargetNA = usetargetsNA[i],
-            thresh_1way = thresh_1way,thresh_2way = thresh_2way)
-    
+    ttt <-disclosure(object, data, keys = keys, target = targets[i],  denom_lim = denom_lim,
+            exclude_ov_denom_lim = exclude_ov_denom_lim, print.flag = print.flag, digits =digits,
+            usetargetNA = usetargetsNA[i], usekeysNA = usekeysNA, not.targetlev = not.targetslev[i],
+            exclude.keys =exclude.keys[[i]], exclude.keylevs = exclude.targetlevs[[i]],
+            exclude.targetlevs = exclude.targetlevs[[i]], ngroups_target = ngroups_targets[i],
+            ngroups_keys = ngroups_keys, thresh_1way =thresh_1way ,thresh_2way = thresh_2way)
+
+
     if (ident.meas == "repU")  ident.syn[i] = mean(ttt$ident$repU[1])
     if (ident.meas == "UiSiO") ident.syn[i] = mean(ttt$ident$UiSiO)
     ident.orig[i] <- mean(ttt$ident$UiO)
@@ -137,13 +182,17 @@ Norig <- dim(data)[1]
     if (ttt$check2[1] == "") n2way[i] <- 0
     else n2way[i] <- length(ttt$check2)
 
-  }
+    output.list[[i]] <- ttt
 
+  }
+## names(output.list <- targets)
+##------------------------------ end of i loop-------------------------
     result <- data.frame(attrib.orig , attrib.syn, check1 = check1,
                     Npairs = n2way, check2 = check2)
  
     dimnames(result)[[1]] <- targets
- 
+    
+    
     ###-----ntoc---------------------------------------------------------------
     # to make labels for variables of constant length from an integer
     ntoc <- function(x)
@@ -187,13 +236,14 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
          title = "Comparison of attribute disclosure measures",
          subtitle= paste( attrib.meas,"for synthetic data  to",oratt ,"for original data.")) +
         geom_line(data = toplot, mapping = aes(x=.data$VALUE, y=.data$name), arrow = arrow(length=unit(0.30,"cm"), ends="first", type = "closed"))
-   
+#cat("line 207------------------------------------------------\n")
+
        res <- list( attrib.table = result, attrib.plot = attrib.plot, keys = keys,
                          ident.orig = ident.orig, ident.syn = ident.syn, Norig = Norig,
                          denom_lim = denom_lim, exclude_ov_denom_lim = exclude_ov_denom_lim,
                          digits = digits, usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
                          ident.meas = ident.meas, attrib.meas = attrib.meas, m = object$m,
-                         plot = plot)
+                         plot = plot, output.list = unclass(output.list))
        class(res) <- "disclosure.summary"
        return(res)
     }        
@@ -238,5 +288,4 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
 }
 
 
-
-
+  
