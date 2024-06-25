@@ -1,26 +1,32 @@
 synthpop 1.8-1
 ---------------
 NEW FEATURES
-* Two new disclosure functions calculate various disclosure measures and their associated 
-  statistics from a set of keys combined to form a quasi-identifier. The basic function disclosure() 
-  calculates the measures for one target variable. the other function (disclosure.summary)
-  calls disclosure() for a set of target variables, defaulting to all the variables in a
-  data set that are not in the keys.
-* The function syn.ipf now allows grouped margins that include all threeway and fourway
-  interactions, as well as twoway.
-* The two syn methods that can be made differentially private (DP) ("catall" and "ipf"
-  can now use the Gaussian mechanism instead of the Laplace mechanism. They
-  each have new parameters (noise) to define the type of noise to add and
-  del - to define delta for the Gaussian mechanism.
+* Two new disclosure functions calculate various disclosure measures and their 
+  associated  statistics from a set of keys combined to form a quasi-identifier. 
+  The basic function disclosure() calculates  measures for one target variable. 
+  The other function (disclosure.summary) calls disclosure() for a set of target
+  variables, defaulting to all the variables in a   data set that are not in the
+  keys. Both functions allow numerical variables to be categorised into groups
+  defined by the supplied parameters. By default numeric variables are treated
+  as factors with levels equal to their number of distinct values.
+* A new vignette, disclosure.pdf, gives details and sample code for the
+  new disclosure functions.
+* The function syn.ipf now allows grouped margins that include all threeway
+  and fourway interactions, as well as twoway.
+* The two syn methods that can be made differentially private (DP) ("catall" and
+  "ipf"   can now use the Gaussian mechanism instead of the Laplace mechanism. They
+  each have new parameters (noise) to define the type of noise to add and del,
+  to define delta for the Gaussian mechanism.
 * New function mergelevels() that combines levels of factors in a data.frame 
   using routines from the forcats package.
 * New function synorig.compare() that can be used to check synthetic data created
   by methods other than syn() to make sure that the data sets are comparable.
   Some simple fixes can be done and the changed data sets returmed.
-  It is called in the versions of compare.synds(), utility.gen(), utility.tab(), utility.tables(),
-  disclosure() and disclosure.summary() when these methods are for synthetic data supplied as 
-  a dataframe or a list of data frames. If fixing is possible this is done and functions
-  continue with fixed data. At present this only happens for first elemement of a list. 
+  It is called in the versions of compare.synds(), utility.gen(), utility.tab(), 
+  utility.tables(), disclosure() and disclosure.summary() when these methods are
+  for synthetic data supplied as a dataframe or a list of data frames. If 
+  fixing is possible this is done and functions continue with fixed data. 
+  At present this only happens for first elemement of a list. 
 
 CHANGE
 * Function replicated.uniques() changed. Now has additional parameter "keys" and
