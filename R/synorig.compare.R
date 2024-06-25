@@ -14,14 +14,13 @@ synorig.compare <- function(syn,orig, print.flag = TRUE){
   cat(out,"dropped from syn\n\n")
   }
 ## reduce syn and orig to common vars in same order
-common <- names(syn)[names(syn) %in% names(orig)]
+common <- names(orig)[names(orig) %in% names(syn)]
 len.common <- length(common)
 if (print.flag) cat(len.common, "variables in common out of" , length(names(syn)), "in syn out of", length(names(orig)),"in orig\n")
 ## reorder to match up
-syn <- syn[,names(syn) %in% common] ; names(syn) <- names(syn)
-syn <- syn[, order(names(syn))] ; names(syn) <- names(syn)
-orig <- orig[,names(orig) %in% common] ; names(orig) <- names(orig) 
-orig <- orig[, order(names(orig))] ; names(orig) <- names(orig)
+orig <- orig[,names(orig) %in% common] 
+syn <- syn[,names(syn) %in% common] 
+syn <- syn[, names(orig)]
 
  ##-------------- change common character variables to factors---------------------------
   nch_syn <- 0 ; nch_orig <- 0
