@@ -50,7 +50,6 @@ if(compare.synorig){
         if (m > 1) cat("only first element of the list has been adjusted and will be used here\n")
         m <- 1 }
 }
-      else if (print.flag) cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")
 
     object <- list(syn = object, m = 1) 
     class(object) <- "synds"
