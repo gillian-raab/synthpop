@@ -25,7 +25,6 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
     else stop("object must be a data frame or a list of data frames.\n", call. = FALSE)
     
 # sort out cont.na to make it into a complete named list
-  if (!is.null(cont.na)) {
     cna <- cont.na
     cont.na <- as.list(rep(NA, length(data)))
     names(cont.na) <- names(data)
@@ -38,7 +37,6 @@ disclosure.summary.data.frame <- disclosure.summary.list <-
         cont.na[[j]] <- unique(c(NA,cna[[i]]))
       }
     }
-  }
 if(compare.synorig){
       if (m ==1) adjust.data <- synorig.compare(object,data, print.flag = FALSE) else
       if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
