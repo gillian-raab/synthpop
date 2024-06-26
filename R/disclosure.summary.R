@@ -163,7 +163,9 @@ Norig <- dim(data)[1]
             exclude.keys =exclude.keys[[i]], exclude.keylevs = exclude.targetlevs[[i]],
             exclude.targetlevs = exclude.targetlevs[[i]], ngroups_target = ngroups_targets[i],
             ngroups_keys = ngroups_keys, thresh_1way =thresh_1way ,thresh_2way = thresh_2way)
-
+    
+    class(ttt) <- "disclosure"
+    output.list[[i]] <- ttt
 
     if (ident.meas == "repU")  ident.syn[i] = mean(ttt$ident$repU[1])
     if (ident.meas == "UiSiO") ident.syn[i] = mean(ttt$ident$UiSiO)
@@ -181,7 +183,7 @@ Norig <- dim(data)[1]
     if (ttt$check2[1] == "") n2way[i] <- 0
     else n2way[i] <- length(ttt$check2)
 
-    output.list[[i]] <- ttt
+ 
 
   }
 ## names(output.list <- targets)
@@ -243,6 +245,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
                          digits = digits, usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, 
                          ident.meas = ident.meas, attrib.meas = attrib.meas, m = object$m,
                          plot = plot, output.list = unclass(output.list))
+       
        class(res) <- "disclosure.summary"
        return(res)
     }        
