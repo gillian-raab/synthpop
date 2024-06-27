@@ -8,13 +8,13 @@ compare.default <- function(object, ...)
 
 ###-----compare.synds------------------------------------------------------
 compare.synds <- function(object, data, vars = NULL, msel = NULL,  
-                          stat = "percents", breaks = 20, 
+                          stat = "percents", breaks = 20, ngroups =5, 
                           nrow = 2, ncol = 2, rel.size.x = 1,
                           utility.stats = c("pMSE", "S_pMSE", "df"),
                           utility.for.plot = "S_pMSE",  
                           cols = c("#1A3C5A","#4187BF"),
-                          plot = TRUE, table = FALSE, ...){    
-                                                                         
+                          plot = TRUE, table = FALSE, ...){   
+
  if (is.null(data)) stop("Requires parameter data to give name of the real data.\n", call. = FALSE)
  if (!is.data.frame(data)) stop("Argument data must be a data frame.\n", call. = FALSE) 
   
@@ -109,11 +109,10 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
    dimnames(tab.utility) <- list(vars, unique(c(utility.stats, utility.for.plot)))
 
    for (i in 1:length(vars)) {
-
-     utility.list[[i]] <- utility.tab(object, data, vars = vars[i])
-
+     utility.list[[i]] <- utility.tab(object, data, vars = vars[i], ngroups = ngroups)
      if (i == 1) tab.ind <- match(utility.stats, names(utility.list[[i]]))
      tab.utility[i, ] <- sapply(utility.list[[i]][tab.ind], mean)
+     cat("Calculations done for", vars[i],"\n")
    }
 
    if (!is.null(utility.for.plot)) utilvals.for.plot <- tab.utility[, match(utility.for.plot, dimnames(tab.utility)[[2]])]
@@ -180,7 +179,6 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
    per.obs.num <- NULL
    per.syn.numall <- NULL
  }
-
  # data frame for plotting 
  if (length(msel) <= 1) per.fac <- rbind.data.frame(per.obs.fac$perdf, 
    per.obs.num$perdf, per.syn.facall$perdf, per.syn.numall$perdf )
@@ -290,13 +288,13 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
 
 ###-----compare.data.frame---compare.list----------------------------------    
 compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.na = NULL,         
-                                               msel = NULL, stat = "percents", breaks = 20, 
-                                               nrow = 2, ncol = 2, rel.size.x = 1,
-                                               utility.stats = c("pMSE", "S_pMSE", "df"),
-                                               utility.for.plot = "S_pMSE",
-                                               cols = c("#1A3C5A","#4187BF"),   
-                                               plot = TRUE, table = FALSE ,
-                                               compare.synorig = TRUE, ...){
+                                   msel = NULL, stat = "percents", breaks = 20, ngroups = 5, 
+                                   nrow = 2, ncol = 2, rel.size.x = 1,
+                                   utility.stats = c("pMSE", "S_pMSE", "df"),
+                                   utility.for.plot = "S_pMSE",
+                                   cols = c("#1A3C5A","#4187BF"),   
+                                   plot = TRUE, table = FALSE ,
+                                   compare.synorig = TRUE, ...){
   
   if (is.null(data)) stop("Requires parameter 'data' to give name of the real data.\n\n",  call. = FALSE)
   if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n\n",  call. = FALSE)   
@@ -337,7 +335,7 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
   class(object ) <- "synds"
   
   res <- compare.synds(object = object, data = data, vars = vars, 
-                       msel = msel, stat = stat, breaks = breaks, 
+                       msel = msel, stat = stat, breaks = breaks, ngroups = ngroups,
                        nrow = nrow, ncol = ncol, rel.size.x = rel.size.x,
                        utility.stats = utility.stats,
                        utility.for.plot = utility.for.plot,

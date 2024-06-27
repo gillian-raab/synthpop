@@ -18,7 +18,7 @@
 }
 \usage{
 \method{compare}{synds}(object, data, vars = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
+        msel = NULL, stat = "percents", breaks = 20, ngroups =5,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
@@ -26,7 +26,7 @@
         plot = TRUE, table = FALSE, \dots)
 
 \method{compare}{data.frame}(object, data, vars = NULL, cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
+        msel = NULL, stat = "percents", breaks = 20,ngroups = 5,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
@@ -34,7 +34,7 @@
         plot = TRUE, table = FALSE, compare.synorig = TRUE, \dots)
 
 \method{compare}{list}(object, data, vars = NULL, cont.na = NULL,
-        msel = NULL, stat = "percents", breaks = 20,
+        msel = NULL, stat = "percents", breaks = 20,ngroups = 5,
         nrow = 2, ncol = 2, rel.size.x = 1,
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
@@ -66,6 +66,8 @@
     If \code{m > 1} and \code{msel = NULL} average counts for synthetic data
     are derived.}
   \item{breaks}{the number of cells for the histogram.}
+  \item{ngroups}{the number of groups used to categorise numeric 
+  variables when calculating the one-way utility measures.}
   \item{nrow}{the number of rows for the plotting area.}
   \item{ncol}{the number of columns for the plotting area.}
   \item{rel.size.x}{a number representing the relative size of x-axis labels.}

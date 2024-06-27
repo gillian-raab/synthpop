@@ -23,7 +23,7 @@
            usetargetNA = TRUE, usekeysNA = TRUE, 
            exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
            ngroups_target = NULL, ngroups_keys = NULL, 
-           thresh_1way = c(50, 90),thresh_2way = c(5, 80),
+           thresh_1way = c(50, 90),thresh_2way = c(4, 80),
            digits = 2, to.print =c("short"), compare.synorig = TRUE, \dots) 
 
 \method{disclosure}{list}(object, data,cont.na = NULL, keys , target , print.flag = TRUE,

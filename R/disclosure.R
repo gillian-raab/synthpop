@@ -25,6 +25,7 @@ disclosure.data.frame <- disclosure.list <-
     cna <- cont.na
     cont.na <- as.list(rep(NA, length(data)))
     names(cont.na) <- names(data)
+    
     if (!is.null(cna)) {
       if (!is.list(cna) | any(names(cna) == "") | is.null(names(cna)))
         stop("Argument 'cont.na' must be a named list with names of selected variables.", call. = FALSE)
@@ -42,18 +43,18 @@ disclosure.data.frame <- disclosure.list <-
         if (m > 1) adjust.data <- synorig.compare(object[[1]],data, print.flag = FALSE)
         
         if (!adjust.data$unchanged) {
-          syn <- adjust.data$syn
+          object <- adjust.data$syn
           data <- adjust.data$orig
           cat("Synthetic data or original or both adjusted with synorig.compare to try to make them comparable\n\n")
           if (m > 1) {cat("only first element of the list has been adjusted and will be used here\n\n")
           m <- 1 }
         }
+    } 
 
-    object <- list(syn = syn, m = m, cont.na = cont.na) 
+    object <- list(syn = object, m = m, cont.na = cont.na) 
     class(object) <- "synds"
-        }
     
-    res <- disclosure(object, data, keys , target , denom_lim = denom_lim,
+    res <- disclosure(object, data, keys , target = target , denom_lim = denom_lim,
                       exclude_ov_denom_lim = exclude_ov_denom_lim, 
                       print.flag = print.flag, digits = digits, 
                       usetargetNA = usetargetNA, usekeysNA = usekeysNA,  
@@ -91,16 +92,14 @@ disclosure.synds <-  function(object, data, keys , target , print.flag = TRUE,
    if (is.numeric(target)) target <- names(data)[target]
   
   Norig <- dim(data)[1]
-  if (object$m ==1) names.syn <- names(object$syn)  else names.syn <- names(object$syn[[1]])
-
+  if (object$m ==1 ){ names.syn <- names(object$syn) 
+  } else {names.syn <- names(object$syn[[1]])}
   # target must be a single variable in  data and object$syn
   # keys must be a vector of variable names in data and in s
   # target must not be in keys
-
-
-if (!(all(keys %in% names(data)) & all(keys %in% names.syn) & 
-    all(target %in% names(data)) & all(target %in% names.syn)))
-    stop("keys and target must be variables in data and synthetic data. \n", call. = FALSE)
+if (!(all(keys %in% names(data)) && all(keys %in% names.syn) 
+      && all(target %in% names(data)) & all(target %in% names.syn )))
+  stop("keys and target must be variables in data and synthetic data. \n", call. = FALSE)
    if (any(duplicated(keys)))
      stop("keys cannot include duplicated values. \n", call. = FALSE)
   if (!(length(target)==1))
@@ -109,7 +108,7 @@ if (!(all(keys %in% names(data)) & all(keys %in% names.syn) &
      stop("target cannot be in keys \n", call. = FALSE)
    if (any(names(data)  == "target"))
      stop("your data have a variables called 'target' please rename in original and synthetic data.\n\n", call. = FALSE) 
-   
+
    if (!(length(usetargetNA)==1))
      stop("usetargetNA must be a single logical value \n", call. = FALSE)
    if (length(usekeysNA) ==1 ) usekeysNA <- rep(usekeysNA, length(keys))
