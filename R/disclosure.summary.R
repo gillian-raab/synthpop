@@ -155,7 +155,8 @@ Norig <- dim(data)[1]
 
   for (i in 1:length(targets)) {
     if (print.flag) cat("------------------",i,targets[i],"-------------------","\n")
-
+    if (not.targetslev[i] =="") not.targetlev = NULL
+    else not.targetlev <-not.targetslev[i]
     ttt <-disclosure(object, data, keys = keys, target = targets[i],  denom_lim = denom_lim,
             exclude_ov_denom_lim = exclude_ov_denom_lim, print.flag = print.flag, digits =digits,
             usetargetNA = usetargetsNA[i], usekeysNA = usekeysNA, not.targetlev = not.targetslev[i],
@@ -176,6 +177,9 @@ Norig <- dim(data)[1]
     if (attrib.meas == "DiSDiO" ){
       attrib.orig[i] <- mean(ttt$attrib$DiO)
         attrib.syn[i] <- mean(ttt$attrib$DiSDiO )}
+    if (attrib.meas == "DCAP" ){
+      attrib.orig[i] <- mean(ttt$allCAPs$CAPd)
+      attrib.syn[i] <-  mean(ttt$allCAPs$DCAP)}
 
     check1[i] <- ttt$check1
     check2[i] <- ttt$check2[1]
@@ -227,7 +231,9 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
       dimnames(toplot)[[1]] <- 1:dim(toplot)[1]
   
       names(toplot)[2] <- "VALUE"
-      oratt <- "Dorig"
+      
+      if (attrib.meas %in% c("DCAP","TCAP")) oratt = "CAPd"
+      else oratt <- "Dorig"
 
       attrib.plot <- ggplot(toplot) + 
        geom_point(data = toplot, size=5, aes(colour = .data$measure, shape = .data$measure, x=.data$VALUE, y=.data$name)) +
@@ -267,7 +273,8 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
     }
     if ("attrib" %in% to.print) {
       cat("\nTable of attribute disclosure measures for",x$keys,"\n")
-      oratt <- "Dorig"
+      if (x$attrib.meas %in% c("DCAP","TCAP")) oratt = "CAPd"
+      else oratt <- "Dorig"
 
       cat("Original measure is ",oratt,"and synthetic measure is",x$attrib.meas,"\n")
       cat("Variables Ordered by synthetic disclosure measure\n\n")
