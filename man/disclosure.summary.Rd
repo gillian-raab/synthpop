@@ -167,7 +167,13 @@
   \item{usekeysNA}{see above.} 
   \item{ident.meas}{see above.} 
   \item{attrib.meas}{see above.} 
+  \item{m}{see above.} 
   \item{plot}{see above.} 
+  \item{output.list}{A named list with a component for each target 
+     where each component is the output from the function 
+     \code{\link{disclosure}} for that target. This
+     allows check_1way and check_2way to be examined for each target.}
+  \item{call}{R call used to create the object}
    }
       
 \references{
