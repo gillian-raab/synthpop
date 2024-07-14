@@ -395,7 +395,7 @@ tab_exclude <- function(xx,col,Nexcludes) {
 ##### missings excluded values from tables if set
 
 if (!usetargetNA && any(dd$target == "Missing")) {
-  Nout[1] <- sum(xx[dimnames(xx)[[1]] == "Missing",])
+  Nout[2] <- sum(xx[dimnames(xx)[[1]] == "Missing",])
   xx[dimnames(xx)[[1]] == "Missing",] <- 0
 }
 
