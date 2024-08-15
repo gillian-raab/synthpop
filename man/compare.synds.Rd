@@ -23,7 +23,8 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, \dots)
+        plot = TRUE, table = FALSE, 
+        print.flag = TRUE, \dots)
 
 \method{compare}{data.frame}(object, data, vars = NULL, cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,ngroups = 5,
@@ -31,7 +32,8 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, compare.synorig = TRUE, \dots)
+        plot = TRUE, table = FALSE, 
+        print.flag = TRUE, compare.synorig = TRUE, \dots)
 
 \method{compare}{list}(object, data, vars = NULL, cont.na = NULL,
         msel = NULL, stat = "percents", breaks = 20,ngroups = 5,
@@ -39,7 +41,8 @@
         utility.stats = c("pMSE", "S_pMSE", "df"),
         utility.for.plot = "S_pMSE",
         cols = c("#1A3C5A","#4187BF"),
-        plot = TRUE, table = FALSE, compare.synorig = TRUE, \dots)
+        plot = TRUE, table = FALSE, 
+        print.flag = TRUE, compare.synorig = TRUE, \dots)
 
 \method{print}{compare.synds}(x, \dots)
 }
@@ -87,6 +90,9 @@
     whether plots should be produced.}
   \item{table}{a logical value with default set to \code{FALSE} indicating
     whether tables should be printed.}
+\item{print.flag}{a logical value with default set to \code{TRUE} indicating
+    whether a message should be printed as the statistic for each 
+    variable are calculated.}
   \item{compare.synorig}{a logical value  to determine if the functions
   \code{synorig.compare()} should be used to check that data sets can be 
    compared. Used when the synthetic data are supplied as a data.frame or 

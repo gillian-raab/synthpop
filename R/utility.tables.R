@@ -20,7 +20,8 @@ utility.tables.data.frame <- utility.tables.list <-
                            max.scale = NULL, min.scale = 0, plot.title = NULL,
                            nworst = 5, ntabstoprint = 0, k.syn = FALSE,
                            low = "grey92", high = "#E41A1C",
-                           n.breaks = NULL, breaks = NULL, compare.synorig = TRUE, ...){
+                           n.breaks = NULL, breaks = NULL, compare.synorig = TRUE,
+                           print.flag = TRUE, ...){
                      if (is.null(data)) stop("Requires parameter 'data' to give name of the real data.\n", call. = FALSE)
  if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
   
@@ -77,7 +78,7 @@ utility.tables.data.frame <- utility.tables.list <-
                        min.scale = min.scale, plot.title = plot.title, 
                        nworst = nworst, ntabstoprint = ntabstoprint, 
                        k.syn = k.syn, low = low, high = high,
-                       n.breaks = n.breaks, breaks = breaks, ...)
+                       n.breaks = n.breaks, breaks = breaks, print.flag = print.flag , ...)
  
  res$call <- match.call()
  return(res)
@@ -95,7 +96,7 @@ utility.tables.synds <- function(object, data,
                                  max.scale = NULL, min.scale = 0, plot.title = NULL,
                                  nworst = 5, ntabstoprint = 0, k.syn = FALSE, 
                                  low = "grey92", high = "#E41A1C",
-                                 n.breaks = NULL, breaks = NULL, ...){
+                                 n.breaks = NULL, breaks = NULL, print.flag = TRUE, ...){
 ###---------------------- checks of input params-------------------------
   
  if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data object.\n", call. = FALSE)   
@@ -185,7 +186,9 @@ utility.tables.synds <- function(object, data,
    X1[i] <- names.vars[pairs.num[1, i]]
    if (!tables == "oneway")  X2[i] <- names.vars[pairs.num[2, i]]
    if (tables == "threeway") X3[i] <- names.vars[pairs.num[3, i]]
- }
+
+   }
+
  
  ###-------------------make list of utils for pairs-----------------------------------
  
@@ -209,6 +212,7 @@ utility.tables.synds <- function(object, data,
      }
      tabs[i,] <- sapply(utility.list[[i]][tab.ind], mean)
      val[i]      <- sapply(utility.list[[i]][val.ind], mean) # value for plotting
+     if (print.flag) cat("Calculations done for", pairs[,i],"\n")
    }  
  
  # find worst set of variables
