@@ -13,7 +13,7 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
                           utility.stats = c("pMSE", "S_pMSE", "df"),
                           utility.for.plot = "S_pMSE",  
                           cols = c("#1A3C5A","#4187BF"),
-                          plot = TRUE, table = FALSE, ...){   
+                          plot = TRUE, table = FALSE, print.flag = TRUE, ...){   
 
  if (is.null(data)) stop("Requires parameter data to give name of the real data.\n", call. = FALSE)
  if (!is.data.frame(data)) stop("Argument data must be a data frame.\n", call. = FALSE) 
@@ -112,7 +112,7 @@ compare.synds <- function(object, data, vars = NULL, msel = NULL,
      utility.list[[i]] <- utility.tab(object, data, vars = vars[i], ngroups = ngroups)
      if (i == 1) tab.ind <- match(utility.stats, names(utility.list[[i]]))
      tab.utility[i, ] <- sapply(utility.list[[i]][tab.ind], mean)
-     cat("Calculations done for", vars[i],"\n")
+     if (print.flag) cat("Calculations done for", vars[i],"\n")
    }
 
    if (!is.null(utility.for.plot)) utilvals.for.plot <- tab.utility[, match(utility.for.plot, dimnames(tab.utility)[[2]])]
@@ -293,7 +293,7 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
                                    utility.stats = c("pMSE", "S_pMSE", "df"),
                                    utility.for.plot = "S_pMSE",
                                    cols = c("#1A3C5A","#4187BF"),   
-                                   plot = TRUE, table = FALSE ,
+                                   plot = TRUE, table = FALSE ,print.flag = TRUE,
                                    compare.synorig = TRUE, ...){
   
   if (is.null(data)) stop("Requires parameter 'data' to give name of the real data.\n\n",  call. = FALSE)
@@ -339,7 +339,7 @@ compare.data.frame <- compare.list <- function(object, data, vars = NULL, cont.n
                        nrow = nrow, ncol = ncol, rel.size.x = rel.size.x,
                        utility.stats = utility.stats,
                        utility.for.plot = utility.for.plot,
-                       cols = cols, plot = plot, table = table, ...) 
+                       cols = cols, plot = plot, table = table,print.flag = print.flag, ...) 
   res$call <- match.call()
   return(res)
 }

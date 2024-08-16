@@ -30,8 +30,12 @@ NEW FEATURES
 
 CHANGE
 * Function replicated.uniques() changed. Now has additional parameter "keys" and
-  now returns more results as an object of class "repuniq.synds" that can be
+  now returns more results as an object of class "repuniq.synds", that can be
   printed with print.repuniq.synds.
+* The functions compare.synds() and utility.tables() that calulate utility 
+  measures comparing synthetic data to the original, now have a parameter
+  print.flag (default TRUE) that prins out a message as each element of the
+  output is calculated.
 
 BUG FIXES
 * In syn at the check for collinearity that removes some predictors, predictors

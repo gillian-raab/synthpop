@@ -21,7 +21,12 @@ To install the package from this repo in Rstudio use the command
 
 If you then go to the package index you will see the documentation file 
 disclosure.pdf in the vignettes directory,
- 
+
+If your computer does not have a program pdflatex to convert latex files to pdfs the installation is likely to fail. If so you will need to install it without vignettes using the command.
+
+### devtools::install_github("Gillian-Raab/synthpop") ###
+
+You will not find the new vignette (disclosure.pdf), that explaining the new disclosure functions, but you can find it in the vignettes directory on github. The other vignettes are unchanged from the version of synthpop on CRAN.
  
 ## Other changes include :
  
