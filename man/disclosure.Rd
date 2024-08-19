@@ -77,7 +77,7 @@
   \item{exclude.targetlevs}{vector of the same length as exclude.keys that give 
       the levels  of target that will be excluded for each key and key level.}
   \item{ngroups_target}{Unless set to NULL (the default) a numeric target variable
-     will be grouped into code{ngroups_target} catergories.}
+     will be grouped into \code{ngroups_target} categories.}
   \item{ngroups_keys}{Unless set to NULL (the default) any numeric variable
      will be grouped into categories If \code{ngroups_keys} is of length 1 all numeric
      keys will be have the same number of groups. Othersise \code{ngroups_keys}

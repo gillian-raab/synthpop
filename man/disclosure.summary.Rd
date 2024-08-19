@@ -100,7 +100,7 @@
      target for two way exclusions for the ith target. For details see  documentation 
      in \code{\link{disclosure}} } 
   \item{ngroups_targets}{Unless set to NULL (the default) numeric target variables
-     will be grouped into code{ngroups_target} categories.If \code{ngroups_keys}
+     will be grouped into \code{ngroups_target} categories. If \code{ngroups_keys}
      is of length 1 all numeric  targets will be have the same number of groups. 
      Otherwise \code{ngroups_targets} needs to be a vector of the same length as 
      targets and will give the number of groups for each  target. 

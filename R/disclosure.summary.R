@@ -185,19 +185,16 @@ Norig <- dim(data)[1]
     check2[i] <- ttt$check2[1]
     if (ttt$check2[1] == "") n2way[i] <- 0
     else n2way[i] <- length(ttt$check2)
-
- 
-
   }
-## names(output.list <- targets)
+
 ##------------------------------ end of i loop-------------------------
     result <- data.frame(attrib.orig , attrib.syn, check1 = check1,
                     Npairs = n2way, check2 = check2)
  
     dimnames(result)[[1]] <- targets
+    names(output.list) <- targets
     
-    
-    ###-----ntoc---------------------------------------------------------------
+###-----ntoc---------------------------------------------------------------
     # to make labels for variables of constant length from an integer
     ntoc <- function(x)
     {
@@ -256,7 +253,7 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
     }        
   
   
-  ###-----print.disclosure.summary-----------------------------------------------
+###-----print.disclosure.summary-----------------------------------------------
   print.disclosure.summary <- function(x,  digits = NULL,  
                                    plot = NULL, to.print = c("ident","attrib"), ...) {
     

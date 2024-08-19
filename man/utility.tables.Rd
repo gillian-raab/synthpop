@@ -140,8 +140,6 @@
   \item{n.breaks}{a number of break points to create if breaks are not given 
     directly.}
   \item{breaks}{breaks for a two colour binned gradient.}
-  {Allows printing of message as metrics are calculated 
-  for each element of the table. Default is TRUE.}
   \item{compare.synorig}{a logical value  to determine if the functions
   \code{synorig.compare()} should be used to check that data sets can be 
    compared. Used when the synthetic data are supplied as a data.frame or 
