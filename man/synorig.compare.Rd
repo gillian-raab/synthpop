@@ -5,18 +5,13 @@
 check synthetic and original if not produced by synthpop.
 }
 \description{
-Prepare synthetic datasets NOT created by  \code{syn()}, and
- check if they are compatible with their originals and can be used 
- to eveluate disclosure  and utility of synthetic data with the functions
- \code{compare.synds()}, \code{utility.syn()}, \code{utility.tab()} and
- \code{utility.tables()} and \code{disclosure()}. 
- The output is a list with 3 components, the first two giving adjusted
+ Check, and attempt to adjust, synthetic datasets NOT created by  \code{syn()} 
+ if not compatible with the original.
+ The output is a list with 4 components, the first two giving adjusted
  versions of the input synthetic data and original and the third \code{needsfix}
- an indicator of whether these functions can be used on the adjusted data.
- THis function is used in functions like \code{compare.data.frame} and
- \code{compare.list} as well as \code{disclosure.data.frame}, 
- \code{disclosure.list} e.t.c. The versions of the functions that are 
- designed for the synthetic data as a simple data frame, or a list of data frames.
+ an indicator of whether the functions listed below are likely to
+ run correctly on the adjusted data, the fourth \code{unchanged} indicates
+ whether any changes have been made to the original or the synthetic data.
  
  Variables that are in both the synthetic and the original data are 
  checked to 1)  convert any character variables to R factors 2)  check

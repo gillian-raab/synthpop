@@ -282,8 +282,7 @@ if (length(keys) >1) {
 
   tab_kts <- table(ss$target,ss$keys)
   tab_ktd <- table(dd$target,dd$keys)   ## two way target and keys table orig
-  
-  if(print.flag) cat("Table for target",target, "from GT alone with keys has",
+  if (print.flag) cat("Table for target",target, "from GT alone with keys has",
                      dim(tab_ktd)[1], "rows", dim(tab_ktd)[2], "colums.\n")
          
   
@@ -305,13 +304,12 @@ if (length(keys) >1) {
 
   ### augment keys tables to match
 
-   if (!(all(Kd %in% Ks))) { ## some original not found in synthetic
+   if (!(all(Kd %in% Ks))) { ## some original keys not found in synthetic
     extraKd <- Kd[!(Kd %in% Ks) ]
-
     extra_tab <- matrix(0,dim(tab_kts)[1],length(extraKd))
     dimnames(extra_tab) <- list(dimnames(tab_kts)[[1]],extraKd)
     tab_kts <- cbind(tab_kts,extra_tab)
-    tab_kts  <- tab_kts[, order(dimnames(tab_kts)[[2]])] 
+    tab_kts  <- tab_kts[, order(dimnames(tab_kts)[[2]]), drop = FALSE] 
    }
 
 
@@ -320,15 +318,15 @@ if (length(keys) >1) {
     extra_tab <- matrix(0,dim(tab_ktd)[1],length(extraKs))
     dimnames(extra_tab) <- list(dimnames(tab_ktd)[[1]],extraKs)
     tab_ktd <- cbind(tab_ktd,extra_tab)
-    tab_ktd <- tab_ktd[,order(dimnames(tab_ktd)[[2]])]
+    tab_ktd <- tab_ktd[,order(dimnames(tab_ktd)[[2]]), drop = FALSE]
   }
-
   if (!(all(Td %in% Ts))) { ## some original target levels not found in synthetic
     extraTd <- Td[!(Td %in% Ts) ]
-    extra_tab <- matrix(0,length(extraTd),dim(tab_kts)[2])
+    if (is.null(dim(tab_kts)))  extra_tab <- matrix(0,length(extraTd),1)
+    else extra_tab <- matrix(0,length(extraTd),dim(tab_kts)[2])
     dimnames(extra_tab) <- list(extraTd , dimnames(tab_kts)[[2]])
     tab_kts <- rbind(tab_kts,extra_tab)
-    tab_kts  <- tab_kts[order(dimnames(tab_kts)[[1]]),] 
+    tab_kts  <- tab_kts[order(dimnames(tab_kts)[[1]]), , drop = FALSE] 
   }   else extraTd <- NULL
 
   if (!(all(Ts %in% Td))) {  ## extra synthetic target levels not in original  ############### 
@@ -339,10 +337,9 @@ if (length(keys) >1) {
     tab_ktd <- tab_ktd[order(dimnames(tab_ktd)[[1]]),] 
   }   else extraTs <- NULL
  
-  if(print.flag) cat("Table for target ",target, "from GT & SD with keys has",
+  if(print.flag) cat("Table for target ",target, "from GT & SD with all key combinations has",
                      dim(tab_ktd)[1], "rows", dim(tab_ktd)[2], "colums.\n")  
 ###------------------------- calculate proportions and margins ---------
-  
   tab_ktd_p <- sweep(tab_ktd,2,apply(tab_ktd,2,sum),"/")
   tab_ktd_p[is.na(tab_ktd_p)] <- 0
   tab_kts_p <- sweep(tab_kts,2,apply(tab_kts,2,sum),"/")

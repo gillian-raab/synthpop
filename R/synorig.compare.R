@@ -1,4 +1,5 @@
 synorig.compare <- function(syn,orig, print.flag = TRUE){
+
  needsfix <- FALSE
  unchanged <- TRUE
   ## to convert any tibbles or matrices
@@ -52,14 +53,22 @@ for( i in 1:len.common ) {
     unchanged2 = FALSE ; unchanged = FALSE
   }
 }
-if (!unchanged2) cat("\nVariables changed from character to factor",nch_syn,"in syn","and",nch_orig,"in orig\n\n")
+if (!unchanged2) cat("\nVariables changed from character to factor x",nch_syn,"in syn","and",nch_orig,"in orig\n\n")
 
   ##--------------- check data types match in common variables----------------------------------
 
   for (i in 1:len.common){
-    if ( is.integer(syn[,i])  & is.numeric(orig[,i]) ) syn[,i] <- as.numeric(syn[,i])
-    if ( is.integer(orig[,i])  & is.numeric(syn[,i]) )  class(orig[,i]) <- as.numeric(syn[,i])
-    if ( length(class(syn[,i])) !=  length(class(orig[,i])) ||
+    if ( is.integer(syn[,i])  &  (is.numeric(orig[,i]) & !is.integer(orig[,i])) ) { 
+      syn[,i] <-  as.numeric(syn[,i])
+      cat(names(syn)[i],"changed from integer to numeric in synthetic to match original\n")
+      unchanged <- FALSE
+    }
+    else if ( is.integer(orig[,i])  & (is.numeric(syn[,i]) & !is.integer(syn[,i])) ) { 
+      orig[,i] <-  as.numeric(orig[,i])
+      cat(names(orig)[i],"changed from integer to numeric in original to match synthetic\n")
+      unchanged <- FALSE
+    }
+    else if ( length(class(syn[,i])) !=  length(class(orig[,i])) ||
          !all(class(syn[,i])  ==  class(orig[,i]) )	) {
        cat("\nDifferent classes for",names(syn)[i],"in syn:",class(syn[,i]),"in orig:",class(orig[,i]),"\n")
       needsfix <- TRUE
@@ -103,7 +112,7 @@ if (!unchanged2) cat("\nVariables changed from character to factor",nch_syn,"in 
   if (!unchanged) { cat("\n*****************************************************************\n",
                     "Differences detected and corrections attempted check output above.\n")
   }
-  else {cat("Synthetic and original data checked with synorig.compare, no adjustment needed\n\n")}
+  else {cat("Synthetic and original data checked with synorig.compare,\n looks like no adjustment needed\n\n")}
 
      res <- list(syn=syn, orig = orig, needsfix = needsfix, unchanged = unchanged)
 }
