@@ -85,17 +85,6 @@ sampler.syn <- function(p, data, m, syn, visit.sequence,
            cat("All ", length(grouped), 
                " variables in the data synthesised together by method '", 
                ordmethod[1], "'\n", sep = "")
-
-           if (ordmethod[1] == "catall" && !is.null(mth.args) && 
-               "epsilon" %in% names(mth.args$catall) && 
-               mth.args$catall$epsilon > 0) 
-                 cat("Synthesis made differentially private with parameter epsilon of ",
-                     mth.args$catall$epsilon,"\n")
-           if (ordmethod[1] == "ipf" && !is.null(mth.args) && 
-               "epsilon" %in% names(mth.args$ipf) && 
-               mth.args$ipf$epsilon > 0) 
-                 cat("Synthesis made differentially private with parameter epsilon of ",
-                     mth.args$ipf$epsilon,"\n")
          }   
        }   
        x <- p$data[, grouped]
