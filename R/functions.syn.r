@@ -903,7 +903,7 @@ syn.catall <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, maxt
 {
  # Fits a saturated model to combinations of variables
  # xp just holds number of synthetic records required
- if (!(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) stop("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')",epsilon, "epsilon" ,call. = FALSE)
+ if (!(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) stop("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')" , call. = FALSE)
   
  if (epsilon < 0 )  stop("catall.epsilon to make catall DP must be > 0 and only 0 if noisetype is ''",call. = FALSE)
  if (noisetype %in% c("Laplace", "Exponential") ) cat("catall made DP with ",noisetype,"noise and epsilon set to", epsilon,"\n")
