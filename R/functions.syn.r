@@ -903,7 +903,8 @@ syn.catall <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, maxt
 {
  # Fits a saturated model to combinations of variables
  # xp just holds number of synthetic records required
- if (!(noisetype !="") & !(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) stop("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')",call. = FALSE)
+  if (epsilon >0) cat("Type of noise added to make catall DP is",noisetype,"\n")
+ if (!(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) stop("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')",call. = FALSE)
  if (!(noisetype !="") & !(epsilon > 0)) stop("catall.epsilon must be > 0",call. = FALSE)
  if (!(delta > 0 & delta <1 )) stop("catall.delta must be between 0 and 1",call. = FALSE)
    levs <- sapply(x, function(x) {length(levels(x)) + any(is.na(x))})  # all NAtemp here already
@@ -932,7 +933,7 @@ WARNING: Total of ", sum(tab[sz])," counts of original data in structural zero c
     cat("Priorn changed from ",pn,"to", priorn,"to satisfy DP with epsilon",epsilon,"\n")
     cat("
 \n************************************************************************
-WARNING: We do not recommend this method because it adds far too much noise 
+WARNING: We do not recommend this method because it adds far far too much noise 
 and we expect that the utility measures from the synthetic data will be terrible.
 ************************************************************************\n", sep = "")
  }
