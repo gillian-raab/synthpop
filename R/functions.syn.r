@@ -904,9 +904,9 @@ syn.catall <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, maxt
  # Fits a saturated model to combinations of variables
  # xp just holds number of synthetic records required
   if (epsilon >0) cat("Type of noise added to make catall DP is",noisetype,"\n")
- if (!(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) stop("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')",call. = FALSE)
+ if (!(noisetype %in% c("Laplace","Gaussian", "Exponential",""))) cat("catall.noisetype must be one of  c('Laplace','Gaussian', 'Exponential','')",call. = FALSE)
  if (!(noisetype !="") & !(epsilon > 0)) stop("catall.epsilon must be > 0",call. = FALSE)
- if (!(delta > 0 & delta <1 )) stop("catall.delta must be between 0 and 1",call. = FALSE)
+ if (!(delta > 0 & delta <1 )) cat("catall.delta must be between 0 and 1",call. = FALSE)
    levs <- sapply(x, function(x) {length(levels(x)) + any(is.na(x))})  # all NAtemp here already
  table.size <- prod(levs)   # exp(sum(log(levs)))
  if (table.size > maxtable) stop("Table has more than ", maxtable/1e6,
