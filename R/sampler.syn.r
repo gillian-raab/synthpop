@@ -83,7 +83,7 @@ sampler.syn <- function(p, data, m, syn, visit.sequence,
                      "Note that only these first variables will be made differentially private.\n")
          } else {
            cat("All ", length(grouped), 
-               " variables in the data synthesised together by the method '", 
+               " variables in the data synthesised from a joint model with the method '", 
                ordmethod[1], "'\n", sep = "")
          }   
        }   
