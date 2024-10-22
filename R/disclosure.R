@@ -14,7 +14,7 @@ disclosure.data.frame <- disclosure.list <-
            exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
            ngroups_target = NULL, ngroups_keys = NULL, 
            thresh_1way = c(50, 90),thresh_2way = c(4, 80),
-           digits = 2, to.print =c("short"), compare.synorig = TRUE, ...) 
+           digits = 2, to.print =c("short"), compare.synorig = TRUE,...) 
     {
     if (is.null(object)) stop("Requires parameter 'object' to give name of the synthetic data.\n", call. = FALSE)   
     if (is.list(object) & !is.data.frame(object)) m <- length(object)
@@ -76,7 +76,7 @@ disclosure.synds <-  function(object, data, keys , target , print.flag = TRUE,
                               exclude.keys =NULL, exclude.keylevs = NULL, exclude.targetlevs = NULL,
                               ngroups_target = NULL, ngroups_keys = NULL, 
                               thresh_1way = c(50, 90),thresh_2way = c(4, 80),
-                              digits = 2, to.print =c("short"), ...) 
+                              digits = 2, to.print =c("short"),...) 
 { 
 
 ###-----------------------check input parameters ----
@@ -128,7 +128,6 @@ if (!(all(keys %in% names(data)) && all(keys %in% names.syn)
         length(exclude.keylevs) == length(exclude.targetlevs) ) stop("All excludes must be the same length\n" , call. = FALSE)
     if (!all(exclude.keys %in% keys)) stop("exclude.keys must be the name of one of your keys", call.= FALSE)
   }
-
    if(!is.null(denom_lim)){
      if (!(round(denom_lim) == denom_lim && denom_lim > 0 )){
        cat(denom_lim ,"denom_lim\n")
@@ -410,7 +409,7 @@ if (!usetargetNA && any(dd$target == "Missing")) {
   if (!all(exclude.targetlevs %in% levels(dd$target))) stop("exclude.targetlevs must be one of levels of ",target,"\n", call. =FALSE)
   
    for (i in 1:length(exclude.keys)){
-    vout <- (1:(dim(xx)[2]))[dimnames(xx)[[2]] == exclude.targetlevs[i]]
+    vout <- (1:(dim(xx)[1]))[dimnames(xx)[[1]] == exclude.targetlevs[i]]
     klev <- levels(dd[, names(dd) == exclude.keys[i]])
     if (!all(exclude.keylevs[i] %in% klev)) stop("exclude.keylevs position ",i, " must be one of levels of ",keys[i],"\n", call. =FALSE)#
     kind <- (1:length(keys))[keys == exclude.keys[i]]
@@ -461,6 +460,10 @@ tab_kd1[tab_kd1>1] <- 0
 tab_kd1_s <- tab_kd1[names(tab_kd1) %in% Ks]
 tab_ksd1 <-tab_kd[tab_ks == 1 & tab_kd == 1] ## repU
 
+tab_ktd_p <- sweep(tab_ktd,2,apply(tab_ktd,2,sum),"/")
+tab_ktd_p[is.na(tab_ktd_p)] <- 0
+tab_kts_p <- sweep(tab_kts,2,apply(tab_kts,2,sum),"/")
+tab_kts_p[is.na(tab_kts_p)] <- 0
 
 UiS<- sum(tab_ks1)/Ns*100
 UiO<- sum(tab_kd1)/Nd*100
@@ -470,6 +473,7 @@ repU <- sum(tab_ksd1)/Nd*100
 ident[jj,] <- c( UiO,UiS, UiOiS,repU )
 
 ###----------------------------- attrib dis measures-------------------------
+
 Dorig <- sum(did)/Nd*100
 Dsyn <- sum(dis)/Ns*100
 iS <- sum(tab_iS)/Nd*100

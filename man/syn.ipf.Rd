@@ -50,8 +50,9 @@ syn.ipf(x, k, proper = FALSE, priorn = 1, structzero = NULL,
      \item{rand}{when epsilon is > 0 and DP synthetic data are created this 
     determines whether the data are created by Poisson counts from the expected 
     fitted counts in the cells of the DP adjusted data.}
-      \item{noisetype}{One of "Laplace" or "Goussian" to determine the type of
-    noise to be added that will make the synthesis DP.}
+  \item{noisetype}{One of "Laplace" or "Gaussian" to determine the type of
+    noise to be added that will make the synthesis DP (Laplace) or approximately DP (Gaussian).
+    For noisetype "Gaussian" your synthesis will fail if epsilon >1.}
   \item{\dots}{additional parameters.}
 }
 \details{

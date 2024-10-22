@@ -862,11 +862,12 @@ group_num <- function(x1, x2, xsyn, n = 5, style = "quantile", cont.na = NA, ...
   x1nm <- x1[!(x1 %in% cont.na) & !is.na(x1)]
   x2nm <- x2[!(x2 %in% cont.na) & !is.na(x2)]
   xsynnm <- xsyn[!(xsyn %in% cont.na) & !is.na(xsyn)]
+  if (length(xsynnm) == 0 ) stop("One of your variables has only missing values\n", call. = FALSE )
 
   # Derive breaks
   my_breaks <- unique(suppressWarnings(classIntervals(c(x1nm, xsynnm),
                                        n = n, style = style, ...))$brks)
-
+  
   my_levels <- c(levels(cut(x1nm, breaks = my_breaks,
                  dig.lab = 8, right = FALSE, include.lowest = TRUE)),
                  cont.na[!is.na(cont.na)])
