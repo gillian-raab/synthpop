@@ -16,7 +16,8 @@ NEW FEATURES
 * The two syn methods that can be made differentially private (DP) ("catall" and
   "ipf"   can now use the Gaussian mechanism instead of the Laplace mechanism. They
   each have new parameters (noise) to define the type of noise to add and del,
-  to define delta for the Gaussian mechanism.
+  to define delta for the Gaussian mechanism. Exponential noise can also be added
+  but this is not recommended and a warning is printed.
 * New function mergelevels() that combines levels of factors in a data.frame 
   using routines from the forcats package.
 * New function synorig.compare() that can be used to check synthetic data created
