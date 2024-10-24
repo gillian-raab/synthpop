@@ -22,7 +22,7 @@ NEW FEATURES
   using routines from the forcats package.
 * New function synorig.compare() that can be used to check synthetic data created
   by methods other than syn() to make sure that the data sets are comparable.
-  Some simple fixes can be done and the changed data sets returmed.
+  Some simple fixes can be done and the changed data sets returned.
   It is called in the versions of compare.synds(), utility.gen(), utility.tab(), 
   utility.tables(), disclosure() and disclosure.summary() when these methods are
   for synthetic data supplied as a dataframe or a list of data frames. If 

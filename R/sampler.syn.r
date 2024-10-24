@@ -70,7 +70,7 @@ sampler.syn <- function(p, data, m, syn, visit.sequence,
 
            cat("First ", length(grouped), " variables (", 
                paste(names(grouped), collapse = ", "),
-               ") synthesised together by method '", ordmethod[1], "'\n", sep = "")
+               ") synthesised together by joint method '", ordmethod[1], "'\n", sep = "")
            if (ordmethod[1] == "catall" && !is.null(mth.args) && 
                "epsilon" %in% names(mth.args$catall))
                  cat("Synthesis made differentially private with parameter epsilon of ",

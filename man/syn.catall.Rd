@@ -7,7 +7,7 @@
 \usage{
 syn.catall(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
            maxtable = 1e8, epsilon = 0,  delta = 0.05,rand = TRUE,
-          noisetype = "Laplace",  ...)}
+          noisetype = "",  ...)}
 \arguments{
   \item{x}{a data frame (\code{n} x \code{p}) of the set of original variables.}
   \item{k}{a number of rows in each synthetic data set - defaults to \code{n}.}
@@ -28,16 +28,16 @@ syn.catall(x, k, proper = FALSE, priorn = 1, structzero = NULL,
     structural zero cells (see an example below).}
   \item{maxtable}{a number of cells in the cross-tabulation of all the variables
     that will trigger a severe warning.}
-  \item{epsilon}{measures scale of Laplace or Gaussian noise to be added under differential 
+  \item{epsilon}{measures scale of Laplace  Gaussian or Exponential noise to be added under differential 
     privacy (DP)}
       \item{delta}{Parameter delta for Gaussian noise when this method is used
       to make the synthesis approximately differentially private (DP)}
   \item{rand}{for DP versions determines if multinomial noise is to be added to 
     DP counts. If it is set to false the DP adjusted counts are simply rounded 
     to a whole number in a manner that preserves the desired sample size (k).}
-  \item{noisetype}{One of "Laplace" or "Gaussian" to determine the type of
-    noise to be added that will make the synthesis DP (Laplace) or approximately DP (Gaussian).
-    For noisetype "Gaussian" your synthesis will fail if epsilon >1.}
+  \item{noisetype}{One of "Laplace" "Gaussian" or "Exponentyial" to determine the type of
+    noise to be added that will make the synthesis DP (Laplace, Exponential) or approximately DP (Gaussian).
+    For noisetype "Gaussian" your synthesis will fail if epsilon >1 or delta not in range 0-1.}
   \item{\dots}{additional parameters.}
 }
 \details{
