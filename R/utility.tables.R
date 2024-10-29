@@ -15,7 +15,7 @@ utility.tables.data.frame <- utility.tables.list <-
                            vars = NULL, third.var = NULL,
                            useNA = TRUE, ngroups = 5,
                            tab.stats = c("pMSE", "S_pMSE", "df"), 
-                           plot.stat = "S_pMSE", plot = TRUE,
+                           plot.stat = "S_pMSE", plot = TRUE, max.table = 1e07,
                            print.tabs = FALSE, digits.tabs = 4,
                            max.scale = NULL, min.scale = 0, plot.title = NULL,
                            nworst = 5, ntabstoprint = 0, k.syn = FALSE,
@@ -73,7 +73,7 @@ utility.tables.data.frame <- utility.tables.list <-
                        vars = vars, third.var = third.var, 
                        useNA = useNA, ngroups = ngroups, 
                        tab.stats = tab.stats, plot.stat = plot.stat, 
-                       plot = plot, print.tabs = print.tabs, 
+                       plot = plot, max.table = max.table, print.tabs = print.tabs, 
                        digits.tabs = digits.tabs, max.scale = max.scale, 
                        min.scale = min.scale, plot.title = plot.title, 
                        nworst = nworst, ntabstoprint = ntabstoprint, 
@@ -91,7 +91,7 @@ utility.tables.synds <- function(object, data,
                                  vars = NULL, third.var = NULL,
                                  useNA = TRUE, ngroups = 5,  
                                  tab.stats = c("pMSE", "S_pMSE", "df"), 
-                                 plot.stat = "S_pMSE", plot = TRUE,
+                                 plot.stat = "S_pMSE", plot = TRUE, max.table = 1e07,
                                  print.tabs = FALSE, digits.tabs = 4,
                                  max.scale = NULL, min.scale = 0, plot.title = NULL,
                                  nworst = 5, ntabstoprint = 0, k.syn = FALSE, 
@@ -204,7 +204,8 @@ utility.tables.synds <- function(object, data,
    
    for (i in 1:npairs) {
      utility.list[[i]] <- utility.tab(object, data, vars = pairs[, i], 
-                                      ngroups = ngroups, k.syn = k.syn, 
+                                      ngroups = ngroups, k.syn = k.syn,
+                                      maxtables = maxtables, 
                                       useNA = useNA, print.flag = FALSE, ...)
      if (i == 1) {
        tab.ind <- match(tab.stats, names(utility.list[[i]]))

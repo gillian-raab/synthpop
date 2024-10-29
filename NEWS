@@ -1,4 +1,4 @@
-synthpop 1.8-1
+synthpop 1.9-0
 ---------------
 NEW FEATURES
 * Two new disclosure functions calculate various disclosure measures and their 
@@ -41,6 +41,9 @@ CHANGE
 BUG FIXES
 * In syn at the check for collinearity that removes some predictors, predictors
   that have a passive method are not removed.
+* The function utility.tables now has an explicit parameter max.table that is 
+  used by utility.tab() to override the default for the maximum table size for 
+  any set of tables to prevent the plots from failing.
 
 synthpop 1.8-0
 ---------------
