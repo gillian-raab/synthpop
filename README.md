@@ -1,7 +1,7 @@
 
 # <img src="logo.png" width="50" height="50"> synthpop with disclosure functions
 
-### for more information about _synthpop_ you can visit **[www.synthpop.org](www.synthpop.org)**. Look under resources for materials from our courses on how to use the package.
+### for more information about _synthpop_ you can visit **[www.synthpop.org.uk](www.synthpop.org.uk)**. Look under resources for materials from our courses on how to use the package.
 
 ### This is a new version (v1.8-1) of the synthpop package.
 
