@@ -984,7 +984,7 @@ and we expect that the utility measures from the synthetic data will be terrible
 syn.ipf <- function(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
                     gmargins = "twoway", othmargins = NULL, tol = 1e-3, max.its = 5000,
                     maxtable = 1e8, print.its = FALSE, 
-                    epsilon= 0, delta = 0.05, rand = TRUE,noisetype ="Laplace", ...)
+                    epsilon= 0, delta = 0.05, noisetype ="Laplace", ...)
 {
  # Fits log-linear model to combinations of variables
  # k just holds number of synthetic records required
@@ -1076,9 +1076,7 @@ the same proportion in each level.
  if (!is.null(structzero)) exp1[sz] <- 0
  
  exp1 <- exp1 / sum(exp1)   # get it as proportions
- if (epsilon == 0 & rand == FALSE) cat("WARNING: No DP noise or random noise added,\nData returned will be close to NULL expectation for model defined by margins.\n")
- if (rand == TRUE)  z    <- rmultinom(1, k, exp1)
- else z <- roundspec(exp1*k/sum(exp1))
+ z    <- rmultinom(1, k, exp1)
  res  <- array(z, dim(exp1))
  dimnames(res) <- dimnames(tab)
  res  <- array.to.frame(res)

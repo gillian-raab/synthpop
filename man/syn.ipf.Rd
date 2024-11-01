@@ -9,7 +9,7 @@
 syn.ipf(x, k, proper = FALSE, priorn = 1, structzero = NULL, 
         gmargins = "twoway", othmargins = NULL, tol = 1e-3,
         max.its = 5000, maxtable = 1e8, print.its = FALSE,
-        epsilon = 0, delta = 0.05, rand = TRUE, 
+        epsilon = 0, delta = 0.05, 
         noisetype = "Laplace", ...)
 }
 \arguments{
@@ -47,9 +47,6 @@ syn.ipf(x, k, proper = FALSE, priorn = 1, structzero = NULL,
     margins used to fit the data.}  
     \item{delta}{Parameter for epsilon-delta differential privacy (DP) 
     parameter, when noisetype = "Gaussian".}
-     \item{rand}{when epsilon is > 0 and DP synthetic data are created this 
-    determines whether the data are created by Poisson counts from the expected 
-    fitted counts in the cells of the DP adjusted data.}
   \item{noisetype}{One of "Laplace" or "Gaussian" to determine the type of
     noise to be added that will make the synthesis DP (Laplace) or approximately DP (Gaussian).
     For noisetype "Gaussian" your synthesis will fail if epsilon >1.}
@@ -84,8 +81,8 @@ those not present in the original data, except those defined by \code{structzero
 NOTE that when the function is called by setting elements of
 method in \code{syn} to \code{"ipf"}, the parameters \code{priorn},
 \code{structzero}, \code{gmargins}, \code{othmargins}, \code{tol}, 
-\code{max.its}, \code{maxtable}, \code{print.its}, \code{epsilon}, 
-and \code{rand} must be supplied to \code{syn} as e.g. \code{ipf.priorn}.
+\code{max.its}, \code{maxtable}, \code{print.its} and \code{epsilon}, 
+must be supplied to \code{syn} as e.g. \code{ipf.priorn}.
 }
 \value{
 A list with two components:
