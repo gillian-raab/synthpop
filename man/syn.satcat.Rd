@@ -5,7 +5,7 @@
 \description{Synthesises one variable (\code{y}) from all possible 
   combinations of its predictors (\code{x}). A bootstrap sample is created 
   from the original values of \code{y} within each unique combinations of 
-  of \code{xp} (the syntheisied values of the grouping variable).
+  of \code{xp} (the synthesisied values of the grouping variable).
   Note that only combinations of predictor variable levels that appear in the 
   original data can be in the synthetic data. 
   The related method 
