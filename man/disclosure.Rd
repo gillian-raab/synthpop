@@ -189,22 +189,9 @@
 
 \examples{
 library(synthpop)
-
-ods <- SD2011[, c("sex", "age", "edu", "marital", "region", "income","ls",
-              "trustfam","ymarr","smoke")]
+ods <- SD2011[, c("sex", "age", "edu", "marital", "income")]
 odsF <- numtocat.syn(ods, numtocat = "income", catgroups = 7, cont.na = list(income = -8))
-s1 <- syn(odsF$data, method = "ctree",seed = 75, m=5)
+s1 <- syn(odsF$data, method = "ctree",seed = 75, m=3, k=1000)
 disc1 <- disclosure(s1, odsF$data, target = "income", 
-         keys = c("sex", "age", "edu","marital", "region"))
-print(disc1)
-print(disc1, to.print = c("ident", "attrib","allCAPs"), digits = 3)
-
-disc2 <- disclosure(s1$syn[[3]], odsF$data, target = "income", keys = c("sex", "age", "edu",
-                                "marital", "region"), usetargetNA = FALSE)
-print(disc2, to.print = "attrib")
-
-disc3 <- disclosure(s1$syn[[2]], odsF$data, target = "smoke", keys = c("sex", "age", "edu",
-         "marital", "region"), denom_lim =5)
-print(disc3, to.print = "attrib")
-print(disc3, to.print = "check_2way")
+                    keys = c("sex", "age", "edu","marital"))
 }
