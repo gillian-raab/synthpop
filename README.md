@@ -3,7 +3,7 @@
 
 ### for more information about _synthpop_ you can visit **[www.synthpop.org.uk](www.synthpop.org.uk)**. Look under resources for materials from our courses on how to use the package.
 
-### This is a new version (v1.8-1) of the synthpop package.
+### This is a new version (v1.9-0) of the synthpop package.
 
 ### The version on CRAN is 1.8-0 as of 6/2/2024.
 

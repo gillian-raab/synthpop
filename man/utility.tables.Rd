@@ -50,7 +50,6 @@
                useNA = TRUE, ngroups = 5, 
                tab.stats = c("pMSE", "S_pMSE", "df"), 
                plot.stat = "S_pMSE", plot = TRUE,  max.table = 1e07,
-                           print.tabs = FALSE, digits.tabs = 4,
                print.tabs = FALSE, digits.tabs = 4,
                max.scale = NULL, min.scale = 0, plot.title = NULL,  
                nworst = 5, ntabstoprint = 0, k.syn = FALSE,

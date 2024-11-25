@@ -35,7 +35,7 @@ CHANGE
   printed with print.repuniq.synds.
 * The functions compare.synds() and utility.tables() that calulate utility 
   measures comparing synthetic data to the original, now have a parameter
-  print.flag (default TRUE) that prins out a message as each element of the
+  print.flag (default TRUE) that prints out a message as each element of the
   output is calculated.
 
 BUG FIXES
@@ -411,7 +411,7 @@ CHANGES
 * No message on the seed value used (it is stored in the result object).
 * Formula of the model to be fitted using glm.synds() or lm.synds() can be 
   specified outside the function.
-* Massage for sdc() on number of replicated uniques also when it is equal to 
+* Message for sdc() on number of replicated uniques also when it is equal to 
   zero.   
 * Maximum number of iterations for a multinomial model used in `polyreg` and 
   `polr` method increased to 1000 (`maxit` parameter). Message if the limit is 
