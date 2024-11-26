@@ -30,9 +30,19 @@ NEW FEATURES
   At present this only happens for first elemement of a list. 
 
 CHANGE
-* Function replicated.uniques() changed. Now has additional parameter "keys" and
-  now returns more results as an object of class "repuniq.synds", that can be
-  printed with print.repuniq.synds.
+* Function replicated.uniques() changed. Now has additional parameter "keys",
+  a vector of variable names  used to define unique records. As well as checking 
+  for replicated uniques it also checks for uniques in the synthetic data
+  that are present (but not necessarily  unique in the original). 
+  It now returns results as an object of class "repuniq.synds", that can be
+  printed with print.repuniq.synds. Its value is a table of numbers of 
+  different types of uniques and two vectors or matrices (if object$m>1)
+  that identify the records to be excluded for each type of unique
+  that can be excluded with the function sdc().
+* Function sdc() is modified to accept input from the new replicated.uniques()
+  function. As well as the parameter rm.replicated.uniques, there is another
+  rm.uniques.in.orig. THis may be a more appropriate strategy for low-fidelity
+  synthetic data. (add ref here when I have report published).
 * The functions compare.synds() and utility.tables() that calulate utility 
   measures comparing synthetic data to the original, now have a parameter
   print.flag (default TRUE) that prints out a message as each element of the

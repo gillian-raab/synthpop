@@ -1,5 +1,6 @@
 \name{replicated.uniques}
 \alias{replicated.uniques}
+\alias{print.repuniq.synds}
 \title{Replications in synthetic data}
 \description{
   Determines which unique units in the synthesised data set(s)
@@ -21,7 +22,7 @@
 \usage{
 replicated.uniques(object, data, keys = names(data))
 
-\method{print}{repuniq.synds}(x)
+\method{print}{repuniq.synds}(x, \dots)
 }
 
 
@@ -33,6 +34,7 @@ replicated.uniques(object, data, keys = names(data))
   \item{data}{the original observed data set.}
   \item{keys}{Variables to be used as quasi-identifiers to check for unique
   combinations.} 
+  \item{\dots}{additional parameters} 
   \item{x}{an object of class \code{repuniq.synds}; a result of a call to \code{replicated.uniques()}.}
 }
 \value{
