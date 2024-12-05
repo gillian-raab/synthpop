@@ -511,7 +511,7 @@ compare.fit.synds <- function(object, data, plot = "Z",
  colnames(res.obs) <- c("Beta","se(Beta)","Z")
  res.syn  <- syn.fit$coefficients[,1:3] 
  res.syn  <- res.syn[order(match(rownames(res.syn), rownames(res.obs))), ]
- res.overlap <- compare.CI(res.syn, res.obs, ci.level = ci.level, intercept = TRUE)
+ res.overlap <- overlap.CI(res.syn, res.obs, ci.level = ci.level, intercept = TRUE)
  ncoef <- nrow(res.obs) 
 
  res.diff <-  cbind(res.syn[,1], res.obs[,1], 
@@ -649,8 +649,8 @@ dfCI <- function(modelsummary, names.est.se = c("Estimate","Std. Error"),
 }
 
 
-###-----compare.CI---------------------------------------------------------
-compare.CI <- function(synthetic, observed, ci.level, intercept, ...)
+###-----overlap.CI---------------------------------------------------------
+overlap.CI <- function(synthetic, observed, ci.level, intercept, ...)
 {
  CI <- qnorm(1- (1 - ci.level)/2)
  ##Initiate

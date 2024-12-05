@@ -42,7 +42,7 @@ replicated.uniques(object, data, keys = names(data))
   \item{m}{number of synthetic data sets in object \code{object$m} }
   \item{n}{number of rows in data \code{object$n}}
   \item{k}{number of rows in of synthetic data set(s) in object \code{object$k}}
-  \item{res_tab}{Tableor list of tables with numbers and percentages of uniques}
+  \item{res_tab}{Table or list of tables with numbers and percentages of uniques}
   \item{synU.rm}{A vector of length \code{object$k} TRUE/FALSE values wherea
   TRUE value identifies a unique in synthetic and prtesent in the original} 
   \item{repU.rm}{A vector of length \code{object$k} TRUE/FALSE values where a

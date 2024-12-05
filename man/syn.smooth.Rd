@@ -9,7 +9,7 @@ syn.smooth(ysyn, yobs = NULL, smoothing = "spline", window = 5, ...)
 }
 \arguments{
   \item{ysyn}{non-missing synthetic data to be smoothed.}
-  \item{yobs}{original data used by all methodds to determine number of 
+  \item{yobs}{original data used by all methods to determine number of 
     decimal places and by method \code{"density"} to identify 
     top-coding.}
   \item{smoothing}{a character vector that can take values \code{"spline"}, 

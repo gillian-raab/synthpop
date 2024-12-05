@@ -82,7 +82,7 @@
   \item{not.targetslev}{Vector of same length as targets giving level of each
    target to be excluded from calculating disclosure measures. Set elements for
    unaffected targets as blanks.}
-  \item{print.flag}{TRUE/FALSe to print out line as disclosure for each member of
+  \item{print.flag}{TRUE/FALSE to print out line as disclosure for each member of
     targets is calculated.}
   \item{usetargetsNA}{A logical vector of the same length as \code{targets} that
             determines if \code{NA} values of each are to be

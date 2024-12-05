@@ -61,7 +61,7 @@
     These are often flagged from  \code{thresh_2way}  where the 
     first element corresponds to  \code{denom_lim}}
   \item{print.flag}{logical value as to whether a line is printed as
-    disclosure is calculated for each symthetic data set.}
+    disclosure is calculated for each synthetic data set.}
   \item{digits}{number of digits to print for disclosure measures.} 
   \item{usetargetNA}{determines whether NA values in target are to be used 
             in checking for disclosure}
@@ -79,8 +79,8 @@
   \item{ngroups_target}{Unless set to NULL (the default) a numeric target variable
      will be grouped into \code{ngroups_target} categories.}
   \item{ngroups_keys}{Unless set to NULL (the default) any numeric variable
-     will be grouped into categories If \code{ngroups_keys} is of length 1 all numeric
-     keys will be have the same number of groups. Othersise \code{ngroups_keys}
+     will be grouped into categories.  If \code{ngroups_keys} is of length 1 all numeric
+     keys will be have the same number of groups. Otherwise \code{ngroups_keys}
      needs to be the same length as keys and will give the number of groups for each
      key. If an element of \code{ngroups_keys} is zero, no grouping will be done.}
   \item{thresh_1way}{A vector of two numeric values both of which meed to be exceeded
@@ -140,13 +140,13 @@
     "DiSCO" measure i.e. the distribution for every record that leads to a 
     correct disclosure of the number of observations with
     the same keys and the same correct target in the synthetic data. 
-    Large denominators are often an   indication that the discloure is 
+    Large denominators are often an   indication that the disclosure is 
     something that might be expected from   prior knowledge of relations.} 
   \item{allCAPs}{Table of the following measures of correct attribution
       probability: "baseCAPd","CAPd", "CAPs" , "DCAP" and  "TCAP"'} 
   \item{check_1way}{A data frame with one record per synthesis
       identifying the level of the target with numbers of disclosive records
-      that are above threshholds defined by \code{thresh_1way}, with default
+      that are above thresholds defined by \code{thresh_1way}, with default
       value c(50,90). This means that there must be more than 50 disclosive       records
     with this level of the target, and that 90\% or more of all disclosive 
     records must have this target. The value of most_dis_lev will be blank 
@@ -157,7 +157,7 @@
    ` or blank if none}
   \item{check_2way}{A list of length number of syntheses giving details 
     for each of the two-way combinations of target and keys where the
-    the numbers of disclosive records are above threshholds defined by 
+    the numbers of disclosive records are above thresholds defined by 
     \code{thresh_2way}. The default value for this is c(5, 80),
     meaning that there must be at least 5 records with this combination
     of targets and keys and that 80\% or more of records in the original

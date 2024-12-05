@@ -115,7 +115,7 @@ agreement with category (real or synthetic) of the observation. The first of the
 \code{pMSE} is identical except for a constant to \code{VW}. No expected values are 
 computed for the last three of these measures, but they can be obtained by replication 
 from \code{utility.gen()}. 
-Three further measures are calulated from the tables. The mean absolute difference 
+Three further measures are calculated from the tables. The mean absolute difference 
 in distributions: firstly \code{MabsDD}, the avarage absolute difference in the 
 proportions of original and synthetic data from all the cells in the table. 
 Secondly a weighted version of this measure \code{WMabsDD} where the weights are 

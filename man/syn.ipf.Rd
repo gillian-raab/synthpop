@@ -75,7 +75,7 @@ for this cell is \eqn{(p_i + priorn/N^2) / (1 + priorn / N^2)} or
 equivalently \eqn{(N * p_i + priorn/N) / (N + priorn / N)}.
 
 Unlike \code{syn.satcat}, which fits saturated models from their conditional 
-distrinutions, \code{x} can include any combination of variables, including 
+distributions, \code{x} can include any combination of variables, including 
 those not present in the original data, except those defined by \code{structzero}.
 
 NOTE that when the function is called by setting elements of
@@ -106,9 +106,18 @@ struct.zero <- list(
                           region = c(3, 4, 10:11, 13)),
   placesize_region = list(placesize = "URBAN 20,000-100,000", 
                           region = c(1, 3, 5, 6, 8, 9, 14:15)))
+                          
+# you could use  the object struct.zero in the command below 
+# byt devtools checking did not like it so have added the list instead
 
 synipf <- syn(ods, method = c(rep("ipf", 4), "ctree", "normrank", "ctree"), 
               ipf.gmargins = "twoway", ipf.othmargins = list(c(1, 2, 3)),
-              ipf.priorn = 2, ipf.structzero = struct.zero)
+              ipf.priorn = 2, ipf.structzero = list(
+  placesize_region = list(placesize = "URBAN 500,000 AND OVER", 
+                          region = c(2, 4, 5, 8:13, 16)),
+  placesize_region = list(placesize = "URBAN 200,000-500,000", 
+                          region = c(3, 4, 10:11, 13)),
+  placesize_region = list(placesize = "URBAN 20,000-100,000", 
+                          region = c(1, 3, 5, 6, 8, 9, 14:15))))
 }
 \keyword{datagen}

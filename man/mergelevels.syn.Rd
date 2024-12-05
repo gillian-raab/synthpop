@@ -14,7 +14,7 @@ mergelevels.syn(data, vars = NULL, newlabel = FALSE, addNA = FALSE,
 
 \arguments{
   \item{data}{An observed data set before synthesis.}
-  \item{vars}{a vector of names or numbers for the variables for which categoies are to be merged.
+  \item{vars}{a vector of names or numbers for the variables for which categories are to be merged.
     defaults to all factors in data when sert to NULL}
   \item{minsize}{The minimum size that of combined categories when \code{merge.byhand} is FALSE}
   \item{newlabel}{When merge.byhand is FALSE when \code{newlabel = TRUE} causes the new factor

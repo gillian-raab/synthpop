@@ -29,7 +29,7 @@ NEW FEATURES
   fixing is possible this is done and functions continue with fixed data. 
   At present this only happens for first elemement of a list. 
 
-CHANGE
+CHANGES
 * Function replicated.uniques() changed. Now has additional parameter "keys",
   a vector of variable names  used to define unique records. As well as checking 
   for replicated uniques it also checks for uniques in the synthetic data

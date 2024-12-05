@@ -47,7 +47,7 @@ summary.synds <- function(object, msel = NULL,
       maxsum = maxsum, digits = digits, ...)
     zall.df <- Reduce(function(x,y) mapply("rbind",x,y),zall)
     meanres <- lapply(zall.df, function(x) apply(x,2,mean))
-    sy$result <- summary.out(meanres)
+    sy$result <- sum.out(meanres)
   } else if (length(msel) == 1) {
     sy$result <- summary(object$syn[[msel]],...)
   } else {
@@ -765,8 +765,8 @@ print.utility.tab <- function(x, print.tables = NULL,
 }
 
 
-###-----summary.out--------------------------------------------------------
-summary.out <- function(z, digits = max(3L, getOption("digits") - 3L), ...)
+###-----sum.out--------------------------------------------------------
+sum.out <- function(z, digits = max(3L, getOption("digits") - 3L), ...)
 {
     ncw <- function(x) {
         zz <- nchar(x, type = "w")
