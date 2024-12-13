@@ -9,7 +9,7 @@
 
 ### You can find it here **[_synthpop_ on CRAN](https://CRAN.R-project.org/package=synthpop)**.
 
-The biggest change in the new version is the inclusion of two new functions to assess the disclosure risk of synthetic data, disclosure() and disclosure.summary().
+The biggest change in the new version is the inclusion of two new functions to assess the disclosure risk of synthetic data, disclosure() and multi.disclosure().
 
 Each of them can take as input either an oject of class synds that includes synthetic data set(s) created by synthpop or a synthetic data set or a list of synthetic data sets created by any method from the same original data.
 
