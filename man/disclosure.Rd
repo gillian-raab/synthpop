@@ -114,8 +114,8 @@
 \details{ Calculates identity disclosure measures for a for a set of keys,
          (quasi identifiers) and attribute disclosure measures for  one
          variable from the same  set of keys considered as a target. The 
-         function \code{\link{disclosure.summary}} calls this function and 
-         summarises the attribute disclosure measures for a set of targets.
+         function \code{\link{multi.disclosure}} calls this function and 
+         summarises the attribute disclosure measures for multiple targets.
          See the vignette 
 }
 
@@ -184,7 +184,7 @@
 \references{
  See references in package vignette}
  
-\seealso{  \code{\link{syn}} \code{\link{disclosure.summary}}
+\seealso{  \code{\link{syn}} \code{\link{multi.disclosure}}
 }
 
 \examples{

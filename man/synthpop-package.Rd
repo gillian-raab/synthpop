@@ -52,7 +52,7 @@ Maintainer: Gillian Raab <gillian.raab@ed.ac.uk>
 
   Raab, G.M. (2023)  Methods to Control Disclosure Risk of Synthetic Data Created by National Statistics Agencies. International journal of population data science 8.2 
 
-  Raab, G.M.,  Nowok, B., and Dibben, C. (2024) Practical privacy metrics for synthetic data, Vignette in synthpop package. Also available at  \doi{10.4855/arXiv.2406.16826}. 
+  Raab, G.M.,  Nowok, B., and Dibben, C. (2024) Practical privacy metrics for synthetic data. Vignette in synthpop package. Also available at  \doi{10.48550/arXiv.2406.16826}. 
    
   Raab, G.M. (2024) Privacy risk from synthetic data: practical proposals. Chapter in Privacy in Statistical databases 2024. published in Springer Series Lecture notes in Computer Science. edited by Melek Önen, and Josep Domingo-Ferrer pp 254-273. Also available at  \doi{10.48550/arXiv.2409.04257}.
   

@@ -1,10 +1,10 @@
-\name{disclosure.summary}
-\alias{disclosure.summary}
-\alias{disclosure.summary.synds}
-\alias{disclosure.summary.data.frame}
-\alias{disclosure.summary.list}
-\alias{print.disclosure.summary}
-\title{Disclosure measures for a range of target variables.}
+\name{multi.disclosure}
+\alias{multi.disclosure}
+\alias{multi.disclosure.synds}
+\alias{multi.disclosure.data.frame}
+\alias{multi.disclosure.list}
+\alias{print.multi.disclosure}
+\title{Disclosure measures for multiple of target variables.}
 \description{
   Calculates, prints and plots tables of disclosure measures for a set of
   target variables from a fixed set of keys to form quasi-identifiers. 
@@ -18,7 +18,7 @@
 }
 
 \usage{
-\method{disclosure.summary}{synds}(object, data, 
+\method{multi.disclosure}{synds}(object, data, 
            keys , targets = NULL, print.flag = TRUE, 
            denom_lim = 5, exclude_ov_denom_lim = FALSE,
            not.targetslev = NULL,  
@@ -30,7 +30,7 @@
            digits = 2, plot = TRUE,  \dots)
 
                
-\method{disclosure.summary}{data.frame}(object, data, cont.na = NULL, 
+\method{multi.disclosure}{data.frame}(object, data, cont.na = NULL, 
            keys , targets = NULL,  print.flag = TRUE, 
            denom_lim = 5, exclude_ov_denom_lim = FALSE,
            not.targetslev = NULL, 
@@ -41,7 +41,7 @@
            thresh_1way = c(50, 90),thresh_2way = c(4, 80), 
            digits = 2, plot = TRUE,  compare.synorig = TRUE,  \dots)
 
-\method{disclosure.summary}{list}(object, data, cont.na = NULL,
+\method{multi.disclosure}{list}(object, data, cont.na = NULL,
             keys , targets = NULL,  print.flag = TRUE, 
             denom_lim = 5, exclude_ov_denom_lim = FALSE,
            not.targetslev = NULL,  
@@ -53,7 +53,7 @@
            digits = 2, plot = TRUE, compare.synorig = TRUE,\dots)
 
 
-\method{print}{disclosure.summary}(x, digits = NULL, plot = NULL, to.print =  c("ident","attrib"),
+\method{print}{multi.disclosure}(x, digits = NULL, plot = NULL, to.print =  c("ident","attrib"),
        \dots)}
 
 
@@ -138,7 +138,7 @@
    compared. Default set to \code{FALSE} except when the synthetic data are supplied as a    data.frame or a list when set to TRUE.} 
    \item{to.print}{Vector of items to be printed including "ident", "attrib", both or NULL}
   \item{\dots}{additional parameters}   
-  \item{x}{an object of class \code{disclosure.summary}.}
+  \item{x}{an object of class \code{multi.disclosure}.}
 }
 
 \details{Calculates measures of identity and attribution disclosure from the keys 
@@ -147,7 +147,7 @@
   Details are in help file for \code{\link{disclosure}}. 
   
 }
-\value{An object of class \code{disclosure.summary} which is a list with the following 
+\value{An object of class \code{multi.disclosure} which is a list with the following 
   components: 
   \item{attrib.table}{a table with the selected attribute disclosure measure
        (\code{attrib.meas}) for synthetic data and corresponding measure for the 
@@ -189,11 +189,11 @@ ods <- SD2011[, c("sex", "age", "edu", "marital", "region", "income")]
 s1 <- syn(ods)
 
 ### synthetic data provided as a 'data.frame' object
-t1 <- disclosure.summary(s1$syn, ods,
+t1 <- multi.disclosure(s1$syn, ods,
 keys = c("sex", "age", "edu"))
 
 ### synthetic data provided as a 'synds' object  
-t1 <- disclosure.summary(s1, ods, 
+t1 <- multi.disclosure(s1, ods, 
 keys = c("sex", "age", "edu"))
 
 }

@@ -48,7 +48,7 @@ options(prompt="R> ", width=77, digits=4, useFancyQuotes=FALSE)
 \maketitle
 \begin{abstract}
 This paper explains how synthpop package \footnote{see \url{www.synthpop.org.uk} } \footnote{The new version 1.8-1 is currently available on Github at \url{https://github.com/gillian-raab/synthpop}} has been extended to include functions to calculate measures of identity and attribute disclosure risk for synthetic data that measure risks for the 
-records used to create the synthetic data. The basic function \texttt{disclosure} calculates identity disclosure for a set of quasi-identifiers (keys) and attribute disclosure for one variable specified as a target from the same set of keys. The second function \texttt{disclosure.summary} is a wrapper for the first and presents summary results for a set of targets. This short paper explains the measures of disclosure risk and documents how they are calculated. We recommend two measures: $RepU$ (replicated uniques) for identity
+records used to create the synthetic data. The basic function \texttt{disclosure} calculates identity disclosure for a set of quasi-identifiers (keys) and attribute disclosure for one variable specified as a target from the same set of keys. The second function \texttt{multi.disclosure} is a wrapper for the first and presents summary results for a set of targets. This short paper explains the measures of disclosure risk and documents how they are calculated. We recommend two measures: $RepU$ (replicated uniques) for identity
 disclosure and $DiSCO$ (Disclosive in Synthetic Correct Original) for attribute disclosure. Both
 are expressed a \% of the original records and each can be compared to similar measures calculated from the original data.
 Experience with using the functions on real data found that some apparent disclosures could be identified as coming from relationships 
@@ -82,19 +82,19 @@ There have been many recent proposals for making synthetic data sets comply with
 
 
 \section[A simple example]{A simple example}\label{sec:simpexamp}
-Here we illustrate the basic use of \texttt{disclosure.summary}. If the parameter \texttt{targets} is not specified, all the variables in the SD that are not part of keys are used as targets.
+Here we illustrate the basic use of \texttt{multi.disclosure}. If the parameter \texttt{targets} is not specified, all the variables in the SD that are not part of keys are used as targets.
 The identity disclosure measures are \texttt{UiO} for original and \texttt{repU} for synthetic, and for attribute disclosure \texttt{Dorig} for original and \texttt{DiSCO} for synthetic. These and other measures will be explained in Sections \ref{subsec:ident} and \ref{subsec:attrib}.
 
 First, a subset of 9 variables are selected from the \texttt{SD2011} data (a survey on quality of life in Poland) that is available as part of the \texttt{synthpop} package. A single synthetic data set is created by the default method in \texttt{synthpop}: \texttt{cart} for each conditional distribution. Note that the variable \texttt{income} has values -8 that indicate not applicable, and the synthesis allows for this. The synthetic data object \texttt{s1}\footnote{an object of class \texttt{synds}} has a component \texttt{syn} that is a single synthetic data set. The disclosure functions can also be used with synthetic data created by other methods either as single synthetic data sets or lists of repeated syntheses from the same original. Here we select 4 keys that represent items that might be known
 for members of this sample, or of the Polish population in 2011. By default,the 5 other variables become the targets: \texttt{depress} \texttt{income} \texttt{ls} \texttt{marital} (marital status), \texttt{workab} (intention to work abroad). The second target, \texttt{income}, is grouped into 20 categories, plus the -8 category. 
-We first use \texttt{disclosure.summary} to create a \texttt{disclosure.summary} object for these keys, and we print out its identity component.
+We first use \texttt{multi.disclosure} to create a \texttt{multi.disclosure} object for these keys, and we print out its identity component.
 \renewcommand{\baselinestretch}{1.0}
 <<synth, size="small">>=
 library("synthpop")
 ods <- SD2011[, c("sex", "age", "region","placesize","depress",
    "income","ls","marital" , "workab")]
 s1 <- syn(ods, seed = 8564, print.flag = FALSE, cont.na = list(income = -8))
-t1 <- disclosure.summary(s1, ods, print.flag = FALSE, plot = FALSE, 
+t1 <- multi.disclosure(s1, ods, print.flag = FALSE, plot = FALSE, 
  keys = c("sex", "age", "region", "placesize"),   ngroups_targets = c(0,20,0,0,0))
 print(t1,to.print = "ident")
 @
@@ -105,7 +105,7 @@ For attribute disclosure we can examine the results as either a table or a plot.
 \begin{figure}[ht]
   \centering
   \includegraphics[width=1\linewidth]{fig1dis.png}
-  \caption{Plot from \texttt{disclosure.summary} with \texttt{plot = TRUE}, the default value.}
+  \caption{Plot from \texttt{multi.disclosure} with \texttt{plot = TRUE}, the default value.}
   \label{fig:f1}
 \end{figure}
 
@@ -132,7 +132,7 @@ synthetic data giving, $repU$ is the percentage of unique original records that 
 The percentage $repU$ has been used as a disclosure measure to evaluate SD by \cite{jackson_rss} and by \cite{raab22} \footnote{Jackson et al. in \cite{jackson_rss} argue that the denominator for $repU$ should be $N_s$ rather than $N_d$. This is inappropriate because our scenario is to consider the risk to the original data.}.
 Replicated uniques are used in \texttt{synthpop} as part of the statistical disclosure control function, \texttt{sdc}, that includes the option of reducing disclosure risk by removing them from the SD. Nowok et al. \cite{nowok_repu} have evaluated this and give an example where this process has very little effect on utility. The function \texttt{replicated.uniques}\footnote{For example by \texttt{replicated.uniques (s2, ods, keys = c("sex","region","age","placesize")} } also calculates $repU$ using a different method from the one described here.
 
-One of the outputs of the functions \texttt{disclosure} and \texttt{disclosure.summary} is \texttt{ident}, a table of identity disclosure measures as illustrated by this example, using the keys from the example in Section \ref{sec:simpexamp} but now calculated for a synthetic object with 5 data sets, using the one target \texttt{depress}. We first create \texttt{t5} an object of class \texttt{disclosure} and then print out the identity and attribute disclosure measures for each synthetic data set.
+One of the outputs of the functions \texttt{disclosure} and \texttt{multi.disclosure} is \texttt{ident}, a table of identity disclosure measures as illustrated by this example, using the keys from the example in Section \ref{sec:simpexamp} but now calculated for a synthetic object with 5 data sets, using the one target \texttt{depress}. We first create \texttt{t5} an object of class \texttt{disclosure} and then print out the identity and attribute disclosure measures for each synthetic data set.
 
 The table for identity disclosure has $UiO$ and $repU$ as its first and last column. The 2nd and 3rd columns are $UiS$ calculated from the synthetic data in the same manner as $UiO$ from the original and $UiOiS$ the \% of $UiO$ with $q$ that are in the SD but not necessarily unique. Each are steps towards calculating $repU$.
 \renewcommand{\baselinestretch}{1.0}
@@ -173,7 +173,7 @@ a-priori. This aspect is discussed further in Section \ref{sec:onetwoway}. The d
 the parameter \texttt{exclude\_over\_denom\_lim} to TRUE. The example in Section \ref{sec:simpexamp} is here run restricted to denominators of 1.
 \renewcommand{\baselinestretch}{1.0}
 <<mof5, size="small">>=
-disclosure.summary(s1, ods, print.flag = FALSE, plot = FALSE,
+multi.disclosure(s1, ods, print.flag = FALSE, plot = FALSE,
    keys = c("sex", "age", "region", "placesize"),
    denom_lim =1, exclude_ov_denom_lim = TRUE)
 @
@@ -229,25 +229,25 @@ disclosive $tq$ combinations with denominators over 4. It then identifies the le
 
 \section{Excluding records}\label{sec:exclusions}
 Having identified records where the apparent disclosure is something that would generally be known, one option is to exclude these key-target combinations explicitly from the measures. The following parameters 
-for \texttt{disclosure.summary} and \texttt{disclosure} can be used for this.
+for \texttt{multi.disclosure} and \texttt{disclosure} can be used for this.
 \begin{itemize}
 \item{\texttt{not.target}: All records with levels of the target given by the parameter \texttt{not.target} are excluded from all disclosure measures.}
 \item{\texttt{usekeysNA}:This is set to TRUE by default so that missing values are included in all tables. It can be set to FALSE for some or all keys to exclude NAs.}
-\item{\texttt{usetargetsNA)(disclosure.summary) or usetargetNA (disclosure) )}: Similar to the above for target(s) - note can be a vector for disclosure.summary.}
-\item{\texttt{exclude.keys, exclude.keylevs and exclude.targetlev}: Three vectors of length the number of key-target pairs to be excluded from all tables.\footnote{For \texttt{disclosure.summary} these parameters are supplied as lists with elements for each target in \texttt{targets}}}
+\item{\texttt{usetargetsNA)(multi.disclosure) or usetargetNA (disclosure) )}: Similar to the above for target(s) - note can be a vector for multi.disclosure.}
+\item{\texttt{exclude.keys, exclude.keylevs and exclude.targetlev}: Three vectors of length the number of key-target pairs to be excluded from all tables.\footnote{For \texttt{multi.disclosure} these parameters are supplied as lists with elements for each target in \texttt{targets}}}
 \end{itemize}
 \begin{figure}[ht]
 \centering
 \includegraphics[width=1\linewidth]{fig2dis.png}
-\caption{Plot from \texttt{disclosure.summary} for variables flagged by checks.}
+\caption{Plot from \texttt{multi.disclosure} for variables flagged by checks.}
 \label{fig:f2}
 \end{figure}
-To illustrate exclusions we will use the Adult data set from the UCI machine learning repository \cite{UCI} with almost 50 thousand records from the US Census income study, available as part of the \texttt{arules} package for \textbf{R} \cite{arules}. This is one of the data sets used in \cite{giomi2022anon} to evaluate privacy risks for SD. Note that the two variables, \texttt{capital gain} and textt{capital gain}, originally numeric data, have been truncated so that they have only 123 and 99 distinct values repsectively. They have not been grouped further in the results presented here.  Figure \ref{fig:f2} is the output of \texttt{disclosure.summary} from the keys \texttt{age, occupation, race and sex} for the other 10 variables that are not in the keys.
+To illustrate exclusions we will use the Adult data set from the UCI machine learning repository \cite{UCI} with almost 50 thousand records from the US Census income study, available as part of the \texttt{arules} package for \textbf{R} \cite{arules}. This is one of the data sets used in \cite{giomi2022anon} to evaluate privacy risks for SD. Note that the two variables, \texttt{capital gain} and textt{capital gain}, originally numeric data, have been truncated so that they have only 123 and 99 distinct values repsectively. They have not been grouped further in the results presented here.  Figure \ref{fig:f2} is the output of \texttt{multi.disclosure} from the keys \texttt{age, occupation, race and sex} for the other 10 variables that are not in the keys.
 The disclosiveness of the original data is relatievly low, compared to the previous example, because of the large sample size and the absence of any geographic identifiers. 
 Three of the 10 variables \texttt{capital.gain, capital.loss and native.country} are flagged to check one-way relationships. The check1 column of the attribute table tells us that the levels contributing to disclosure are
 zeros for the first two and \texttt{United-States} for \texttt{native.country}. These levels make up 95\%, 92\% and 89\% of all records.
 
-Three other variables are flagged as having disclosive two\_way relationships \texttt{workclass, marital, relationship} with totals of 7,7 and 2 $tq$ combinations respectively. The summary function \texttt{disclosure.summary} does not allow target and key specific pairs to be excluded. To
+Three other variables are flagged as having disclosive two\_way relationships \texttt{workclass, marital, relationship} with totals of 7,7 and 2 $tq$ combinations respectively. The summary function \texttt{multi.disclosure} does not allow target and key specific pairs to be excluded. To
 investigate this it is necessary to examine the output of \texttt{disclosure}\footnote{see code in Appendix 3 for how to do this.}. This showed that 
 the largest contribution to \texttt{check\_2way} for \texttt{workclass} was due to this being missing when occupation was missing, although other
 relationships between these two variables also contributed. 

@@ -44,10 +44,10 @@ export(compare, compare.synds, compare.fit.synds,
        disclosure, disclosure.synds,
        disclosure.data.frame, disclosure.list,
        print.disclosure,
-       disclosure.summary, disclosure.summary.synds,
-       disclosure.summary.data.frame, disclosure.summary.list,
+       multi.disclosure, multi.disclosure.synds,
+       multi.disclosure.data.frame, multi.disclosure.list,
        codebook.syn, numtocat.syn, mergelevels.syn,
-       print.disclosure.summary,synorig.compare)
+       print.multi.disclosure,synorig.compare)
 
 S3method(compare, default)
 S3method(compare, synds)
@@ -75,10 +75,11 @@ S3method(disclosure, synds)
 S3method(disclosure, data.frame)
 S3method(disclosure, list)
 
-S3method(disclosure.summary, default)
-S3method(disclosure.summary, synds)
-S3method(disclosure.summary, data.frame)
-S3method(disclosure.summary, list)
+
+S3method(multi.disclosure, default)
+S3method(multi.disclosure, synds)
+S3method(multi.disclosure, data.frame)
+S3method(multi.disclosure, list)
 
 
 S3method(print, synds)
@@ -94,7 +95,7 @@ S3method(print, utility.tab)
 S3method(print, utility.tables)
 S3method(print, repuniq.synds)
 S3method(print, disclosure)
-S3method(print, disclosure.summary)
+S3method(print, multi.disclosure)
 
 
 #exportClasses(synds)

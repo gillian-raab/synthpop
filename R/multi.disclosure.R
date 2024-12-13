@@ -1,12 +1,12 @@
-###----------------------- disclosure.summary------------------------------
-disclosure.summary <- function(object, data, ...) UseMethod("disclosure.summary")
+###----------------------- multi.disclosure------------------------------
+multi.disclosure <- function(object, data, ...) UseMethod("multi.disclosure")
 
-###-----disclosure.summary.default-----------------------------
-disclosure.summary.default <- function(object, ...)
-  stop("No disclosure.summary method associated with class ", class(object), call. = FALSE)
+###-----multi.disclosure.default-----------------------------
+multi.disclosure.default <- function(object, ...)
+  stop("No multi.disclosure method associated with class ", class(object), call. = FALSE)
 
-###-----disclosure.summary.data.frame---disclosure.list--------
-disclosure.summary.data.frame <- disclosure.summary.list <- 
+###-----multi.disclosure.data.frame---multi.disclosure.list--------
+multi.disclosure.data.frame <- multi.disclosure.list <- 
   function(object, data, cont.na = NULL, keys , targets = NULL, print.flag = TRUE, 
            denom_lim = 5, exclude_ov_denom_lim = FALSE,
            not.targetslev = NULL,  
@@ -53,7 +53,7 @@ if(compare.synorig){
     object <- list(syn = object, m = 1, cont.na = cont.na) 
     class(object) <- "synds"
 
-    res <- disclosure.summary.synds(object, data, keys = keys , targets = targets, 
+    res <- multi.disclosure.synds(object, data, keys = keys , targets = targets, 
            denom_lim = denom_lim,  exclude_ov_denom_lim = exclude_ov_denom_lim, 
            not.targetslev = not.targetslev, print.flag = print.flag ,  
            usetargetsNA = usetargetsNA, usekeysNA = usekeysNA, ngroups_targets = ngroups_targets,
@@ -65,8 +65,8 @@ if(compare.synorig){
   }
 
 
-###-----disclosure.summary.synds-------------------------
-disclosure.summary.synds <-     function(object, data, keys , targets = NULL, print.flag = TRUE,  
+###-----multi.disclosure.synds-------------------------
+multi.disclosure.synds <-     function(object, data, keys , targets = NULL, print.flag = TRUE,  
                                          denom_lim = 5, exclude_ov_denom_lim = FALSE,
                                          not.targetslev = NULL, 
                                          usetargetsNA = TRUE,  usekeysNA = TRUE, 
@@ -248,13 +248,13 @@ dimnames(result)[[1]] <- paste(ntoc(1:dim(result)[1]),dimnames(result)[[1]] )
                          ident.meas = ident.meas, attrib.meas = attrib.meas, m = object$m,
                          plot = plot, output.list = unclass(output.list))
        
-       class(res) <- "disclosure.summary"
+       class(res) <- "multi.disclosure"
        return(res)
     }        
   
   
-###-----print.disclosure.summary-----------------------------------------------
-  print.disclosure.summary <- function(x,  digits = NULL,  
+###-----print.multi.disclosure-----------------------------------------------
+  print.multi.disclosure <- function(x,  digits = NULL,  
                                    plot = NULL, to.print = c("ident","attrib"), ...) {
     
      if (is.null(digits)) digits <- x$digits
