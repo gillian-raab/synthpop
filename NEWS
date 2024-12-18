@@ -47,6 +47,8 @@ CHANGES
   measures comparing synthetic data to the original, now have a parameter
   print.flag (default TRUE) that prints out a message as each element of the
   output is calculated.
+* The function write.syn() can no longer write SPSS or Stata files. The function
+  read.obs() has been removed.
 
 BUG FIXES
 * In syn at the check for collinearity that removes some predictors, predictors

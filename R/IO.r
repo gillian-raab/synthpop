@@ -239,98 +239,10 @@ bottom.top.recoding <- function(x,bottom,top,exclude=NULL){
   return(list(x=x,no.recoded.bottom=no.below,no.recoded.top=no.above))
 }
 
-
-###---- read.obs ----------------------------------------------------------
-
-read.obs <- function(file, convert.factors = TRUE, lab.factors = FALSE, 
-                     export.lab = FALSE, ...){
-
- pos <- regexpr("\\.([[:alnum:]]+)$", file)
- ext <- ifelse(pos > -1L, substring(file, pos + 1L), "")
-
- if (ext=="sav") {
-   real.data <- read.spss(file, to.data.frame = FALSE, 
-                  use.value.labels = convert.factors, 
-                  trim.factor.names = TRUE, ...)
-  # trim.factor.names=T - trim trailing spaces from factor levels
-  # use.value.labels=F -> to prevent combining factor levels with missing labels
-  # for read.spss -> cbind(value=attributes(data)$label.table$...)
-  # {Hmisc} real.data <- spss.get(file,use.value.labels=TRUE,max.value.labels=20)
-   varlab <- attr(real.data, "variable.labels")
-   vallab <- attr(real.data, "label.table")
-   vallab <- lapply(vallab,rev)
-   codepage <- attr(real.data,"codepage")
-   real.data <- as.data.frame(real.data)
-   attr(real.data, "variable.labels") <- varlab
-   attr(real.data, "label.table") <- vallab
-   if (codepage > 500) attr(real.data, "codepage") <- codepage
-   
-   labs <- list(var.lab=varlab,val.lab=vallab)
-   if (export.lab) dput(labs,"SPSSlabels")
-   
-   if (convert.factors == FALSE & lab.factors == TRUE){  
-   # convert completly labeled variables into factors
-     ff <- !sapply(vallab,is.null)
-     suppressWarnings(llall <-
-       sapply(vallab, function(x) !(sum(!is.na(as.numeric(names(x))))!=0)))
-     factors <- which(ff & llall)
-     for (i in factors){
-       real.data[,i] <- factor(real.data[,i],levels=vallab[[i]])
-     }
-   }
- 
- } else if (ext=="dta") {
-   real.data <- read.dta(file, convert.factors = convert.factors, ...)
-   
-   varlab <- attr(real.data, "val.labels")
-   vallab <- attr(real.data, "label.table")
-   labs <- list(var=varlab,val=vallab)
-   if (export.lab) dput(labs,"Statalabels")
-   
-   if (convert.factors == FALSE & lab.factors == TRUE){  
-   # convert completly labeled variables into factors
-      ff <- which(varlab != "")
-      suppressWarnings(varlaball <-
-       sapply(vallab, function(x) !(sum(!is.na(as.numeric(names(x))))!=0)))
-      factors <- ff[varlaball[varlab[ff]]]
-      for (i in factors){
-        real.data[,i] <- factor(real.data[,i],levels=vallab[[varlab[i]]])
-      }
-   }
-
-  # for read.dta -> cbind(value=attributes(data)$label.table$...)
-  # convert.factors=T, convert.underscore=F, warn.missing.labels=T, missing.type=T
-  # {Hmisc} real.data <- stata.get(file,...)
-
- } else if (ext=="xpt") {
-   real.data <- read.xport(file)
-  # {Hmisc} real.data <- sasxport.get(file, ...)
-
- } else if (ext=="csv") {
-   real.data <- read.csv(file, header=TRUE, ...)
-
- } else if (ext=="txt") {
-   real.data <- read.table(file, header=TRUE, ...)
-
- } else if (ext=="tab") {
-   real.data <- read.table(file, header=TRUE, sep="\t")
-
- } else {
-   stop(".",ext," is an unrecognized data format",call.=FALSE)
- }
-
- attr(real.data,"filetype") <- ext
- return(real.data)
-}
-# R files (*.RData, *.rda)
-# load(".rda") - don't assign to an object!
-
-
 ###---- write.syn ---------------------------------------------------------
 
 write.syn <- function(object, filename,
-  filetype =c("csv",  "tab", "txt","SPSS", "Stata", "SAS",  "rda", "RData"),
-  convert.factors = "numeric", data.labels = NULL,
+  filetype =c("csv",  "tab", "txt","SAS",  "rda", "RData"),
   save.complete = TRUE, extended.info = TRUE, ...){
 
 # pos <- regexpr("\\.([[:alnum:]]+)$", file)
@@ -340,27 +252,8 @@ write.syn <- function(object, filename,
  m <- object$m
  if (m == 1) object$syn <- list(object$syn)
  filetype <- match.arg(filetype)
- if (is.null(data.labels)) data.labels <- list(var.lab = object$var.lab,
-                                               val.lab = object$val.lab)
 
- if (filetype=="SPSS"){
-   if (m==1) {
-     f1 <- paste0(filename,".sps"); f2 <- paste0(filename,".txt")
-   } else {
-     f1 <- paste0(filename,"_",1:m,".sps"); f2 <- paste0(filename,"_",1:m,".txt")
-   }
-   for (i in 1:m) {
-     #write.foreign(object$syn[[i]], codefile=f1, datafile=f2, package=filetype, ...)
-     write.syn.SPSS(object$syn[[i]], codefile = f1[i], datafile = f2[i],
-       varnames = names(object$syn[[i]]), data.labels = data.labels, ...)
-   }
- } else if (filetype == "Stata"){
-   if (m==1) f1 <- paste0(filename,".dta") else f1 <- paste0(filename,"_",1:m,".dta")
-   for (i in 1:m){
-     write.dta(object$syn[[i]], file = f1[i], convert.factors = convert.factors, ...)
-       #!### check why default convert.factors="labels" cuts the names
-   }
- } else if (filetype == "SAS"){
+ if (filetype == "SAS"){
    if (m==1) {
      f1 <- paste0(filename,".sas"); f2 <- paste0(filename,".txt")
    } else {
@@ -400,7 +293,7 @@ write.syn <- function(object, filename,
  cat("Data frame with original data:", deparse(object$call$data), "\n")
  cat("Number of synthetic data sets:", m, "\n")
  cat("Output file(s):")
- if (filetype=="SPSS" | filetype=="SAS"){
+ if (filetype=="SAS"){
    cat(paste0("(",filetype,") "))
    cat(paste(f1, f2, collapse=" "))
  } else {
@@ -423,58 +316,6 @@ write.syn <- function(object, filename,
  cat("\nInformation on synthetic data written to\n ",
      paste(getwd(),"/",infofile,sep=""),"\n")
 
-}
-
-
-###---- write.syn.SPSS ----------------------------------------------------
-
-write.syn.SPSS <- function (df, datafile, codefile, varnames = names(df),
-  data.labels = NULL, ...)
-{
-  varlabels <- data.labels$var.lab
-  vallabels <- data.labels$val.lab
-  if (is.null(varnames)) varnames <- names(df)
-  
-  dfn <- df
-  for (i in 1:ncol(dfn)){
-    if (!is.null(vallabels[[varnames[i]]])){
-      dfn[,i] <- mapvalues(dfn[,i], from = names(vallabels[[varnames[i]]]), 
-        to = vallabels[[varnames[i]]])
-    }
-  }
-  write.table(dfn, file = datafile, row.names = FALSE, col.names = FALSE,
-    sep = ",", quote = FALSE, na = "", eol = ",\n")
-  varnames  <- gsub("[^[:alnum:]_\\$@#]", "\\.", varnames)
-  if (is.null(varlabels)) varlabels <- varnames 
-  dl.varnames <- varnames
-  if (any(chv <- sapply(df, is.character))) {
-    lengths <- sapply(df[chv], function(v) max(nchar(v)))
-    if (any(lengths > 255L))
-      stop("Cannot handle character variables longer than 255")
-    lengths <- paste0("(A", lengths, ")")
-    star <- ifelse(c(TRUE, diff(which(chv) > 1L)), " *"," ")
-    dl.varnames[chv] <- paste(star, dl.varnames[chv], lengths)
-  }
-  cat("DATA LIST FILE=", adQuote(paste(getwd(), datafile, sep = "/")),
-    " free (\",\")\n", file = codefile)
-  cat("/", dl.varnames, " .\n\n", file = codefile, append = TRUE)
-  cat("VARIABLE LABELS\n", file = codefile, append = TRUE)
-  cat(paste(varnames, adQuote(varlabels[varnames]), "\n"), ".\n", file = codefile,
-    append = TRUE)
-  factors <- sapply(df, is.factor) & !sapply(vallabels[varnames], is.null)
-  if (any(factors)) {
-    cat("\nVALUE LABELS\n", file = codefile, append = TRUE)
-    for (v in which(factors)) {
-      cat("/\n", file = codefile, append = TRUE)
-      cat(varnames[v], " \n", file = codefile, append = TRUE, sep = "")
-      levs     <- vallabels[[varnames[v]]]
-      levslabs <- names(vallabels[[varnames[v]]])
-      cat(paste((levs), adQuote(levslabs), "\n", sep = " "),
-        file = codefile, append = TRUE)
-    }
-    cat(".\n", file = codefile, append = TRUE)
-  }
-  cat("\nEXECUTE.\n", file = codefile, append = TRUE)
 }
 
 
