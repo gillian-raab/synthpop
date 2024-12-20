@@ -7,6 +7,8 @@
 \title{Disclosure measures}
 \description{
   Calculates disclosure measures for synthetic data. 
+  NOTE: The other function that calculates disclosure results for multiple
+  targets has been renamed as multi.disclosure from disclosure.summary.
 }
 \usage{
 \method{disclosure}{synds}(object, data, keys , target , print.flag = TRUE,
